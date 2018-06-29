@@ -1,5 +1,5 @@
-#include "sobolmulti.hpp"
 #include "sobol.hpp"
+#include "sobolmulti.hpp"
 
 void SOBOLMulti::Init(unsigned int param1, unsigned int param2, unsigned int param3, unsigned int param4, string param5, string param6)
 {
@@ -164,26 +164,26 @@ void SOBOLMulti::SeqGen()
 {
     if (mode == "delayed")
     {
-        SOBOL sobolInst[dimNum];
         for (int i = 0; i < dimNum; ++i)
         {
-            sobolInst[i].Init(sobolLen,dimIndex,i*delayIndex,"sobolInst");
-            sobolInst[i].SeqGen();
-            outSeq[i] = sobolInst[i].OutSeq();
-            dirVec[i] = sobolInst[i].DirVec();
-            dirMem[i] = sobolInst[i].DirMem();
+            SOBOL sobolInst;
+            sobolInst.Init(sobolLen,dimIndex,i*delayIndex,"sobolInst");
+            sobolInst.SeqGen();
+            outSeq[i] = sobolInst.OutSeq();
+            dirVec[i] = sobolInst.DirVec();
+            dirMem[i] = sobolInst.DirMem();
         }
     }
     else if (mode == "incremental")
     {
-        SOBOL sobolInst[dimNum];
         for (int i = 0; i < dimNum; ++i)
         {
-            sobolInst[i].Init(sobolLen,i+dimIndex,0,"sobolInst");
-            sobolInst[i].SeqGen();
-            outSeq[i] = sobolInst[i].OutSeq();
-            dirVec[i] = sobolInst[i].DirVec();
-            dirMem[i] = sobolInst[i].DirMem();
+            SOBOL sobolInst;
+            sobolInst.Init(sobolLen,i+dimIndex,0,"sobolInst");
+            sobolInst.SeqGen();
+            outSeq[i] = sobolInst.OutSeq();
+            dirVec[i] = sobolInst.DirVec();
+            dirMem[i] = sobolInst.DirMem();
         }
     }
 }

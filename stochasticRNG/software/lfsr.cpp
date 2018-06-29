@@ -288,7 +288,16 @@ void LFSR::SeqGen()
         }
         ++period;
         outSeq[period] = lfsr;
+        // printf("%u\n", outSeq[period]);
     } while (lfsr != initState);
+    // if (period = outputLen)
+    // {
+    //     printf("Equal length\n");
+    // }
+    // else
+    // {
+    //     printf("non-Equal length\n");
+    // }
     vector<unsigned int> delayed(outputLen);
     for (int i = 0; i < outputLen; ++i)
     {

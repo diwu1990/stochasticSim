@@ -126,12 +126,15 @@ void SeqSearch::CombGen()
                 vector<vector<unsigned int>> inSeq2(2);
                 inSeq2[0] = inSeq[i];
                 inSeq2[1] = inSeq[j];
+                vector<vector<unsigned int>> outSeq2(2);
+                outSeq2[0].resize(inSeq2[0].size());
+                outSeq2[1].resize(inSeq2[1].size());
                 // unsigned int lowCCFlag = 1;
                 vector<unsigned int> bitLengthVec(2);
                 vector<float> probVec(2);
                 // float prob;
                 
-                for (int k = 0; k < 10000; ++k)
+                for (int k = 0; k < 100; ++k)
                 {   
                     RandNum2BitMulti num2bitMultiInst;
                     CrossCorrelation CCInst;
@@ -144,8 +147,9 @@ void SeqSearch::CombGen()
                     num2bitMultiInst.Init(probVec,bitLengthVec,inSeq2,"num2bitMultiInst");
                     num2bitMultiInst.SeqGen();
                     // num2bitMultiInst.SeqPrint();
+                    outSeq2 = num2bitMultiInst.OutSeq();
 
-                    CCInst.Init(num2bitMultiInst.OutSeq(),threshold,"CCInst");
+                    CCInst.Init(outSeq2,threshold,"CCInst");
                     CCInst.CalcCC();
 
                     meansquareCC[i*inDim + j] += CCInst.OutCC()[0]*CCInst.OutCC()[0];

@@ -123,24 +123,24 @@ void LFSRMulti::SeqGen()
 {
     if (mode == "delayed")
     {
-        LFSR lfsrInst[dimNum];
         for (int i = 0; i < dimNum; ++i)
         {
-            lfsrInst[i].Init(lfsrLen,1,polyIndex,i*delayIndex,"lfsrInst");
-            lfsrInst[i].SeqGen();
-            outSeq[i] = lfsrInst[i].OutSeq();
-            polyVal[i] = lfsrInst[i].OutPly();
+            LFSR lfsrInst;
+            lfsrInst.Init(lfsrLen,1,polyIndex,i*delayIndex,"lfsrInst");
+            lfsrInst.SeqGen();
+            outSeq[i] = lfsrInst.OutSeq();
+            polyVal[i] = lfsrInst.OutPly();
         }
     }
     else if (mode == "incremental")
     {
-        LFSR lfsrInst[dimNum];
         for (int i = 0; i < dimNum; ++i)
         {
-            lfsrInst[i].Init(lfsrLen,1,polyIndex+i,0,"lfsrInst");
-            lfsrInst[i].SeqGen();
-            outSeq[i] = lfsrInst[i].OutSeq();
-            polyVal[i] = lfsrInst[i].OutPly();
+            LFSR lfsrInst;
+            lfsrInst.Init(lfsrLen,1,polyIndex+i,0,"lfsrInst");
+            lfsrInst.SeqGen();
+            outSeq[i] = lfsrInst.OutSeq();
+            polyVal[i] = lfsrInst.OutPly();
         }
     }
 }

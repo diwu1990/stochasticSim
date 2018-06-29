@@ -18,6 +18,7 @@ int main()
     srand(time(NULL));
     /*test mixed sobol*/
     unsigned int sobolNum = 15;
+
     unsigned int initialIndex = 1;
     string sobolmode = "incremental";
     // string sobolmode = "delayed";

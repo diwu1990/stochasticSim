@@ -20,6 +20,7 @@ class SOBOLMulti
     vector<vector<unsigned int>> outSeq;
     vector<vector<unsigned int>> dirVec;
     vector<vector<unsigned int>> dirMem;
+    SOBOL sobolInst;
 
     public:
         SOBOLMulti();
@@ -31,9 +32,9 @@ class SOBOLMulti
         void SeqPrint();
         void VecPrint();
         void MemPrint();
-        unsigned int SeqLen();
-        vector<vector<unsigned int>> OutSeq();
-        vector<vector<unsigned int>> DirMem();
-        vector<vector<unsigned int>> DirVec();
+        unsigned int& SeqLen();
+        vector<vector<unsigned int>>& OutSeq();
+        vector<vector<unsigned int>>& DirMem();
+        vector<vector<unsigned int>>& DirVec();
 
 };
