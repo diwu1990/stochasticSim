@@ -115,9 +115,9 @@ void SeqSearch::CombGen()
 {
     srand(time(NULL));
     
-    for (int i = 7; i < inDim; ++i)
+    for (int i = 0; i < inDim; ++i)
     {
-        for (int j = 9; j < inDim; ++j)
+        for (int j = 0; j < inDim; ++j)
         {
             if (i < j)
             {
@@ -131,7 +131,7 @@ void SeqSearch::CombGen()
                 vector<float> probVec(2);
                 // float prob;
                 
-                for (int k = 0; k < 5; ++k)
+                for (int k = 0; k < 10000; ++k)
                 {   
                     RandNum2BitMulti num2bitMultiInst;
                     CrossCorrelation CCInst;
@@ -145,17 +145,17 @@ void SeqSearch::CombGen()
                     num2bitMultiInst.SeqGen();
                     // num2bitMultiInst.SeqPrint();
 
-                    // CCInst.Init(num2bitMultiInst.OutSeq(),threshold,"CCInst");
-                    // CCInst.CalcCC();
+                    CCInst.Init(num2bitMultiInst.OutSeq(),threshold,"CCInst");
+                    CCInst.CalcCC();
 
-                    // meansquareCC[i*inDim + j] += CCInst.OutCC()[0]*CCInst.OutCC()[0];
+                    meansquareCC[i*inDim + j] += CCInst.OutCC()[0]*CCInst.OutCC()[0];
                 }
 
                 // avg cc for (i,j) comb
-                // meansquareCC[i*inDim + j] = meansquareCC[i*inDim + j]/10000;
-                // msCC += meansquareCC[i*inDim + j];
+                meansquareCC[i*inDim + j] = meansquareCC[i*inDim + j]/10000;
+                msCC += meansquareCC[i*inDim + j];
             }
         }
     }
-    // msCC = sqrt(msCC/totalComb);
+    msCC = sqrt(msCC/totalComb);
 }

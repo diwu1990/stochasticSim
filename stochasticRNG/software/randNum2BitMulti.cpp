@@ -97,6 +97,6 @@ void RandNum2BitMulti::SeqGen()
         num2bit.SeqGen();
         // num2bit.SeqPrint();
         bitVec[i] = num2bit.OutSeq();
-        num2bit.SeqPrint();
+        // num2bit.SeqPrint();
     }
 }
