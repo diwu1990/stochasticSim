@@ -27,7 +27,7 @@ int main()
         printf("%-2d, ", i+1);
         for (int j = 0; j < sobolNum; ++j)
         {
-            unsigned int initialIndex = i+1;
+            unsigned int initialIndex = i;
             unsigned int soboldelay = j;
 
             // SOBOLMulti sobolmulti8to8;
@@ -78,17 +78,17 @@ int main()
         }
         printf("\n");
     }
-
+    
 
     sobolmode = "incremental";
     printf("LFSR incremental:\n");
 
-    for (int i = 0; i < sobolNum; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         printf("%-2d, ", i+1);
-        for (int j = 0; j < sobolNum; ++j)
+        for (int j = 0; j < 1; ++j)
         {
-            unsigned int initialIndex = i+1;
+            unsigned int initialIndex = i;
             unsigned int soboldelay = j;
 
             // SOBOLMulti sobolmulti8to8;
@@ -112,10 +112,10 @@ int main()
     }
 
     printf("SOBOL incremental:\n");
-    for (int i = 0; i < sobolNum; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         printf("%-2d, ", i+1);
-        for (int j = 0; j < sobolNum; ++j)
+        for (int j = 0; j < 1; ++j)
         {
             unsigned int initialIndex = i+1;
             unsigned int soboldelay = j;
