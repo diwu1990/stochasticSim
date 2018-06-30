@@ -114,7 +114,7 @@ unsigned int& SeqSearch::CombNum()
 void SeqSearch::CombGen()
 {
     srand(time(NULL));
-    
+    int index = 0;
     for (int i = 0; i < inDim; ++i)
     {
         for (int j = 0; j < inDim; ++j)
@@ -122,7 +122,7 @@ void SeqSearch::CombGen()
             if (i < j)
             {
                 printf("%-3d,%-3d\n", i, j);
-                meansquareCC[i*inDim + j] = 0;
+                meansquareCC[index] = 0;
                 vector<vector<unsigned int>> inSeq2(2);
                 inSeq2[0] = inSeq[i];
                 inSeq2[1] = inSeq[j];
@@ -152,12 +152,13 @@ void SeqSearch::CombGen()
                     CCInst.Init(outSeq2,threshold,"CCInst");
                     CCInst.CalcCC();
 
-                    meansquareCC[i*inDim + j] += CCInst.OutCC()[0]*CCInst.OutCC()[0];
+                    meansquareCC[index] += CCInst.OutCC()[0]*CCInst.OutCC()[0];
                 }
 
                 // avg cc for (i,j) comb
-                meansquareCC[i*inDim + j] = meansquareCC[i*inDim + j]/10000;
-                msCC += meansquareCC[i*inDim + j];
+                meansquareCC[index] = meansquareCC[index]/100;
+                msCC += meansquareCC[index];
+                index++;
             }
         }
     }
