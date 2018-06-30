@@ -125,12 +125,12 @@ void XSHRR1608::SeqGen()
     }
 }
 
-unsigned int& XSHRR1608::SeqLen()
+unsigned int XSHRR1608::SeqLen()
 {
     return seqLength;
 }
 
-unsigned int& XSHRR1608::SeqDim()
+unsigned int XSHRR1608::SeqDim()
 {
     return outDim;
 }
@@ -149,7 +149,7 @@ void XSHRR1608::SeqPrint()
     }
 }
 
-vector<vector<unsigned int>>& XSHRR1608::OutSeq()
+vector<vector<unsigned int>> XSHRR1608::OutSeq()
 {
     return outSeq;
 }

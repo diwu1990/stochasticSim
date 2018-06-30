@@ -95,22 +95,22 @@ void SOBOLMulti::Help()
     printf("**********************************************************\n");
 }
 
-unsigned int& SOBOLMulti::SeqLen()
+unsigned int SOBOLMulti::SeqLen()
 {
     return outputLen;
 }
 
-vector<vector<unsigned int>>& SOBOLMulti::OutSeq()
+vector<vector<unsigned int>> SOBOLMulti::OutSeq()
 {
     return outSeq;
 }
 
-vector<vector<unsigned int>>& SOBOLMulti::DirMem()
+vector<vector<unsigned int>> SOBOLMulti::DirMem()
 {
     return dirMem;
 }
 
-vector<vector<unsigned int>>& SOBOLMulti::DirVec()
+vector<vector<unsigned int>> SOBOLMulti::DirVec()
 {
     return dirVec;
 }

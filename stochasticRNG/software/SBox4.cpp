@@ -152,7 +152,7 @@ void SBOX4::RatePrint()
     printf("%u\n", inRate);
 }
 
-unsigned int& SBOX4::OutNum()
+unsigned int SBOX4::OutNum()
 {
     return outNum;
 }

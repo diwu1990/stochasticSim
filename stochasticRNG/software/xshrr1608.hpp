@@ -31,7 +31,7 @@ class XSHRR1608
         void Report();
         void SeqGen();
         void SeqPrint();
-        unsigned int& SeqDim();
-        unsigned int& SeqLen();
-        vector<vector<unsigned int>>& OutSeq();
+        unsigned int SeqDim();
+        unsigned int SeqLen();
+        vector<vector<unsigned int>> OutSeq();
 };

@@ -76,12 +76,12 @@ void SeqProbMulti::CalcProb()
     }
 }
 
-vector<unsigned int>& SeqProbMulti::SeqLen()
+vector<unsigned int> SeqProbMulti::SeqLen()
 {
     return seqLength;
 }
 
-vector<float>& SeqProbMulti::OutProb()
+vector<float> SeqProbMulti::OutProb()
 {
     return outProb;
 }

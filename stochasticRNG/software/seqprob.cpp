@@ -60,12 +60,12 @@ void SeqProb::CalcProb()
     outProb = (float)oneNum/(float)seqLength;
 }
 
-unsigned int& SeqProb::SeqLen()
+unsigned int SeqProb::SeqLen()
 {
     return seqLength;
 }
 
-float& SeqProb::OutProb()
+float SeqProb::OutProb()
 {
     return outProb;
 }

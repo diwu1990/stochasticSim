@@ -49,7 +49,7 @@ void AutoCorrelation::Help()
 
 }
 
-float& AutoCorrelation::OutAC()
+float AutoCorrelation::OutAC()
 {
     return outAC;
 }

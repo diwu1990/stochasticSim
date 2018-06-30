@@ -18,27 +18,32 @@ int main()
     srand(time(NULL));
     /*test mixed sobol*/
     unsigned int sobolNum = 15;
+    string sobolmode = "delayed";
 
-    unsigned int initialIndex = 1;
-    string sobolmode = "incremental";
-    // string sobolmode = "delayed";
-    unsigned int soboldelay = 1;
+    for (int i = 0; i < sobolNum; ++i)
+    {
+        unsigned int initialIndex = i+1;
+        // string sobolmode = "incremental";
+        unsigned int soboldelay = 1;
 
-//     SOBOLMulti sobolmulti8to8;
-    LFSRMulti sobolmulti8to8;
-    // string sobolmode = "incremental";
-    sobolmulti8to8.Init(sobolNum,initialIndex,soboldelay,8,sobolmode,"sobolmulti8to8");
-    sobolmulti8to8.SeqGen();
-    // sobolmulti8to8.SeqPrint();
-    // sobolmulti8to8.VecPrint();
-    // sobolmulti8to8.MemPrint();
+        SOBOLMulti sobolmulti8to8;
+        // LFSRMulti sobolmulti8to8;
+        // string sobolmode = "incremental";
+        sobolmulti8to8.Init(sobolNum,initialIndex,soboldelay,8,sobolmode,"sobolmulti8to8");
+        sobolmulti8to8.SeqGen();
+        // sobolmulti8to8.SeqPrint();
+        // sobolmulti8to8.VecPrint();
+        // sobolmulti8to8.MemPrint();
 
-    SeqSearch seqsearchInst;
-    seqsearchInst.Init(sobolmulti8to8.OutSeq(),8,0.15,"seqsearchInst");
-    seqsearchInst.Report();
-    seqsearchInst.CombGen();
-    // seqsearchInst.CombPrint();
-    seqsearchInst.MSCCPrint();
+        SeqSearch seqsearchInst;
+        seqsearchInst.Init(sobolmulti8to8.OutSeq(),8,0.15,"seqsearchInst");
+        // seqsearchInst.Report();
+        seqsearchInst.CombGen();
+        // seqsearchInst.CombPrint();
+        // seqsearchInst.MSCCPrint();
+        printf("%-2.5f, ", seqsearchInst.MSCC());
+    }
+    
 
     // unsigned int seqNum = sobolNum*(sobolNum-1)/(sobolNum-1);
 

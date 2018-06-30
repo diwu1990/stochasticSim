@@ -73,22 +73,22 @@ void SOBOL::Help()
     printf("**********************************************************\n");
 }
 
-unsigned int& SOBOL::SeqLen()
+unsigned int SOBOL::SeqLen()
 {
     return outputLen;
 }
 
-vector<unsigned int>& SOBOL::OutSeq()
+vector<unsigned int> SOBOL::OutSeq()
 {
     return outSeq;
 }
 
-vector<unsigned int>& SOBOL::DirVec()
+vector<unsigned int> SOBOL::DirVec()
 {
     return dirVec;
 }
 
-vector<unsigned int>& SOBOL::DirMem()
+vector<unsigned int> SOBOL::DirMem()
 {
     return dirMem;
 }

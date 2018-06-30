@@ -82,7 +82,7 @@ void RandNum2BitMulti::Init(vector<float> param1, vector<unsigned int> param2, v
     }
 }
 
-vector<vector<unsigned int>>& RandNum2BitMulti::OutSeq()
+vector<vector<unsigned int>> RandNum2BitMulti::OutSeq()
 {
     return bitVec;
 }

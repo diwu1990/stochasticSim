@@ -37,9 +37,9 @@ class SOBOL
         void SeqPrint();
         void VecPrint();
         void MemPrint();
-        unsigned int& SeqLen();
-        vector<unsigned int>& OutSeq();
-        vector<unsigned int>& DirVec();
-        vector<unsigned int>& DirMem();
+        unsigned int SeqLen();
+        vector<unsigned int> OutSeq();
+        vector<unsigned int> DirVec();
+        vector<unsigned int> DirMem();
         float * i4_sobol_generate();
 };

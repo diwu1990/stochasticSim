@@ -177,7 +177,7 @@ void MUL::CalcProd()
     }
 }
 
-vector<unsigned int>& MUL::OutSeq()
+vector<unsigned int> MUL::OutSeq()
 {
     return outSeq;
 }
@@ -202,47 +202,47 @@ void MUL::OutPrint()
     // printf("\n");
 }
 
-float& MUL::InCC()
+float MUL::InCC()
 {
     return inCC;
 }
 
-vector<float>& MUL::InProb()
+vector<float> MUL::InProb()
 {
     return inProb;
 }
 
-float& MUL::TheoProb()
+float MUL::TheoProb()
 {
     return theoProb;
 }
 
-vector<float>& MUL::RealProb()
+vector<float> MUL::RealProb()
 {
     return realProb;
 }
 
-float& MUL::FinalRealProb()
+float MUL::FinalRealProb()
 {
     return realProb[seqLength-1];
 }
 
-vector<float>& MUL::ErrRate()
+vector<float> MUL::ErrRate()
 {
     return errRate;
 }
 
-float& MUL::FinalErrRate()
+float MUL::FinalErrRate()
 {
     return errRate[seqLength-1];
 }
 
-unsigned int& MUL::SeqLen()
+unsigned int MUL::SeqLen()
 {
     return seqLength;
 }
 
-unsigned int& MUL::LowErrLen()
+unsigned int MUL::LowErrLen()
 {
     return lowErrLen;
 }

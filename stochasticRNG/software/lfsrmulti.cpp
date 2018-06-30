@@ -79,17 +79,17 @@ void LFSRMulti::Help()
     printf("**********************************************************\n");
 }
 
-unsigned int& LFSRMulti::SeqLen()
+unsigned int LFSRMulti::SeqLen()
 {
     return outputLen;
 }
 
-vector<vector<unsigned int>>& LFSRMulti::OutSeq()
+vector<vector<unsigned int>> LFSRMulti::OutSeq()
 {
     return outSeq;
 }
 
-vector<unsigned int>& LFSRMulti::OutPly()
+vector<unsigned int> LFSRMulti::OutPly()
 {
     return polyVal;
 }

@@ -59,17 +59,17 @@ void SeqSearch::Help()
     printf("**********************************************************\n");
 }
 
-vector<vector<unsigned int>>& SeqSearch::OutComb()
+vector<vector<unsigned int>> SeqSearch::OutComb()
 {
     return outComb;
 }
 
-float& SeqSearch::MSCC()
+float SeqSearch::MSCC()
 {
     return msCC;
 }
 
-vector<float>& SeqSearch::MSCCVec()
+vector<float> SeqSearch::MSCCVec()
 {
     return meansquareCC;
 }
@@ -106,7 +106,7 @@ void SeqSearch::Report()
     printf("Good CC Threshold:      %.3f\n", threshold);
 }
 
-unsigned int& SeqSearch::CombNum()
+unsigned int SeqSearch::CombNum()
 {
     return combNum;
 }
@@ -114,6 +114,7 @@ unsigned int& SeqSearch::CombNum()
 void SeqSearch::CombGen()
 {
     srand(time(NULL));
+    msCC = 0;
     int index = 0;
     for (int i = 0; i < inDim; ++i)
     {
@@ -121,7 +122,7 @@ void SeqSearch::CombGen()
         {
             if (i < j)
             {
-                printf("%-3d,%-3d\n", i, j);
+                // printf("%-3d,%-3d\n", i, j);
                 meansquareCC[index] = 0;
                 vector<vector<unsigned int>> inSeq2(2);
                 inSeq2[0] = inSeq[i];
@@ -134,7 +135,7 @@ void SeqSearch::CombGen()
                 vector<float> probVec(2);
                 // float prob;
                 
-                for (int k = 0; k < 100; ++k)
+                for (int k = 0; k < 50000; ++k)
                 {   
                     RandNum2BitMulti num2bitMultiInst;
                     CrossCorrelation CCInst;
@@ -151,16 +152,25 @@ void SeqSearch::CombGen()
 
                     CCInst.Init(outSeq2,threshold,"CCInst");
                     CCInst.CalcCC();
+                    // if (isnan(CCInst.OutCC()[0]))
+                    // {
+                    //     printf("prob:%f,%f\n", probVec[0], probVec[1]);
+                    //     printf("CC:%f\n", CCInst.OutCC()[0]);
+                    //     num2bitMultiInst.SeqPrint();
+                    // }
 
                     meansquareCC[index] += CCInst.OutCC()[0]*CCInst.OutCC()[0];
                 }
+                // printf("\n%f\n", meansquareCC[index]);
 
                 // avg cc for (i,j) comb
-                meansquareCC[index] = meansquareCC[index]/100;
+                meansquareCC[index] = meansquareCC[index]/50000;
                 msCC += meansquareCC[index];
                 index++;
             }
         }
     }
+    // printf("%f\n", msCC);
     msCC = sqrt(msCC/totalComb);
+    // printf("%f\n", msCC);
 }

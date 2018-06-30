@@ -24,6 +24,6 @@ class SeqProbMulti
         void CalcProb();
         void Report();
         void ProbPrint();
-        vector<unsigned int>& SeqLen();
-        vector<float>& OutProb();
+        vector<unsigned int> SeqLen();
+        vector<float> OutProb();
 };

@@ -32,9 +32,9 @@ class SOBOLMulti
         void SeqPrint();
         void VecPrint();
         void MemPrint();
-        unsigned int& SeqLen();
-        vector<vector<unsigned int>>& OutSeq();
-        vector<vector<unsigned int>>& DirMem();
-        vector<vector<unsigned int>>& DirVec();
+        unsigned int SeqLen();
+        vector<vector<unsigned int>> OutSeq();
+        vector<vector<unsigned int>> DirMem();
+        vector<vector<unsigned int>> DirVec();
 
 };

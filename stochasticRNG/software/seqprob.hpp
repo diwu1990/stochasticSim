@@ -23,6 +23,6 @@ class SeqProb
         void Report();
         void ProbPrint();
         void CalcProb();
-        unsigned int& SeqLen();
-        float& OutProb();
+        unsigned int SeqLen();
+        float OutProb();
 };

@@ -49,17 +49,17 @@ void CrossCorrelation::Help()
 
 }
 
-vector<float>& CrossCorrelation::OutCC()
+vector<float> CrossCorrelation::OutCC()
 {
     return outCC;
 }
 
-float& CrossCorrelation::MaxCC()
+float CrossCorrelation::MaxCC()
 {
     return maxCC;
 }
 
-float& CrossCorrelation::MinCC()
+float CrossCorrelation::MinCC()
 {
     return minCC;
 }
@@ -153,12 +153,26 @@ void CrossCorrelation::CalcCC()
                 {
                     int ab = a+b;
                     int ac = a+c;
-                    outCC[CCIndex] = (float)(a*d-b*c)/(float)(bitVecLen*min(ab,ac)-(a+b)*(a+c));
+                    if ((float)(bitVecLen*min(ab,ac)-(a+b)*(a+c)) != 0)
+                    {
+                        outCC[CCIndex] = (float)(a*d-b*c)/(float)(bitVecLen*min(ab,ac)-(a+b)*(a+c));
+                    }
+                    else
+                    {
+                        outCC[CCIndex] = 1;
+                    }
                 }
                 else
                 {
                     int ad = a-d;
-                    outCC[CCIndex] = (float)(a*d-b*c)/(float)((a+b)*(a+c)-(bitVecLen)*min(ad,0));
+                    if ((float)((a+b)*(a+c)-(bitVecLen)*min(ad,0)) != 0)
+                    {
+                        outCC[CCIndex] = (float)(a*d-b*c)/(float)((a+b)*(a+c)-(bitVecLen)*min(ad,0));
+                    }
+                    else
+                    {
+                        outCC[CCIndex] = 1;
+                    }
                 }
                 if (outCC[CCIndex] > maxCC)
                 {
