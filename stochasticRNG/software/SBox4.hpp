@@ -50,6 +50,6 @@ class SBOX4
         void NumGen(unsigned int);
         void NumPrint();
         void RatePrint();
-        unsigned int OutNum();
+        unsigned int& OutNum();
     
 };

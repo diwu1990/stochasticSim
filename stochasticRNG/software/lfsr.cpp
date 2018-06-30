@@ -86,17 +86,17 @@ void LFSR::Help()
     printf("**********************************************************\n");
 }
 
-unsigned int LFSR::SeqLen()
+unsigned int& LFSR::SeqLen()
 {
     return outputLen;
 }
 
-unsigned int LFSR::OutPly()
+unsigned int& LFSR::OutPly()
 {
     return polyVal;
 }
 
-vector<unsigned int> LFSR::OutSeq()
+vector<unsigned int>& LFSR::OutSeq()
 {
     for (int i = 0; i < outputLen; ++i)
     {
@@ -287,7 +287,10 @@ void LFSR::SeqGen()
             lfsr ^= curPoly;
         }
         ++period;
-        outSeq[period] = lfsr;
+        if (period < outputLen)
+        {
+            outSeq[period] = lfsr;
+        }
         // printf("%u\n", outSeq[period]);
     } while (lfsr != initState);
     // if (period = outputLen)

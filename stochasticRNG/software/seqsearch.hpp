@@ -35,8 +35,8 @@ class SeqSearch
         void CombGen();
         void CombPrint();
         void MSCCPrint();
-        vector<vector<unsigned int>> OutComb();
-        unsigned int CombNum();
-        float MSCC();
-        vector<float> MSCCVec();
+        vector<vector<unsigned int>>& OutComb();
+        unsigned int& CombNum();
+        float& MSCC();
+        vector<float>& MSCCVec();
 };

@@ -49,17 +49,17 @@ void CrossCorrelation::Help()
 
 }
 
-vector<float> CrossCorrelation::OutCC()
+vector<float>& CrossCorrelation::OutCC()
 {
     return outCC;
 }
 
-float CrossCorrelation::MaxCC()
+float& CrossCorrelation::MaxCC()
 {
     return maxCC;
 }
 
-float CrossCorrelation::MinCC()
+float& CrossCorrelation::MinCC()
 {
     return minCC;
 }

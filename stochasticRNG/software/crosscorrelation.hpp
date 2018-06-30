@@ -31,7 +31,7 @@ class CrossCorrelation
         void CalcCC();
         void Report();
         void CCPrint();
-        vector<float> OutCC();
-        float MaxCC();
-        float MinCC();
+        vector<float>& OutCC();
+        float& MaxCC();
+        float& MinCC();
 };

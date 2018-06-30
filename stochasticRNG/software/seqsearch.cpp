@@ -59,17 +59,17 @@ void SeqSearch::Help()
     printf("**********************************************************\n");
 }
 
-vector<vector<unsigned int>> SeqSearch::OutComb()
+vector<vector<unsigned int>>& SeqSearch::OutComb()
 {
     return outComb;
 }
 
-float SeqSearch::MSCC()
+float& SeqSearch::MSCC()
 {
     return msCC;
 }
 
-vector<float> SeqSearch::MSCCVec()
+vector<float>& SeqSearch::MSCCVec()
 {
     return meansquareCC;
 }
@@ -106,7 +106,7 @@ void SeqSearch::Report()
     printf("Good CC Threshold:      %.3f\n", threshold);
 }
 
-unsigned int SeqSearch::CombNum()
+unsigned int& SeqSearch::CombNum()
 {
     return combNum;
 }

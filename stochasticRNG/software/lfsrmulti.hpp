@@ -29,7 +29,7 @@ class LFSRMulti
         void SeqGen();
         void SeqPrint();
         void PlyPrint();
-        unsigned int SeqLen();
-        vector<vector<unsigned int>> OutSeq();
-        vector<unsigned int> OutPly();
+        unsigned int& SeqLen();
+        vector<vector<unsigned int>>& OutSeq();
+        vector<unsigned int>& OutPly();
 };

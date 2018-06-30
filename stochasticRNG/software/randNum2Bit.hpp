@@ -24,5 +24,5 @@ public:
     void SeqPrint();
     void Init(float, unsigned int, vector<unsigned int>, string);
     void SeqGen();
-    vector<unsigned int> OutSeq();
+    vector<unsigned int>& OutSeq();
 };
