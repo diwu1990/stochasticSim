@@ -135,7 +135,7 @@ void SeqSearch::CombGen()
                 vector<float> probVec(2);
                 // float prob;
                 
-                for (int k = 0; k < 50000; ++k)
+                for (int k = 0; k < 10000; ++k)
                 {   
                     RandNum2BitMulti num2bitMultiInst;
                     CrossCorrelation CCInst;
@@ -164,7 +164,7 @@ void SeqSearch::CombGen()
                 // printf("\n%f\n", meansquareCC[index]);
 
                 // avg cc for (i,j) comb
-                meansquareCC[index] = meansquareCC[index]/50000;
+                meansquareCC[index] = meansquareCC[index]/10000;
                 msCC += meansquareCC[index];
                 index++;
             }
