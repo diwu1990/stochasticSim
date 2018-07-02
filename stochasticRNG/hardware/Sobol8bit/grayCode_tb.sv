@@ -4,7 +4,7 @@ module grayCode_tb ();
 
     logic   clk;
     logic   rst;
-    logic   [`GWIDTH-1:0]grayOutBin;
+    logic   [`GCWD-1:0]grayOutBin;
 
 	grayCode U_grayCode(
         .clk(clk),

@@ -3,11 +3,11 @@
 module grayCode (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
-    output logic [`GWIDTH-1:0]grayOutBin
+    output logic [`GCWD-1:0]grayOut
     
 );
 
-    logic [`GWIDTH-1:0]cnt;
+    logic [`GCWD-1:0]cnt;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_1
         if(~rst_n) begin
@@ -18,7 +18,7 @@ module grayCode (
     end
 
     always_comb begin : proc_2
-        grayOutBin <= (cnt>>1) ^ cnt;
+        grayOut <= (cnt>>1) ^ cnt;
     end
 
 endmodule

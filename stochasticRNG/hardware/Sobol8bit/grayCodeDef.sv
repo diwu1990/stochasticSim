@@ -1,1 +1,1 @@
-`define GWIDTH 4
+`define GCWD 8
