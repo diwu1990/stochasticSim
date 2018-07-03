@@ -12,11 +12,12 @@
 #include "seqsearch.hpp"
 #include <cstdlib>
 #include <ctime>
+#include "sobolmerge.hpp"
 
 int main()
 {
+    /*
     srand(time(NULL));
-    /*test mixed sobol*/
     unsigned int sobolNum = 15;
     string sobolmode = "delayed";
     // string sobolmode = "incremental";
@@ -139,84 +140,32 @@ int main()
         }
         printf("\n");
     }
-    
+    */
+    unsigned int dim1 = 8;
+    unsigned int dim2 = 1;
+    SOBOL sobolinst1;
+    sobolinst1.Init(8,dim1,0,"sobolinst1");
+    sobolinst1.SeqGen();
+    // sobolinst1.SeqPrint();
+    // sobolinst1.VecPrint();
+    // sobolinst1.MemPrint();
 
-    // unsigned int seqNum = sobolNum*(sobolNum-1)/(sobolNum-1);
+    SOBOL sobolinst2;
+    sobolinst2.Init(8,dim2,0,"sobolinst2");
+    sobolinst2.SeqGen();
+    // sobolinst2.SeqPrint();
+    // sobolinst2.VecPrint();
+    // sobolinst2.MemPrint();
 
-    // vector<unsigned int> tenFoldCnt(10);
-    // vector<float> tenFoldErr(10);
-    // vector<float> tenFoldCC(10);
-    // vector<float> tenFoldLowErrLen(10);
-    // vector<unsigned int> bitLengthVecmix(seqNum);
-    // vector<float> probVecmix(seqNum);
-    // for (int iter = 0; iter < 10000; ++iter)
-    // {
-    //     for (int i = 0; i < seqNum; ++i)
-    //     {
-    //         bitLengthVecmix[i] = 8;
-    //         // probVecmix[i] = (float)i/(float)seqNum;
-    //         probVecmix[i] = (float)((float)(rand()%256)/256);
-    //         // probVecmix[i] = 0.3;
-    //     }
-        
-    //     RandNum2BitMulti num2bitSobolmix;
-    //     num2bitSobolmix.Init(probVecmix,bitLengthVecmix,sobolmulti8to8.OutSeq(),"num2bitSobolmix");
-    //     num2bitSobolmix.SeqGen();
+    vector<vector<unsigned int>> dirVec(2);
+    dirVec[0] = sobolinst1.DirVec();
+    dirVec[0] = sobolinst2.DirVec();
+    dirVec[1] = {0,0,0,0,0,0,0,0};
+    SOBOLMerge sobolmergeinst;
+    sobolmergeinst.Init(dirVec,8,"sobolmergeinst");
+    sobolmergeinst.Report();
+    sobolmergeinst.MemGen();
+    sobolmergeinst.VecPrint();
+    sobolmergeinst.MemPrint();
 
-    //     // float threshold = 0.15;
-    //     float errorthreshold = 0.05;
-    //     // CrossCorrelation CCsobolmix;
-    //     // CCsobolmix.Init(num2bitSobolmix.OutSeq(),threshold,"CCsobolmix");
-    //     // CCsobolmix.CalcCC();
-
-    //     unsigned int totalOK = 0;
-    //     vector<float> mulResult(sobolNum*(sobolNum-1)/2);
-    //     for (int i = 0; i < sobolNum*(sobolNum-1)/2; ++i)
-    //     {
-    //         mulResult[i] = 0;
-    //     }
-    //     for (int i = 0; i < sobolNum; ++i)
-    //     {
-    //         for (int j = 0; j < sobolNum; ++j)
-    //         {
-    //             if (i < j)
-    //             {
-    //                 vector<vector<unsigned int>> mulInSeq(2);
-    //                 mulInSeq[0] = num2bitSobolmix.OutSeq()[i];
-    //                 mulInSeq[1] = num2bitSobolmix.OutSeq()[j];
-    //                 MUL multiplier;
-    //                 multiplier.Init(mulInSeq,"multiplier");
-    //                 // multiplier.Report();
-    //                 multiplier.CalcProd();
-    //                 // if (multiplier.InCC() < threshold && multiplier.InCC() > -threshold)
-    //                 if (multiplier.FinalErrRate() < errorthreshold && multiplier.FinalErrRate() > -errorthreshold)
-    //                 {
-    //                     totalOK++;
-    //                     tenFoldCnt[(int)(multiplier.FinalRealProb()*10)]++;
-    //                     tenFoldErr[(int)(multiplier.FinalRealProb()*10)] += multiplier.FinalErrRate()*multiplier.FinalErrRate();
-    //                     tenFoldCC[(int)(multiplier.FinalRealProb()*10)] += multiplier.InCC()*multiplier.InCC();
-    //                     tenFoldLowErrLen[(int)(multiplier.FinalRealProb()*10)] += multiplier.LowErrLen();
-    //                     // printf("(%d,%d) Input Probability: %f, %f => Input CC: %.3f; Final Error Rate: %.3f; Low Error Length: %u\n", i,j,,,multiplier.InCC(),multiplier.FinalErrRate(), multiplier.LowErrLen());
-    //                     // printf("(%d,%d)%u\n",i,j,totalOK);
-    //                     // multiplier.OutPrint();
-    //                     // if ((int)multiplier.FinalRealProb() >= 0 and multiplier.FinalRealProb() < 0.1)
-    //                     // {
-    //                     //     /* code */
-    //                     // }
-    //                     // else if (multiplier.FinalRealProb() >= 0.1 and multiplier.FinalRealProb() < 0.2)
-    //                     // {
-    //                     //     /* code */
-    //                     // }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // std::cout << "Sobol Mode:          " << sobolmode << std::endl;
-    // printf("Sobol Index:         %u\n", initialIndex);
-    // printf("Sobol delay:         %u\n", soboldelay);
-    // for (int i = 0; i < 10; ++i)
-    // {
-    //     printf("%d: %-7d, %-5.5f, %-5.5f, %-5.5f\n", i, tenFoldCnt[i], tenFoldErr[i]/tenFoldCnt[i], tenFoldCC[i]/tenFoldCnt[i], (float)tenFoldLowErrLen[i]/(float)tenFoldCnt[i]);
-    // }
 }
