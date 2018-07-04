@@ -15,6 +15,7 @@ class DIV
     vector<unsigned int> randNum;
     unsigned int bitLength;
     unsigned int depth;
+    unsigned int logDepth;
     unsigned int inDim;
 
     unsigned int seqLength;
