@@ -24,7 +24,7 @@ void DIV::Help()
     printf("Configure the DIV inst.\n");
     printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Bit Length of Random Number, Tracing Memory Bit Length, Instance Name.\n");
     printf("Recommended Tracing Memory Bit Length: 2\n");
-    
+
     printf("2. inst.CalcQuot() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
 
@@ -61,7 +61,7 @@ void DIV::Help()
     printf("13. inst.LowErrLen() method:\n");
     printf("Return the sequence length required to converge with less than 5 percent error rate.\n");
 
-    printf("13. inst.PPStage() method:\n");
+    printf("14. inst.PPStage() method:\n");
     printf("Return the pipline stages required by hardware.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
