@@ -12,7 +12,7 @@ void SOBOLMerge::Help(){
     printf("Configure the SOBOLMerge inst.\n");
     printf("Initial Parameters: Vector of SOBOL Memory Value, Instance Name.\n");
 
-    printf("2. inst.MemGen() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Generate the merged memory vectors.\n");
 
     printf("3. inst.OutMem() method:\n");
@@ -69,7 +69,7 @@ void SOBOLMerge::Report()
     printf("Input Bit Length:       %-5u\n", bitLength);
 }
 
-void SOBOLMerge::MemGen()
+void SOBOLMerge::Calc()
 {
     for (int i = 0; i < inLen; ++i)
     {

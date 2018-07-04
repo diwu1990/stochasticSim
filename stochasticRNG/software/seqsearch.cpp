@@ -41,7 +41,7 @@ void SeqSearch::Help()
     printf("Configure the SeqSearch inst.\n");
     printf("Initial Parameters: Input Random Number Vector, Threshold of Cross-Correlation, Instance Name.\n");
 
-    printf("2. inst.CombGen() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the combination of input vectors with low discrepency from inst.Init().\n");
 
     printf("3. inst.OutComb() method:\n");
@@ -111,7 +111,7 @@ unsigned int SeqSearch::CombNum()
     return combNum;
 }
 
-void SeqSearch::CombGen()
+void SeqSearch::Calc()
 {
     srand(time(NULL));
     msCC = 0;
@@ -151,7 +151,7 @@ void SeqSearch::CombGen()
                     outSeq2 = num2bitMultiInst.OutSeq();
 
                     CCInst.Init(outSeq2,threshold,"CCInst");
-                    CCInst.CalcCC();
+                    CCInst.Calc();
                     // if (isnan(CCInst.OutCC()[0]))
                     // {
                     //     printf("prob:%f,%f\n", probVec[0], probVec[1]);

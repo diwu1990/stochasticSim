@@ -39,7 +39,7 @@ void AutoCorrelation::Help()
     printf("Configure the AutoCorrelation inst.\n");
     printf("Initial Parameters: Bit Vector, Auto-Correlation Offset, Orignal Expectation of Bit Vector, Instance Name.\n");
 
-    printf("\n2. inst.CalcAC() method:\n");
+    printf("\n2. inst.Calc() method:\n");
     printf("Calculate the Auto-Correlation of input bit vector from inst.Init().\n");
 
     printf("\n3. inst.OutAC() method:\n");
@@ -54,7 +54,7 @@ float AutoCorrelation::OutAC()
     return outAC;
 }
 
-void AutoCorrelation::CalcAC()
+void AutoCorrelation::Calc()
 {
     // bitVec is the input stochastic bit array, which is to be calculated for auto-correlation
     // offset is the shifting offset for the input array

@@ -26,7 +26,7 @@ void MUL::Help()
     printf("Configure the MUL inst.\n");
     printf("Initial Parameters: Two Input Vectors.\n");
 
-    printf("2. inst.CalcProd() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the product of two input sequences.\n");
 
     printf("3. inst.OutSeq() method:\n");
@@ -62,7 +62,7 @@ void MUL::Help()
     printf("13. inst.LowErrLen() method:\n");
     printf("Return the sequence length required to converge with less than 5 percent error rate.\n");
 
-    printf("13. inst.PPStage() method:\n");
+    printf("14. inst.PPStage() method:\n");
     printf("Return the pipline stages required by hardware.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
@@ -73,7 +73,7 @@ void MUL::Init(vector<vector<unsigned int>> param1, string param2)
     inSeq = param1;
     SeqProbMulti probCalc;
     probCalc.Init(inSeq,"probCalc");
-    probCalc.CalcProb();
+    probCalc.Calc();
     inProb = probCalc.OutProb();
     m_name = param2;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 2)
@@ -125,11 +125,11 @@ void MUL::Report()
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
-void MUL::CalcProd()
+void MUL::Calc()
 {
     CrossCorrelation inputCC;
     inputCC.Init(inSeq,1,"inputCC");
-    inputCC.CalcCC();
+    inputCC.Calc();
     inCC = inputCC.OutCC()[0];
 
     unsigned int oneCount = 0;

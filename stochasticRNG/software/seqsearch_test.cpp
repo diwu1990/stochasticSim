@@ -25,7 +25,7 @@
             SeqSearch seqsearchInst;
             seqsearchInst.Init(sobolmulti8to8.OutSeq(),8,0.15,"seqsearchInst");
             // seqsearchInst.Report();
-            seqsearchInst.CombGen();
+            seqsearchInst.Calc();
             // seqsearchInst.CombPrint();
             // seqsearchInst.MSCCPrint();
             printf("%-2.3f, ", seqsearchInst.MSCC());
@@ -54,7 +54,7 @@
             SeqSearch seqsearchInst;
             seqsearchInst.Init(sobolmulti8to8.OutSeq(),8,0.15,"seqsearchInst");
             // seqsearchInst.Report();
-            seqsearchInst.CombGen();
+            seqsearchInst.Calc();
             // seqsearchInst.CombPrint();
             // seqsearchInst.MSCCPrint();
             printf("%-2.3f, ", seqsearchInst.MSCC());
@@ -86,7 +86,7 @@
             SeqSearch seqsearchInst;
             seqsearchInst.Init(sobolmulti8to8.OutSeq(),8,0.15,"seqsearchInst");
             // seqsearchInst.Report();
-            seqsearchInst.CombGen();
+            seqsearchInst.Calc();
             // seqsearchInst.CombPrint();
             // seqsearchInst.MSCCPrint();
             printf("%-2.3f, ", seqsearchInst.MSCC());
@@ -115,7 +115,7 @@
             SeqSearch seqsearchInst;
             seqsearchInst.Init(sobolmulti8to8.OutSeq(),8,0.15,"seqsearchInst");
             // seqsearchInst.Report();
-            seqsearchInst.CombGen();
+            seqsearchInst.Calc();
             // seqsearchInst.CombPrint();
             // seqsearchInst.MSCCPrint();
             printf("%-2.3f, ", seqsearchInst.MSCC());

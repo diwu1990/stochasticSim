@@ -32,7 +32,7 @@ class SeqSearch
         void Help();
         void Init(vector<vector<unsigned int>>, unsigned int, float, string);
         void Report();
-        void CombGen();
+        void Calc();
         void CombPrint();
         void MSCCPrint();
         vector<vector<unsigned int>> OutComb();

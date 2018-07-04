@@ -30,7 +30,7 @@ class MUL
         void Help();
         void Init(vector<vector<unsigned int>>, string);
         void Report();
-        void CalcProd();
+        void Calc();
         void OutPrint();
         vector<unsigned int> OutSeq();
         float InCC();

@@ -11,7 +11,7 @@ void SeqProb::Help()
     printf("Configure the SeqProb inst.\n");
     printf("Initial Parameters: Bit Vector, Instance Name.\n");
 
-    printf("2. inst.CalcProb() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the Cross-Correlation of input bit vector from inst.Init().\n");
 
     printf("3. inst.SeqLen() method:\n");
@@ -50,7 +50,7 @@ void SeqProb::ProbPrint()
     printf("%f\n", outProb);
 }
 
-void SeqProb::CalcProb()
+void SeqProb::Calc()
 {
     int oneNum = 0;
     for (int i = 0; i < seqLength; ++i)

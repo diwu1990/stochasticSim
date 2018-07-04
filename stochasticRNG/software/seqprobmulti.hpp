@@ -21,7 +21,7 @@ class SeqProbMulti
         ~SeqProbMulti();
         void Help();
         void Init(vector<vector<unsigned int>>, string);
-        void CalcProb();
+        void Calc();
         void Report();
         void ProbPrint();
         vector<unsigned int> SeqLen();

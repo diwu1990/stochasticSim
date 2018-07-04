@@ -11,7 +11,7 @@ void SeqProbMulti::Help()
     printf("Configure the SeqProbMulti inst.\n");
     printf("Initial Parameters: Bit Vector, Instance Name.\n");
 
-    printf("2. inst.CalcProb() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the Cross-Correlation of input bit vector from inst.Init().\n");
 
     printf("3. inst.SeqLen() method:\n");
@@ -62,7 +62,7 @@ void SeqProbMulti::ProbPrint()
     printf("\n");
 }
 
-void SeqProbMulti::CalcProb()
+void SeqProbMulti::Calc()
 {
     for (int i = 0; i < inDim; ++i)
     {

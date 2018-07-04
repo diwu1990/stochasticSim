@@ -34,7 +34,7 @@ class DIV
         void Help();
         void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, string);
         void Report();
-        void CalcQuot();
+        void Calc();
         void OutPrint();
         vector<unsigned int> OutSeq();
         float InCC();

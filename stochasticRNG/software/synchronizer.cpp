@@ -58,7 +58,7 @@ void Synchronizer::Init(vector<vector<unsigned int>> param1, unsigned int param2
     }
     SeqProbMulti inProbInst;
     inProbInst.Init(inSeq,"inProbInst");
-    inProbInst.CalcProb();
+    inProbInst.Calc();
     if (inProbInst.OutProb()[0] > inProbInst.OutProb()[1])
     {
         printf("Error: Probability of input sequence 0 (%-.3f) is larger than that of input sequence 1 (%-.3f).\n", inProbInst.OutProb()[0], inProbInst.OutProb()[1]);
@@ -140,18 +140,18 @@ void Synchronizer::SeqGen()
 
     CrossCorrelation inCCInst;
     inCCInst.Init(inSeq, 1, "inCCInst");
-    inCCInst.CalcCC();
+    inCCInst.Calc();
     inCC = inCCInst.OutCC()[0];
 
     SeqProbMulti outProbInst;
     outProbInst.Init(outSeq,"outProbInst");
-    outProbInst.CalcProb();
+    outProbInst.Calc();
     outProb[0] = outProbInst.OutProb()[0];
     outProb[1] = outProbInst.OutProb()[1];
 
     CrossCorrelation outCCInst;
     outCCInst.Init(outSeq, 1, "outCCInst");
-    outCCInst.CalcCC();
+    outCCInst.Calc();
     outCC = outCCInst.OutCC()[0];
 
     errRate = (outProb[0] - inProb[0]) / inProb[0];

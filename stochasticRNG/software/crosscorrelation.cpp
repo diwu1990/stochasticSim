@@ -30,7 +30,7 @@ void CrossCorrelation::Help()
     printf("Configure the CrossCorrelation inst.\n");
     printf("Initial Parameters: Bit Vector Array, Threshold To Be Print, Instance Name.\n");
 
-    printf("2. inst.CalcCC() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the Cross-Correlation of input bit vector from inst.Init().\n");
 
     printf("3. inst.OutCC() method:\n");
@@ -99,7 +99,7 @@ void CrossCorrelation::Report()
     printf("Seqsence Length:        %u\n", bitVecLen);
 }
 
-void CrossCorrelation::CalcCC()
+void CrossCorrelation::Calc()
 {
     // bitVecX is the input stochastic bit array X, which is the first array to be calculated for cross-correlation
     // bitVecY is the input stochastic bit array Y, which is the second array to be calculated for cross-correlation

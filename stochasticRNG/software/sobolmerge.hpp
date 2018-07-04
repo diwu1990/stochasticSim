@@ -22,7 +22,7 @@ class SOBOLMerge
         void Help();
         void Init(vector<vector<unsigned int>>, unsigned int, string);
         void Report();
-        void MemGen();
+        void Calc();
         void VecPrint();
         void MemPrint();
         vector<unsigned int> OutMem();

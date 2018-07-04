@@ -28,7 +28,7 @@ class CrossCorrelation
         ~CrossCorrelation();
         void Help();
         void Init(vector<vector<unsigned int>>, float, string);
-        void CalcCC();
+        void Calc();
         void Report();
         void CCPrint();
         vector<float> OutCC();

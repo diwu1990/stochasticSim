@@ -22,7 +22,7 @@ class AutoCorrelation
         void Help();
         void Init(vector<unsigned int>, unsigned int, float, string);
         void Report();
-        void CalcAC();
+        void Calc();
         float OutAC();
     
 };

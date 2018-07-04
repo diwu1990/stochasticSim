@@ -25,7 +25,7 @@ void DIV::Help()
     printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Bit Length of Random Number, Tracing Memory Bit Length, Instance Name.\n");
     printf("Recommended Tracing Memory Bit Length: 2\n");
 
-    printf("2. inst.CalcQuot() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
 
     printf("3. inst.OutSeq() method:\n");
@@ -72,7 +72,7 @@ void DIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
     inSeq = param1;
     SeqProbMulti probCalc;
     probCalc.Init(inSeq,"probCalc");
-    probCalc.CalcProb();
+    probCalc.Calc();
     inProb = probCalc.OutProb();
     randNum = param2;
     bitLength = param3;
@@ -134,11 +134,12 @@ void DIV::Report()
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
-void DIV::CalcQuot()
+// void DIV::CalcQuot()
+void DIV::Calc()
 {
     CrossCorrelation inputCC;
     inputCC.Init(inSeq,1,"inputCC");
-    inputCC.CalcCC();
+    inputCC.Calc();
     inCC = inputCC.OutCC()[0];
 
     Synchronizer divSyncInst;

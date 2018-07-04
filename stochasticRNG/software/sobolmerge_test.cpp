@@ -23,7 +23,7 @@
 //     SOBOLMerge sobolmergeinst;
 //     sobolmergeinst.Init(dirVec,8,"sobolmergeinst");
 //     sobolmergeinst.Report();
-//     sobolmergeinst.MemGen();
+//     sobolmergeinst.Calc();
 //     sobolmergeinst.VecPrint();
 //     sobolmergeinst.MemPrint();
 // }

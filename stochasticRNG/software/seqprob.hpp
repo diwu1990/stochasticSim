@@ -22,7 +22,7 @@ class SeqProb
         void Init(vector<unsigned int>, string);
         void Report();
         void ProbPrint();
-        void CalcProb();
+        void Calc();
         unsigned int SeqLen();
         float OutProb();
 };
