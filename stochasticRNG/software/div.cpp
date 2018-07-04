@@ -110,7 +110,7 @@ void DIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
         realProb[i] = 0;
         errRate[i] = 0;
     }
-    lowErrLen = 0;
+    lowErrLen = seqLength;
     // for (int i = 0; i < inDim; ++i)
     // {
     //     for (int j = 0; j < seqLength; ++j)
@@ -192,13 +192,13 @@ void DIV::Calc()
     //         // printf("%u\n", outSeq[i]);
     //         oneCount += outSeq[i];
     //         if (i < 32)
-            // {
-            //     realProb[i] = (float)oneCount/(float)(i+1);
-            // }
-            // else
-            // {
-            //     realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            // }
+    //         {
+    //             realProb[i] = (float)oneCount/(float)(i+1);
+    //         }
+    //         else
+    //         {
+    //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+    //         }
     //         errRate[i] = (theoProb - realProb[i])/theoProb;
     //     }
     //     else
@@ -219,13 +219,13 @@ void DIV::Calc()
     //         }
     //         oneCount += outSeq[i];
     //         if (i < 32)
-            // {
-            //     realProb[i] = (float)oneCount/(float)(i+1);
-            // }
-            // else
-            // {
-            //     realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            // }
+    //         {
+    //             realProb[i] = (float)oneCount/(float)(i+1);
+    //         }
+    //         else
+    //         {
+    //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+    //         }
     //         errRate[i] = (theoProb - realProb[i])/theoProb;
     //     }
     //     // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);

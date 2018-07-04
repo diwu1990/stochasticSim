@@ -103,7 +103,7 @@ void MUL::Init(vector<vector<unsigned int>> param1, string param2)
         realProb[i] = 0;
         errRate[i] = 0;
     }
-    lowErrLen = 0;
+    lowErrLen = seqLength;
     // for (int i = 0; i < inDim; ++i)
     // {
     //     for (int j = 0; j < seqLength; ++j)
@@ -139,6 +139,7 @@ void MUL::Calc()
         {
             outSeq[i] = 1;
             oneCount += 1;
+            // modify the calculation of real time prob, use past 32 bit instead of all bit
             if (i < 32)
             {
                 realProb[i] = (float)oneCount/(float)(i+1);
