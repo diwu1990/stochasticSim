@@ -24,6 +24,7 @@ void DIV::Help()
     printf("Configure the DIV inst.\n");
     printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Bit Length of Random Number, Tracing Memory Bit Length, Instance Name.\n");
     printf("Recommended Tracing Memory Bit Length: 2\n");
+    
     printf("2. inst.CalcQuot() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
 
