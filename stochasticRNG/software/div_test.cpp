@@ -25,8 +25,8 @@ int main()
     // string mode = "incremental";
     string mode = "delayed";
     unsigned int totalIter = 10000;
-    unsigned int TotalDepth = 4;
-    unsigned int seqLength = 512;
+    unsigned int TotalDepth = 1;
+    unsigned int seqLength = 256;
     for (int index = 0; index < 10; ++index)
     {
         unsigned int sobolInitIdx = 1+index;
@@ -49,6 +49,7 @@ int main()
         for (int i = 0; i < TotalDepth; ++i)
         {
             depth = (unsigned int)pow(2,i);
+            // depth = 5;
             for (int iter = 0; iter < totalIter; ++iter)
             {
                 /* code */

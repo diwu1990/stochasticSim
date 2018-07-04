@@ -137,20 +137,21 @@ void DIV::Report()
 // void DIV::CalcQuot()
 void DIV::Calc()
 {
-    CrossCorrelation inputCC;
-    inputCC.Init(inSeq,1,"inputCC");
-    inputCC.Calc();
-    inCC = inputCC.OutCC()[0];
-
-    Synchronizer divSyncInst;
-    divSyncInst.Init(inSeq, 2, "divSyncInst");
-    divSyncInst.SeqGen();
-    // divSyncInst.ProbPrint();
-    // divSyncInst.SeqPrint();
+    
 
     // *****************************************************************************
-    // counter based
+    // counter based for correlation
     // *****************************************************************************
+    // CrossCorrelation inputCC;
+    // inputCC.Init(inSeq,1,"inputCC");
+    // inputCC.Calc();
+    // inCC = inputCC.OutCC()[0];
+
+    // Synchronizer divSyncInst;
+    // divSyncInst.Init(inSeq, 2, "divSyncInst");
+    // divSyncInst.SeqGen();
+    // // divSyncInst.ProbPrint();
+    // // divSyncInst.SeqPrint();
     // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
     // unsigned int halfBound = (unsigned int)pow(2,depth-1);
     // unsigned int traceReg = halfBound;
@@ -190,7 +191,14 @@ void DIV::Calc()
     //         }
     //         // printf("%u\n", outSeq[i]);
     //         oneCount += outSeq[i];
-    //         realProb[i] = (float)oneCount/(float)(i+1);
+    //         if (i < 32)
+            // {
+            //     realProb[i] = (float)oneCount/(float)(i+1);
+            // }
+            // else
+            // {
+            //     realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+            // }
     //         errRate[i] = (theoProb - realProb[i])/theoProb;
     //     }
     //     else
@@ -210,15 +218,33 @@ void DIV::Calc()
     //             reservedOne++;
     //         }
     //         oneCount += outSeq[i];
-    //         realProb[i] = (float)oneCount/(float)(i+1);
+    //         if (i < 32)
+            // {
+            //     realProb[i] = (float)oneCount/(float)(i+1);
+            // }
+            // else
+            // {
+            //     realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+            // }
     //         errRate[i] = (theoProb - realProb[i])/theoProb;
     //     }
     //     // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     // }
 
     // *****************************************************************************
-    // shift reg based
+    // shift reg based for correlation
     // *****************************************************************************
+    CrossCorrelation inputCC;
+    inputCC.Init(inSeq,1,"inputCC");
+    inputCC.Calc();
+    inCC = inputCC.OutCC()[0];
+
+    Synchronizer divSyncInst;
+    divSyncInst.Init(inSeq, 2, "divSyncInst");
+    divSyncInst.SeqGen();
+    // divSyncInst.ProbPrint();
+    // divSyncInst.SeqPrint();
+
     // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
     // unsigned int halfBound = (unsigned int)pow(2,depth-1);
     vector<unsigned int> traceReg(depth);
@@ -253,7 +279,14 @@ void DIV::Calc()
             effectiveOne += outSeq[i];
             // printf("%u\n", outSeq[i]);
             oneCount += outSeq[i];
-            realProb[i] = (float)oneCount/(float)(i+1);
+            if (i < 32)
+            {
+                realProb[i] = (float)oneCount/(float)(i+1);
+            }
+            else
+            {
+                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+            }
             errRate[i] = (theoProb - realProb[i])/theoProb;
         }
         else if (divSyncInst.OutSeq()[1][i] == 0)
@@ -264,7 +297,14 @@ void DIV::Calc()
             outSeq[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
             oneCount += outSeq[i];
             reservedOne += outSeq[i];
-            realProb[i] = (float)oneCount/(float)(i+1);
+            if (i < 32)
+            {
+                realProb[i] = (float)oneCount/(float)(i+1);
+            }
+            else
+            {
+                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+            }
             errRate[i] = (theoProb - realProb[i])/theoProb;
             // printf("reserved, %5u, %5u, %5u, %5u, %5u\n", randNum[i],traceReg,outSeq[i],oneCount,reservedOne);
         }
@@ -274,6 +314,74 @@ void DIV::Calc()
         }
         // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     }
+
+    // // *****************************************************************************
+    // // counter based no correlation
+    // // *****************************************************************************
+    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
+    // unsigned int halfBound = (unsigned int)pow(2,depth-1);
+    // unsigned int traceReg = halfBound;
+    // unsigned int oneCount = 0;
+
+    // unsigned int effectiveBit = 0;
+    // unsigned int effectiveOne = 0;
+    // unsigned int reservedBit = 0;
+    // unsigned int reservedOne = 0;
+
+    // for (int i = 0; i < seqLength; ++i)
+    // {
+    //     // printf("%d iter\n", i);
+    //     if (traceReg >= (randNum[i] >> (bitLength-depth)))
+    //     {
+    //         // printf("%d: effective\n", i);
+    //         outSeq[i] = 1;
+    //         oneCount += outSeq[i];
+    //         if (i < 32)
+    //         {
+    //             realProb[i] = (float)oneCount/(float)(i+1);
+    //         }
+    //         else
+    //         {
+    //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+    //         }
+    //         errRate[i] = (theoProb - realProb[i])/theoProb;
+    //         printf("%f, %u, %f, %f\n", errRate[i], outSeq[i], realProb[i], theoProb);
+    //     }
+    //     else
+    //     {
+    //         outSeq[i] = 0;
+    //         oneCount += outSeq[i];
+    //         if (i < 32)
+    //         {
+    //             realProb[i] = (float)oneCount/(float)(i+1);
+    //         }
+    //         else
+    //         {
+    //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+    //         }
+    //         errRate[i] = (theoProb - realProb[i])/theoProb;
+    //         printf("%f, %u, %f, %f\n", errRate[i], outSeq[i], realProb[i], theoProb);
+    //     }
+    //     unsigned int andGate = outSeq[i] & inSeq[1][i];
+    //     unsigned int inc = !andGate & inSeq[0][i];
+    //     unsigned int dec = andGate & !inSeq[0][i];
+    //     // printf("%u, %u, %u, %u, %u\n", andGate, inSeq[0][i], inSeq[1][i], inc, dec);
+    //     if (inc == 1 && dec == 0)
+    //     {
+    //         if (traceReg < upperBound)
+    //         {
+    //             traceReg = traceReg + 1;
+    //         }
+    //     }
+    //     else if (inc == 0 && dec == 1)
+    //     {
+    //         if (traceReg > 0)
+    //         {
+    //             traceReg = traceReg - 1;
+    //         }
+    //     }
+    //     // printf("%u\n", traceReg);
+    // }
 
     // printf("theoretical prob: %-.3f\n", theoProb);
     // printf("effective prob:   %-.3f, One: %5u, Total Bit: %5u\n", (float)effectiveOne/(float)effectiveBit, effectiveOne, effectiveBit);
