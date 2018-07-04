@@ -12,6 +12,7 @@ class DIV
 {
     vector<vector<unsigned int>> inSeq;
     vector<float> inProb;
+    unsigned int depth;
     unsigned int inDim;
 
     unsigned int seqLength;
@@ -22,14 +23,15 @@ class DIV
     vector<float> errRate;
     string m_name;
     unsigned int lowErrLen;
+    unsigned int ppStage;
 
     public:
-        MUL();
-        ~MUL();
+        DIV();
+        ~DIV();
         void Help();
-        void Init(vector<vector<unsigned int>>, string);
+        void Init(vector<vector<unsigned int>>, unsigned int, string);
         void Report();
-        void CalcProd();
+        void CalcQuot();
         void OutPrint();
         vector<unsigned int> OutSeq();
         float InCC();
@@ -41,4 +43,5 @@ class DIV
         float FinalErrRate();
         unsigned int SeqLen();
         unsigned int LowErrLen();
+        unsigned int PPStage();
 };

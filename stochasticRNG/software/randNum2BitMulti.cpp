@@ -55,6 +55,18 @@ void RandNum2BitMulti::Report()
     printf("Current RandNum2BitMulti:\n");
     std::cout << "Instance name: " << m_name << std::endl;
     printf("Sequence Dim:  %-u\n", seqDim);
+    printf("Sequence Prob: ");
+    for (int i = 0; i < seqDim; ++i)
+    {
+        printf("%-.3f, ", expectation[i]);
+    }
+    printf("\n");
+    printf("Sequence Bit Length: ");
+    for (int i = 0; i < seqDim; ++i)
+    {
+        printf("%-3d, ", bitLength[i]);
+    }
+    printf("\n");
 }
 
 void RandNum2BitMulti::Init(vector<float> param1, vector<unsigned int> param2, vector<vector<unsigned int>> param3, string param4)

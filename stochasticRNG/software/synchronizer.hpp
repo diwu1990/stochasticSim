@@ -15,10 +15,14 @@ class Synchronizer
     unsigned int depth;
     unsigned int inDim;
     unsigned int inLen;
+    vector<float> inProb;
+    vector<float> outProb;
     float inCC;
     float outCC;
+    float errRate;
     unsigned int ppStage;
     string m_name;
+
 public:
     Synchronizer();
     ~Synchronizer();
@@ -27,8 +31,15 @@ public:
     void Report();
     void SeqGen();
     void CCPrint();
+    void ProbPrint();
+    void SeqPrint();
+    void ErrPrint();
     vector<vector<unsigned int>> OutSeq();
     float InCC();
     float OutCC();
+    float ErrRate();
+    vector<float> InProb();
+    vector<float> OutProb();
     unsigned int PPStage();
+    unsigned int SeqLen();
 };

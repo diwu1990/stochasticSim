@@ -60,7 +60,10 @@ void MUL::Help()
     printf("Return the sequence length.\n");
 
     printf("13. inst.LowErrLen() method:\n");
-    printf("Return the sequence length.\n");
+    printf("Return the sequence length required to converge with less than 5 percent error rate.\n");
+
+    printf("13. inst.PPStage() method:\n");
+    printf("Return the pipline stages required by hardware.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -109,6 +112,7 @@ void MUL::Init(vector<vector<unsigned int>> param1, string param2)
     //     }
     //     printf("\n");
     // }
+    ppStage = 0;
 }
 
 void MUL::Report()
@@ -128,21 +132,8 @@ void MUL::CalcProd()
     inputCC.CalcCC();
     inCC = inputCC.OutCC()[0];
 
-    float oneCount = 0;
-    if (inSeq[0][0] == 1 && inSeq[1][0] == 1)
-    {
-        outSeq[0] = 1;
-        oneCount += 1;
-        realProb[0] = oneCount/(0+1);
-        errRate[0] = (theoProb - realProb[0])/theoProb;
-    }
-    else
-    {
-        outSeq[0] = 1;
-        realProb[0] = oneCount/1;
-        errRate[0] = (theoProb - realProb[0])/theoProb;
-    }
-    for (int i = 1; i < seqLength; ++i)
+    unsigned int oneCount = 0;
+    for (int i = 0; i < seqLength; ++i)
     {
         if (inSeq[0][i] == 1 && inSeq[1][i] == 1)
         {
@@ -180,6 +171,11 @@ void MUL::CalcProd()
 vector<unsigned int> MUL::OutSeq()
 {
     return outSeq;
+}
+
+unsigned int MUL::PPStage()
+{
+    return ppStage;
 }
 
 void MUL::OutPrint()
