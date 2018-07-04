@@ -12,6 +12,8 @@ class DIV
 {
     vector<vector<unsigned int>> inSeq;
     vector<float> inProb;
+    vector<unsigned int> randNum;
+    unsigned int bitLength;
     unsigned int depth;
     unsigned int inDim;
 
@@ -29,7 +31,7 @@ class DIV
         DIV();
         ~DIV();
         void Help();
-        void Init(vector<vector<unsigned int>>, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, string);
         void Report();
         void CalcQuot();
         void OutPrint();

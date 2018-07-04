@@ -20,16 +20,17 @@ int main()
 {
     
     srand(time(NULL));
-    unsigned int sobolNum = 2;
+    unsigned int sobolNum = 3;
     unsigned int sobolBitLen = 8;
-    string mode = "incremental";
-    // string mode = "delayed";
-    unsigned int totalIter = 10000;
+    // string mode = "incremental";
+    string mode = "delayed";
+    unsigned int totalIter = 1;
     unsigned int TotalDepth = 1;
+    unsigned int seqLength = 256;
     for (int index = 0; index < 10; ++index)
     {
         unsigned int sobolInitIdx = 1+index;
-        unsigned int delay = 0;
+        unsigned int delay = 1;
         SOBOLMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
@@ -47,7 +48,7 @@ int main()
 
         for (int i = 0; i < TotalDepth; ++i)
         {
-            depth = i+1;
+            depth = i+4;
             for (int iter = 0; iter < totalIter; ++iter)
             {
                 /* code */
@@ -61,14 +62,23 @@ int main()
                     probVec[l] = val[l];
                 }
 
+                vector<vector<unsigned int>> inRandNum(2);
+                inRandNum[0].resize(seqLength);
+                inRandNum[1].resize(seqLength);
+                for (int z = 0; z < seqLength; ++z)
+                {
+                    inRandNum[0][z] = sobolinst.OutSeq()[0][z%256];
+                    inRandNum[1][z] = sobolinst.OutSeq()[1][z%256];
+                }
                 RandNum2BitMulti num2bitMultiInst;
-                num2bitMultiInst.Init(probVec,bitLengthVec,sobolinst.OutSeq(),"num2bitMultiInst");
+                num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
                 num2bitMultiInst.SeqGen();
                 // num2bitMultiInst.Report();
                 // num2bitMultiInst.SeqPrint();
 
                 DIV divInst;
-                divInst.Init(num2bitMultiInst.OutSeq(),depth,"divInst");
+                divInst.Init(num2bitMultiInst.OutSeq(),sobolinst.OutSeq()[2],sobolBitLen,depth,"divInst");
+                // divInst.Report();
                 divInst.CalcQuot();
                 // divInst.OutPrint();
                 // for (int len = 0; len < divInst.SeqLen(); ++len)

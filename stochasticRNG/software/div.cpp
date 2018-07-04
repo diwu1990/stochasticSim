@@ -66,15 +66,17 @@ void DIV::Help()
     printf("**********************************************************\n");
 }
 
-void DIV::Init(vector<vector<unsigned int>> param1, unsigned int param2, string param3)
+void DIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
     probCalc.Init(inSeq,"probCalc");
     probCalc.CalcProb();
     inProb = probCalc.OutProb();
-    depth = param2;
-    m_name = param3;
+    randNum = param2;
+    bitLength = param3;
+    depth = param4;
+    m_name = param5;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 2)
     {
         inDim = (unsigned int)inSeq.size();
@@ -118,6 +120,7 @@ void DIV::Report()
 {
     printf("Current DIV:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
+    printf("Bit Length of RandNum:  %u\n", bitLength);
     printf("Bit Length of tracer:   %u\n", depth);
     printf("Number of Seqsences:    %u\n", inDim);
     printf("Seqsence Length:        %u\n", seqLength);
@@ -141,30 +144,68 @@ void DIV::CalcQuot()
     unsigned int upperBound = (unsigned int)pow(2,depth)-1;
     unsigned int halfBound = (unsigned int)pow(2,depth-1);
     unsigned int traceReg = halfBound;
-    traceReg = 0;
     unsigned int oneCount = 0;
+
+    unsigned int effectiveBit = 0;
+    unsigned int effectiveOne = 0;
+    unsigned int reservedBit = 0;
+    unsigned int reservedOne = 0;
 
     for (int i = 0; i < seqLength; ++i)
     {
+        // printf("%d iter\n", i);
         if (divSyncInst.OutSeq()[1][i] == 1)
         {
             // printf("effective\n");
+            effectiveBit++;
             outSeq[i] = divSyncInst.OutSeq()[0][i];
-            traceReg = outSeq[i];
+            if (outSeq[i] == 0)
+            {
+                if (traceReg > 0 && effectiveBit < 16)
+                {
+                    traceReg -= 1;
+                    printf("%d => %5u, %-.3f\n", i, traceReg, (float)traceReg/pow(2,depth));
+                }
+            }
+            else
+            {
+                effectiveOne++;
+                if (traceReg < upperBound && effectiveBit < 16)
+                {
+                    traceReg += 1;
+                    printf("%d => %5u, %-.3f\n", i, traceReg, (float)traceReg/pow(2,depth));
+                }
+            }
+            // printf("%u\n", outSeq[i]);
             oneCount += outSeq[i];
             realProb[i] = (float)oneCount/(float)(i+1);
             errRate[i] = (theoProb - realProb[i])/theoProb;
         }
         else
         {
-            // printf("reserved\n");
-            outSeq[i] = traceReg;
+            // printf("reserved, %u\n", randNum[i]);
+            // printf("reserved, %u\n", (randNum[i] >> (bitLength-depth)));
+            reservedBit++;
+            if (traceReg <= (randNum[i] >> (bitLength-depth)))
+            {
+                outSeq[i] = 0;
+                printf("%d => %5u, %5u\n", i, traceReg, (randNum[i] >> (bitLength-depth)));
+            }
+            else
+            {
+                outSeq[i] = 1;
+                printf("%d => %5u, %5u\n", i, traceReg, (randNum[i] >> (bitLength-depth)));
+                reservedOne++;
+            }
             oneCount += outSeq[i];
             realProb[i] = (float)oneCount/(float)(i+1);
             errRate[i] = (theoProb - realProb[i])/theoProb;
         }
-        // printf("%u => %u\n", divSyncInst.OutSeq()[1][i], outSeq[i]);
+        // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     }
+    printf("theoretical prob: %-.3f\n", theoProb);
+    printf("effective prob:   %-.3f, One: %5u, Total Bit: %5u\n", (float)effectiveOne/(float)effectiveBit, effectiveOne, effectiveBit);
+    printf("reserved prob :   %-.3f, One: %5u, Total Bit: %5u\n", (float)reservedOne/(float)reservedBit, reservedOne, reservedBit);
     
     for (int i = 0; i < seqLength; ++i)
     {

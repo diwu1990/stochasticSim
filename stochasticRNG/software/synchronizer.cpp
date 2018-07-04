@@ -253,7 +253,7 @@ void Synchronizer::SeqPrint()
         }
         printf("\n");
     }
-    else if (same = 0)
+    else if (same == 0)
     {
         printf("Error: Input Sequence 1 is not the same as output sequence 1.\n");
     }
