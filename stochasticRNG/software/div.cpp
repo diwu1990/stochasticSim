@@ -345,7 +345,7 @@ void DIV::Calc()
     //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
     //         }
     //         errRate[i] = (theoProb - realProb[i])/theoProb;
-    //         printf("%f, %u, %f, %f\n", errRate[i], outSeq[i], realProb[i], theoProb);
+    //         // printf("%f, %u, %f, %f\n", errRate[i], outSeq[i], realProb[i], theoProb);
     //     }
     //     else
     //     {
@@ -360,7 +360,7 @@ void DIV::Calc()
     //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
     //         }
     //         errRate[i] = (theoProb - realProb[i])/theoProb;
-    //         printf("%f, %u, %f, %f\n", errRate[i], outSeq[i], realProb[i], theoProb);
+    //         // printf("%f, %u, %f, %f\n", errRate[i], outSeq[i], realProb[i], theoProb);
     //     }
     //     unsigned int andGate = outSeq[i] & inSeq[1][i];
     //     unsigned int inc = !andGate & inSeq[0][i];

@@ -22,10 +22,10 @@ int main()
     srand(time(NULL));
     unsigned int sobolNum = 3;
     unsigned int sobolBitLen = 8;
-    // string mode = "incremental";
-    string mode = "delayed";
+    string mode = "incremental";
+    // string mode = "delayed";
     unsigned int totalIter = 100000;
-    unsigned int seqLength = 256;
+    unsigned int seqLength = (unsigned int)pow(2,sobolBitLen);
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
@@ -39,8 +39,9 @@ int main()
             tenFoldLowErrLen[i] = 0;
         }
         unsigned int sobolInitIdx = 1+index;
-        unsigned int delay = 1;
-        SOBOLMulti sobolinst;
+        unsigned int delay = 0;
+         SOBOLMulti sobolinst;
+        // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
         // sobolinst.SeqPrint();
@@ -49,7 +50,7 @@ int main()
         vector<float> probVec(2);
         vector<float> val(2);
         unsigned int depth;
-        depth = (unsigned int)pow(2,2);
+        depth = (unsigned int)pow(2,3);
         // depth = 5;
         for (int iter = 0; iter < totalIter; ++iter)
         {
@@ -69,14 +70,14 @@ int main()
             inRandNum[1].resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                inRandNum[0][z] = sobolinst.OutSeq()[0][z%256];
-                inRandNum[1][z] = sobolinst.OutSeq()[1][z%256];
+                inRandNum[0][z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
+                inRandNum[1][z] = sobolinst.OutSeq()[1][z%(unsigned int)(pow(2,sobolBitLen))];
             }
             vector<unsigned int> RandSeq;
             RandSeq.resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                RandSeq[z] = sobolinst.OutSeq()[2][z%256];
+                RandSeq[z] = sobolinst.OutSeq()[2][z%(unsigned int)(pow(2,sobolBitLen))];
             }
             RandNum2BitMulti num2bitMultiInst;
             num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
