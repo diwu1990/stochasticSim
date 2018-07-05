@@ -119,7 +119,7 @@ void DIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
     //     }
     //     printf("\n");
     // }
-    ppStage = 2;
+    ppStage = 0;
 }
 
 void DIV::Report()

@@ -8,19 +8,18 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class DIV
+class SQRT
 {
-    vector<vector<unsigned int>> inSeq;
-    vector<float> inProb;
+    vector<unsigned int> inSeq;
+    float inProb;
+    float inAC;
     vector<unsigned int> randNum;
     unsigned int bitLength;
     unsigned int depth;
     unsigned int logDepth;
-    unsigned int inDim;
 
     unsigned int seqLength;
     vector<unsigned int> outSeq;
-    float inCC;
     float theoProb;
     vector<float> realProb;
     vector<float> errRate;
@@ -29,16 +28,16 @@ class DIV
     unsigned int ppStage;
 
     public:
-        DIV();
-        ~DIV();
+        SQRT();
+        ~SQRT();
         void Help();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, string);
+        void Init(vector<unsigned int>, vector<unsigned int>, unsigned int, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();
         vector<unsigned int> OutSeq();
-        float InCC();
-        vector<float> InProb();
+        float InProb();
+        float InAC();
         float TheoProb();
         vector<float> RealProb();
         float FinalRealProb();
