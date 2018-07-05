@@ -24,7 +24,7 @@ int main()
     unsigned int sobolBitLen = 8;
     // string mode = "incremental";
     string mode = "delayed";
-    unsigned int totalIter = 10000;
+    unsigned int totalIter = 1;
     unsigned int seqLength = 256;
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
@@ -49,7 +49,7 @@ int main()
         vector<float> probVec(2);
         vector<float> val(2);
         unsigned int depth;
-        depth = (unsigned int)pow(2,1);
+        depth = (unsigned int)pow(2,2);
         // depth = 5;
         for (int iter = 0; iter < totalIter; ++iter)
         {
