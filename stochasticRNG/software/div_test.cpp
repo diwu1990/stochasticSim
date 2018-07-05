@@ -24,12 +24,12 @@ int main()
     unsigned int sobolBitLen = 8;
     // string mode = "incremental";
     string mode = "delayed";
-    unsigned int totalIter = 1;
+    unsigned int totalIter = 100000;
     unsigned int seqLength = 256;
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
-    vector<unsigned int> tenFoldLowErrLen(foldNum);
+    vector<float> tenFoldLowErrLen(foldNum);
     for (int index = 0; index < 10; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
@@ -96,12 +96,15 @@ int main()
 
             tenFoldErr[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.FinalErrRate() * divInst.FinalErrRate();
             tenFoldNum[(unsigned int)floor(divInst.TheoProb()*10)] += 1;
+            // printf("%u\n", divInst.LowErrLen());
             tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.LowErrLen();
+            // printf("%u\n", tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)]);
         }
         for (int y = 0; y < foldNum; ++y)
         {
+            // printf("11111\n");
             tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
-            tenFoldLowErrLen[y] = tenFoldErr[y]/tenFoldNum[y];
+            tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
         }
         
 
@@ -109,7 +112,7 @@ int main()
         printf("Value range index, Freq, Final Error, LowErrLen:\n");
         for (int i = 0; i < foldNum; ++i)
         {
-            printf("%3d, %5u, %-.3f, %5u\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldLowErrLen[i]);
+            printf("%3d, %5u, %-.3f, %-3.3f\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldLowErrLen[i]);
         }
         printf("\n");
     }
