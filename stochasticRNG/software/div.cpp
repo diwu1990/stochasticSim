@@ -1,7 +1,7 @@
 #include "div.hpp"
 #include "seqprobmulti.hpp"
 #include "crosscorrelation.hpp"
-#include "synchronizer.hpp"
+#include "skewedsynchronizer.hpp"
 
 DIV::DIV(){}
 DIV::~DIV(){}
@@ -239,8 +239,8 @@ void DIV::Calc()
     inputCC.Calc();
     inCC = inputCC.OutCC()[0];
 
-    Synchronizer divSyncInst;
-    divSyncInst.Init(inSeq, 2, "divSyncInst");
+    SkewedSynchronizer divSyncInst;
+    divSyncInst.Init(inSeq, 4, "divSyncInst");
     divSyncInst.SeqGen();
     // divSyncInst.ProbPrint();
     // divSyncInst.SeqPrint();
