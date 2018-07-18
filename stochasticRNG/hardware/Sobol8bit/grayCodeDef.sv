@@ -1,1 +1,0 @@
-`define GCWD 8
