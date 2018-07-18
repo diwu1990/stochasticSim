@@ -15,6 +15,7 @@
 #include "sobolmerge.hpp"
 #include "synchronizer.hpp"
 #include "div.hpp"
+#include "sqrt.hpp"
 
 int main()
 {
@@ -39,8 +40,8 @@ int main()
             tenFoldLowErrLen[i] = 0;
         }
         unsigned int sobolInitIdx = 1+index;
-        unsigned int delay = 0;
-         SOBOLMulti sobolinst;
+        unsigned int delay = 1;
+        SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
@@ -50,8 +51,8 @@ int main()
         vector<float> probVec(2);
         vector<float> val(2);
         unsigned int depth;
-        depth = (unsigned int)pow(2,3);
-        // depth = 5;
+        // depth = (unsigned int)pow(2,3);
+        depth = 2;
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
@@ -65,41 +66,44 @@ int main()
                 probVec[l] = val[l];
             }
 
-            vector<vector<unsigned int>> inRandNum(2);
-            inRandNum[0].resize(seqLength);
-            inRandNum[1].resize(seqLength);
+            vector<unsigned int> inRandNum(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                inRandNum[0][z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
-                inRandNum[1][z] = sobolinst.OutSeq()[1][z%(unsigned int)(pow(2,sobolBitLen))];
+                inRandNum[z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
             }
             vector<unsigned int> RandSeq;
             RandSeq.resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                RandSeq[z] = sobolinst.OutSeq()[2][z%(unsigned int)(pow(2,sobolBitLen))];
+                RandSeq[z] = sobolinst.OutSeq()[1][z%(unsigned int)(pow(2,sobolBitLen))];
             }
-            RandNum2BitMulti num2bitMultiInst;
-            num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
-            num2bitMultiInst.SeqGen();
-            // num2bitMultiInst.Report();
-            // num2bitMultiInst.SeqPrint();
+            RandNum2Bit num2bitInst;
+            num2bitInst.Init(prob0,bitLengthVec[0],inRandNum,"num2bitInst");
+            num2bitInst.SeqGen();
+            // num2bitInst.Report();
+            // num2bitInst.SeqPrint();
 
             // for (int ooo = 0; ooo < sobolinst.SeqLen(); ++ooo)
             // {
             //     printf("%d: %u, %u", i, sobolinst.OutSeq()[2][ooo], sobolinst.OutSeq()[2][ooo]);
             //     /* code */
             // }
-            DIV divInst;
-            divInst.Init(num2bitMultiInst.OutSeq(),RandSeq,sobolBitLen,depth,"divInst");
-            // divInst.Report();
-            divInst.Calc();
+            SQRT sqrtInst;
+            sqrtInst.Init(num2bitInst.OutSeq(),RandSeq,sobolBitLen,depth,"sqrtInst");
+            // sqrtInst.Report();
+            sqrtInst.Calc();
+            // sqrtInst.OutPrint();
+            // if (prob0 < 0.2)
+            // {
+                // sqrtInst.OutPrint();
+            // }
 
-            tenFoldErr[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.FinalErrRate() * divInst.FinalErrRate();
-            tenFoldNum[(unsigned int)floor(divInst.TheoProb()*10)] += 1;
-            // printf("%u\n", divInst.LowErrLen());
-            tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.LowErrLen();
-            // printf("%u\n", tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)]);
+            tenFoldErr[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.FinalErrRate() * sqrtInst.FinalErrRate();
+            // tenFoldErr[(unsigned int)floor(sqrtInst.TheoProb()*10)] += ((sqrtInst.FinalRealProb()-sqrt(prob0))/sqrt(prob0)) * ((sqrtInst.FinalRealProb()-sqrt(prob0))/sqrt(prob0));
+            tenFoldNum[(unsigned int)floor(sqrtInst.TheoProb()*10)] += 1;
+            // printf("%u\n", sqrtInst.LowErrLen());
+            tenFoldLowErrLen[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.LowErrLen();
+            // printf("%u\n", tenFoldLowErrLen[(unsigned int)floor(sqrtInst.TheoProb()*10)]);
         }
         for (int y = 0; y < foldNum; ++y)
         {

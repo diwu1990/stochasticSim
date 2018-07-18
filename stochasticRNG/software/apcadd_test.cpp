@@ -14,7 +14,7 @@
 // #include <ctime>
 // #include "sobolmerge.hpp"
 // #include "synchronizer.hpp"
-// #include "div.hpp"
+// #include "apcadd.hpp"
 
 // int main()
 // {
@@ -97,16 +97,16 @@
 //             //     printf("%d: %u, %u", i, sobolinst.OutSeq()[2][ooo], sobolinst.OutSeq()[2][ooo]);
 //             //     /* code */
 //             // }
-//             DIV divInst;
-//             divInst.Init(num2bitMultiInst.OutSeq(),RandSeq,sobolBitLen,depth,"divInst");
-//             // divInst.Report();
-//             divInst.Calc();
+//             APCADD apcaddInst;
+//             apcaddInst.Init(num2bitMultiInst.OutSeq(),RandSeq,sobolBitLen,depth,"apcaddInst");
+//             // apcaddInst.Report();
+//             apcaddInst.Calc();
 
-//             tenFoldErr[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.FinalErrRate() * divInst.FinalErrRate();
-//             tenFoldNum[(unsigned int)floor(divInst.TheoProb()*10)] += 1;
-//             // printf("%u\n", divInst.LowErrLen());
-//             tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.LowErrLen();
-//             // printf("%u\n", tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)]);
+//             tenFoldErr[(unsigned int)floor(apcaddInst.TheoProb()*10)] += apcaddInst.FinalErrRate() * apcaddInst.FinalErrRate();
+//             tenFoldNum[(unsigned int)floor(apcaddInst.TheoProb()*10)] += 1;
+//             // printf("%u\n", apcaddInst.LowErrLen());
+//             tenFoldLowErrLen[(unsigned int)floor(apcaddInst.TheoProb()*10)] += apcaddInst.LowErrLen();
+//             // printf("%u\n", tenFoldLowErrLen[(unsigned int)floor(apcaddInst.TheoProb()*10)]);
 //         }
 //         for (int y = 0; y < foldNum; ++y)
 //         {
