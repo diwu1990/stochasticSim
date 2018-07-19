@@ -20,7 +20,7 @@ module sqrtJK (
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_JKout
             if(~rst_n) begin
-                JKout <= 0;
+                JKout <= 1;
             end else begin
                 JKout <= Kport ? ~JKout : Jport;
             end
