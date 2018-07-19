@@ -8,7 +8,7 @@ module sqrtJK (
     logic JKout;
     logic sel;
     logic [1:0] mux;
-    // logic Jport;
+    logic Jport;
     logic Kport;
 
     assign mux[0] = 1;
@@ -16,13 +16,13 @@ module sqrtJK (
     assign out = sel ? mux[1] : mux[0];
     assign sel = JKout;
     assign Kport = out;
-    // assign Jport = 1;
+    assign Jport = 1;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_JKout
             if(~rst_n) begin
                 JKout <= 0;
             end else begin
-                JKout <= Kport ? ~JKout : 1;
+                JKout <= Kport ? ~JKout : Jport;
             end
         end    
 
