@@ -18,7 +18,7 @@ module sqrt (
                 cnt <= cnt + 1;
             end else if(~inc & dec & ~|cnt) begin
                 cnt <= cnt - 1;
-            end else begin : 
+            end else begin
                 cnt <= cnt;
             end
         end
