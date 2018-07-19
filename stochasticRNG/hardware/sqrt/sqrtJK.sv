@@ -11,9 +11,10 @@ module sqrtJK (
     // logic Jport;
     logic Kport;
 
-    assign mux[0] = JKout;
+    assign mux[0] = 1;
     assign mux[1] = in;
     assign out = sel ? mux[1] : mux[0];
+    assign sel = JKout;
     assign Kport = out;
     // assign Jport = 1;
 
