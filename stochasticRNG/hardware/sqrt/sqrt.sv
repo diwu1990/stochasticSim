@@ -9,6 +9,7 @@ module sqrt (
     logic [5:0] cnt;
     logic inc;
     logic dec;
+    logic out_d1;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_cnt
         if(~rst_n) begin
