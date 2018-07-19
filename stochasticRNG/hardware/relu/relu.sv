@@ -1,18 +1,22 @@
-module sqrt (
+module relu (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
-    input [5:0]randNum,
     input in,
-    output out
+    output out    
 );
-    
-    logic [5:0] cnt;
+    parameter DEPTH = 5;
+
+    logic overHalf;
+    logic [DEPTH:0]cnt;
     logic inc;
     logic dec;
 
+    assign inc = in;
+    assign dec = ~in;
+
     always_ff @(posedge clk or negedge rst_n) begin : proc_cnt
         if(~rst_n) begin
-            cnt <= 6'b100000;
+            cnt <= {1,{(DEPTH-1){1'b0}}};
         end else begin
             if(inc & ~dec & ~&cnt) begin
                 cnt <= cnt + 1;
@@ -24,16 +28,8 @@ module sqrt (
         end
     end
 
-    assign out = cnt >= randNum;
-    always_ff @(posedge clk or negedge rst_n) begin : proc_out_d1
-        if(~rst_n) begin
-            out_d1 <= 0;
-        end else begin
-            out_d1 <= out;
-        end
-    end
+    assign overHalf = cnt[DEPTH-1];
 
-    assign inc = in;
-    assign dec = out & out_d1;
+    assign out = overHalf ? in : 0;
 
 endmodule

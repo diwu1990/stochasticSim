@@ -1,9 +1,9 @@
 module add2 (
-	input sel,
+	input randNum,
 	input [1:0] in,
 	output out
 );
 
-	assign out = sel ? in[1] : in[0];
+	assign out = randNum ? in[1] : in[0];
 
 endmodule

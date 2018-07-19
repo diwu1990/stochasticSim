@@ -1,9 +1,10 @@
-module sqrt (
+module div (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     input [5:0]randNum,
-    input in,
-    output out
+    input dividend,
+    input divisor,
+    output quotient
 );
     
     logic [5:0] cnt;
@@ -24,16 +25,16 @@ module sqrt (
         end
     end
 
-    assign out = cnt >= randNum;
+    assign quotient = cnt >= randNum;
     always_ff @(posedge clk or negedge rst_n) begin : proc_out_d1
         if(~rst_n) begin
             out_d1 <= 0;
         end else begin
-            out_d1 <= out;
+            out_d1 <= quotient;
         end
     end
 
-    assign inc = in;
-    assign dec = out & out_d1;
+    assign inc = dividend;
+    assign dec = quotient & divisor;
 
 endmodule
