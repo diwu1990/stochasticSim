@@ -1,6 +1,8 @@
 #include "exp.hpp"
 #include "seqprobmulti.hpp"
 #include "crosscorrelation.hpp"
+#include "add.hpp"
+#include "mul.hpp"
 
 EXP::EXP(){}
 
@@ -115,27 +117,35 @@ void EXP::Calc()
 
     float oneCount = 0;
 
-    vector<vector<unsigned int>> muxConst(4);
-    muxConst[0].resize(seqLength);
+    vector<vector<unsigned int>> addConst(3);
+    // add[0] is for (1 + x)/2
+    // add[1] is for (0 + x)/2
+    // add[2] is for (1 + x/2)/2
+    // add[3] is for ((1+x)/2 + x^2/2(1+x/2)/2)/2
+    addConst[0].resize(seqLength);
+    addConst[1].resize(seqLength);
+    addConst[2].resize(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
-        muxConst[]
+        addConst[0][i] = 1;
+        addConst[1][i] = 0;
+        addConst[2][i] = 1;
     }
-    muxConst[1].resize(seqLength);
-    muxConst[2].resize(seqLength);
-    muxConst[3].resize(seqLength);
 
-    for (int i = 1; i < seqLength; ++i)
-    {
-        // mux 0
+    // add 0
+    ADD addInst0;
+    addInst0.Init();
 
-        // mux 1
+    // add 1
 
-        // mux 2
+    // add 2
 
-        // mux 3
+    // mul 0
 
-    }
+    // mul 1
+
+    // add 3
+
 
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
