@@ -8,25 +8,14 @@ ADD::~ADD(){}
 
 void ADD::Help()
 {
-    // void Report();
-    // void OutPrint();
-    // vector<unsigned int> OutSeq();
-    // float InCC();
-    // vector<float> InProb();
-    // float TheoProb();
-    // vector<float> RealProb();
-    // float FinalRealProb();
-    // vector<float> ErrRate();
-    // float FinalErrRate();
-    // unsigned int SeqLen();
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("Calling ADD Help. Following are instructions to ADD Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the ADD inst.\n");
-    printf("Initial Parameters: Two Input Vectors.\n");
+    printf("Initial Parameters: Input Vectors, Random NUmbers, Bit Length of Input Random Number, Instance Name.\n");
 
-    printf("2. inst.CalcProd() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the sum of two input sequences.\n");
 
     printf("3. inst.OutSeq() method:\n");
@@ -61,36 +50,53 @@ void ADD::Help()
 
     printf("13. inst.LowErrLen() method:\n");
     printf("Return the sequence length.\n");
+
+    printf("14. inst.Report() method:\n");
+    printf("Report the configuration for current instance.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
 
-void ADD::Init(vector<vector<unsigned int>> param1, string param2)
+void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
     probCalc.Init(inSeq,"probCalc");
-    probCalc.CalcProb();
+    probCalc.Calc();
     inProb = probCalc.OutProb();
-    m_name = param2;
-    if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 3)
+    randNum = param2;
+    bitLength = param3;
+    m_name = param4;
+    if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() >= 2)
     {
         inDim = (unsigned int)inSeq.size();
+        float logInDimfloat = log2(inDim);
+        if (ceil(logInDimfloat) != floor(logInDimfloat))
+        {
+            printf("Error: Input Dimension is not power of 2.\n");
+        }
+        logInDim = (unsigned int)logInDimfloat;
     }
     else
     {
-        printf("Error: Input Dimension is not 2.\n");
+        printf("Error: Input Dimensions of Sequences and Probabilities mismatch.\n");
     }
 
-    if ((unsigned int)inSeq[0].size() == (unsigned int)inSeq[1].size())
+    seqLength = (unsigned int)inSeq[0].size();
+    for (int i = 0; i < inDim; ++i)
     {
-        seqLength = (unsigned int)inSeq[0].size();
+        if ((unsigned int)inSeq[i].size() != seqLength)
+        {
+            printf("Error: Input Length is not the same.\n");
+            break;
+        }
     }
-    else
+    theoProb = inProb[0];
+    for (int i = 1; i < inDim; ++i)
     {
-        printf("Error: Input Length is not the same.\n");
+        theoProb += inProb[i];
     }
-    theoProb = (inProb[0] + inProb[1])/2; // '+' for summation, '*' for multiplication?
+    theoProb = theoProb/(float)inDim; // '+' for summation, '*' for multiplication?
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -101,14 +107,6 @@ void ADD::Init(vector<vector<unsigned int>> param1, string param2)
         errRate[i] = 0;
     }
     lowErrLen = 0;
-    // for (int i = 0; i < inDim; ++i)
-    // {
-    //     for (int j = 0; j < seqLength; ++j)
-    //     {
-    //         printf("%u,", inSeq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
 }
 
 void ADD::Report()
@@ -117,8 +115,7 @@ void ADD::Report()
     std::cout << "Instance name:          " << m_name << std::endl;
     printf("Number of Seqsences:    %u\n", inDim);
     printf("Seqsence Length:        %u\n", seqLength);
-    printf("Input Probability:      %f,%f\n", inProb[0], inProb[1]);
-    printf("Input sel:      %f\n", inProb[2]);
+    printf("Random Num Bit Length:  %u\n", bitLength);
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
@@ -126,55 +123,30 @@ void ADD::Calc()
 {
     CrossCorrelation inputCC;
     inputCC.Init(inSeq,1,"inputCC");
-    inputCC.CalcCC();
-    inCC = inputCC.OutCC()[0];
+    inputCC.Calc();
+    inCC.resize(inputCC.OutCC().size());
+    inCC = inputCC.OutCC();
 
-    float oneCount = 0;
-    if (inSeq[2][0] == 1) // inSeq[2] -> sel signal for the mux 
-    {
-        outSeq[0] = inSeq[0][0];
-        oneCount += outSeq[0];
-        realProb[0] = oneCount/(0+1);
-        errRate[0] = (theoProb - realProb[0])/theoProb;
-    }
-    else
-    {
-        outSeq[0] = inSeq[1][0];
-        oneCount += outSeq[0];
-        realProb[0] = oneCount/1;
-        errRate[0] = (theoProb - realProb[0])/theoProb;
-    }
+    unsigned int oneCount = 0;
 
-    for (int i = 1; i < seqLength; ++i)
+    for (int i = 0; i < seqLength; ++i)
     {
-        if (inSeq[2][i] == 1)
+        outSeq[i] = inSeq[randNum[i] >> (bitLength - logInDim)][i];
+        oneCount += outSeq[i];
+        if (i < 32)
         {
-            outSeq[i] = inSeq[0][i];
-            oneCount += outSeq[i];
             realProb[i] = (float)oneCount/(float)(i+1);
-            errRate[i] = (theoProb - realProb[i])/theoProb;
         }
         else
         {
-            outSeq[i] = inSeq[1][i];
-            oneCount += outSeq[i];
-            realProb[i] = (float)oneCount/(float)(i+1);
-            errRate[i] = (theoProb - realProb[i])/theoProb;
+            realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
         }
+        errRate[i] = (theoProb - realProb[i])/theoProb;
     }
 
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
     {
-        // printf("%f\n", errRate[seqLength-1-i]);
-        // if (errRate[seqLength-1-i] > 0.05)
-        // {
-        //     printf("larger than 0.05\n");
-        // }
-        // if (errRate[seqLength-1-i] < -0.05)
-        // {
-        //     printf("smaller than -0.05\n");
-        // }
         if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
         {
             lowErrLen = seqLength-i;
@@ -208,7 +180,7 @@ void ADD::OutPrint()
     // printf("\n");
 }
 
-float  ADD::InCC()
+vector<float>  ADD::InCC()
 {
     return inCC;
 }

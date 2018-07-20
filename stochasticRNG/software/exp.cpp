@@ -8,25 +8,14 @@ EXP::~EXP(){}
 
 void EXP::Help()
 {
-    // void Report();
-    // void OutPrint();
-    // vector<unsigned int> OutSeq();
-    // float InCC();
-    // vector<float> InProb();
-    // float TheoProb();
-    // vector<float> RealProb();
-    // float FinalRealProb();
-    // vector<float> ErrRate();
-    // float FinalErrRate();
-    // unsigned int SeqLen();
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("Calling EXP Help. Following are instructions to EXP Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the EXP inst.\n");
-    printf("Initial Parameters: Two Input Vectors and Selection Signal.\n");
+    printf("Initial Parameters: Input Vectors and Selection Signal.\n");
 
-    printf("2. inst.CalcProd() method:\n");
+    printf("2. inst.Calc() method:\n");
     printf("Calculate the exponent of input.\n");
 
     printf("3. inst.OutSeq() method:\n");
@@ -35,8 +24,8 @@ void EXP::Help()
     printf("4. inst.OutPrint() method:\n");
     printf("Print the information of result.\n");
 
-    printf("5. inst.InCC() method:\n");
-    printf("Return the input crosscorrelation.\n");
+    printf("5. inst.InAC() method:\n");
+    printf("Return the input autocorrelation.\n");
 
     printf("6. inst.InProb() method:\n");
     printf("Return the input probability.\n");
@@ -61,42 +50,41 @@ void EXP::Help()
 
     printf("13. inst.LowErrLen() method:\n");
     printf("Return the sequence length.\n");
+
+    printf("14. inst.Report() method:\n");
+    printf("Report the status of current instance.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
 
-void EXP::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned int>> param2, string param3)
+void EXP::Init(vector<unsigned int> param1, vector<vector<unsigned int>> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     inSel = param2;
-    SeqProbMulti probCalc;
+    SeqProb probCalc;
     probCalc.Init(inSeq,"probCalc");
-    probCalc.CalcProb();
+    probCalc.Calc();
     inProb = probCalc.OutProb();
-    m_name = param3;
-    if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 3) // three stage delay
+    bitLength = param3;
+    m_name = param4;
+    if ((unsigned int)inSel.size() != 4)
     {
-        inDim = (unsigned int)inSeq.size();
-    }
-    else
-    {
-        printf("Error: Input Dimension is not 3.\n");
+        printf("Error: Input Sel Dimension is not 4.\n");
     }
 
-    if ((unsigned int)inSeq[0].size() == (unsigned int)inSeq[1].size())
+    seqLength = (unsigned int)inSeq.size();
+    for (int i = 0; i < 4; ++i)
     {
-        seqLength = (unsigned int)inSeq[0].size();
+        if ((unsigned int)inSeq[i].size() != seqLength)
+        {
+            printf("Error: Input Seqsence Length is not the same with the Sel Length.\n");
+        }
     }
-    else
-    {
-        printf("Error: Input Length is not the same.\n");
-    }
-    theoProb = exp(inProb[0]) /4; // '+' for summation, '*' for multiplication?
+
+    theoProb = exp(inProb)/4;
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
-
-    vector<vector<unsigned int>> MuxConst;
 
 
     for (int i = 0; i < seqLength; ++i)
@@ -104,57 +92,35 @@ void EXP::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned int>>
         outSeq[i] = 0;
         realProb[i] = 0;
         errRate[i] = 0;
-        MuxConst[0][i] = 1; // initialize the constants for addition
-        MuxConst[1][i] = 0;
-        MuxConst[2][i] = 0;
     }
     lowErrLen = 0;
-    // for (int i = 0; i < inDim; ++i)
-    // {
-    //     for (int j = 0; j < seqLength; ++j)
-    //     {
-    //         printf("%u,", inSeq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
 }
 
 void EXP::Report()
 {
     printf("Current EXP:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
-    printf("Number of Seqsences:    %u\n", inDim);
     printf("Seqsence Length:        %u\n", seqLength);
-    printf("Input Probability:      %f\n", inProb[0]);
+    printf("Random Num Bit Length:  %u\n", bitLength);
+    printf("Input Probability:      %f\n", inProb);
     //printf("Input sel:      %f\n", inProb[2]); // input probability of selection signal??**
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
 void EXP::Calc()
 {
-    CrossCorrelation inputCC;
-    inputCC.Init(inSeq,1,"inputCC"); 
-    inputCC.CalcCC();
-    inCC = inputCC.OutCC()[0];
+    AutoCorrelation inputAC;
+    inputAC.Init(inSeq,1,inProb,"inputAC"); 
+    inputAC.Calc();
+    inAC = inputAC.OutAC();
+
+    vector<unsigned int> selSeq(4);
+    for (int i = 0; i < 4; ++i)
+    {
+        /* code */
+    }
 
     float oneCount = 0;
-
-    /*
-    if (inSeq[2][0] == 1) // inSeq[2] -> sel signal for the mux 
-    {
-        outSeq[0] = inSeq[0][0];
-        oneCount += outSeq[0];
-        realProb[0] = oneCount/(0+1);
-        errRate[0] = (theoProb - realProb[0])/theoProb;
-    }
-    else
-    {
-        outSeq[0] = inSeq[1][0];
-        oneCount += outSeq[0];
-        realProb[0] = oneCount/1;
-        errRate[0] = (theoProb - realProb[0])/theoProb;
-    }
-    */
 
     for (int i = 1; i < seqLength; ++i)
     {   
@@ -243,15 +209,6 @@ void EXP::Calc()
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
     {
-        // printf("%f\n", errRate[seqLength-1-i]);
-        // if (errRate[seqLength-1-i] > 0.05)
-        // {
-        //     printf("larger than 0.05\n");
-        // }
-        // if (errRate[seqLength-1-i] < -0.05)
-        // {
-        //     printf("smaller than -0.05\n");
-        // }
         if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
         {
             lowErrLen = seqLength-i;
@@ -269,7 +226,7 @@ void EXP::OutPrint()
 {
     printf("Calling OutPrint for EXP instance: ");
     std::cout << m_name << std::endl;
-    printf("Theoretical Probability: exp (%.3f) = %.3f with input crosscorrelation %.3f\n", inProb[0], theoProb, inCC);
+    printf("Theoretical Probability: exp (%.3f) = %.3f with input crosscorrelation %.3f\n", inProb, theoProb, inAC);
     printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
     printf("Low Error Length (5 percent approximation): %u\n", lowErrLen);
     // for (int i = 0; i < seqLength; ++i)
@@ -285,12 +242,12 @@ void EXP::OutPrint()
     // printf("\n");
 }
 
-float  EXP::InCC()
+float  EXP::InAC()
 {
-    return inCC;
+    return inAC;
 }
 
-vector<float> EXP::InProb()
+float EXP::InProb()
 {
     return inProb;
 }

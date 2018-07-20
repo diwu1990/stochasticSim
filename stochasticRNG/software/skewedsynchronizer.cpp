@@ -1,8 +1,8 @@
-#include "synchronizer.hpp"
+#include "skewedsynchronizer.hpp"
 #include "crosscorrelation.hpp"
 #include "seqprobmulti.hpp"
 
-SkewedSkewedSynchronizer::SkewedSkewedSynchronizer()
+SkewedSynchronizer::SkewedSynchronizer()
 {}
 
 SkewedSynchronizer::~SkewedSynchronizer()
