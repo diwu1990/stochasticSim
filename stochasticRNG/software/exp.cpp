@@ -86,7 +86,6 @@ void EXP::Init(vector<unsigned int> param1, vector<vector<unsigned int>> param2,
     realProb.resize(seqLength);
     errRate.resize(seqLength);
 
-
     for (int i = 0; i < seqLength; ++i)
     {
         outSeq[i] = 0;
@@ -114,97 +113,29 @@ void EXP::Calc()
     inputAC.Calc();
     inAC = inputAC.OutAC();
 
-    vector<unsigned int> selSeq(4);
-    for (int i = 0; i < 4; ++i)
-    {
-        /* code */
-    }
-
     float oneCount = 0;
 
+    vector<vector<unsigned int>> muxConst(4);
+    muxConst[0].resize(seqLength);
+    for (int i = 0; i < seqLength; ++i)
+    {
+        muxConst[]
+    }
+    muxConst[1].resize(seqLength);
+    muxConst[2].resize(seqLength);
+    muxConst[3].resize(seqLength);
+
     for (int i = 1; i < seqLength; ++i)
-    {   
-        
-        vector<unsigned int> outTemp;
+    {
+        // mux 0
 
-        for (int j = 0; j < 3; ++j) // three states 
-        {
-            if(j == 0)
-            if(inSel[j][i] == 1)// inSel[j][i] % 2 == 1
-            {
-                outTemp[j] = 1; // mux constant
-            }
-            else
-            {
-                outTemp[j] = inSeq[j][i];
-            }
-            else if(j == 1)
-            {
-                if(inSeq[j][i] == 1 && inSeq[j-1][i] == 1)
-                {
-                    if (inSel[j][i] == 1) // inSel[j][i] % 2 == 1
-                    {
-                        outTemp[j] = 1;
-                    }
-                    else
-                    {
-                        outTemp[j] = 0; // mux constant
-                    }
-                }
-                else
-                {
-                    outTemp[j] = 0; // can only be zero here
-                }
-            }
-            else
-            {
-                if(inSeq[j][i] == 1 && inSeq[j-2][i] == 1)
-                {
-                    if (inSel[j][i] == 1) // may be modified to integer mod // inSel[j][i] % 4 == 1
-                    {
-                        outTemp[j] = 1;
-                    }
-                    else
-                    {
-                        outTemp[j] = 0; // mux constant
-                    }
-                }
-                else
-                {
-                    outTemp[j] = 0; // can only be zero here
-                }                   
-            }
-        }
+        // mux 1
 
-        // final combination scaling logic
-        if(inSel[5][i] == 1) // inSel[5][i] % 2 == 1
-        {
-            outSeq[i] = outTemp[0];
-            oneCount += 1;
-            realProb[i] = (float)oneCount/(float)(i+1);
-            errRate[i] = (theoProb - realProb[i])/theoProb;
-        }
-        else
-        {
-            if(inSel[4][i] == 1) // inSel[4][i] % 2 == 1
-            {
-            outSeq[i] = outTemp[1];
-            oneCount += 1;
-            realProb[i] = (float)oneCount/(float)(i+1);
-            errRate[i] = (theoProb - realProb[i])/theoProb;               
-            }
-            else
-            {
-            outSeq[i] = outTemp[2];
-            oneCount += 1;
-            realProb[i] = (float)oneCount/(float)(i+1);
-            errRate[i] = (theoProb - realProb[i])/theoProb;                   
-            }
-        }
+        // mux 2
+
+        // mux 3
 
     }
-
-
 
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
