@@ -4,7 +4,7 @@ module relu (
     input in,
     output out    
 );
-    parameter DEPTH = 5;
+    parameter DEPTH = 4;
 
     logic overHalf;
     logic [DEPTH:0]cnt;
