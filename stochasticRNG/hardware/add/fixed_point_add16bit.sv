@@ -3,7 +3,7 @@ module fixed_point_add16bit (
     input rst_n,  // Asynchronous reset active low
     input [15:0] a,
     input [15:0] b,
-    output [16:0] c
+    output logic [16:0] c
 );
     
     always_ff @(posedge clk or negedge rst_n) begin : proc_c
