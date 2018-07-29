@@ -10,7 +10,6 @@ module div (
     logic [5:0] cnt;
     logic inc;
     logic dec;
-    logic out_d1;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_cnt
         if(~rst_n) begin
@@ -26,16 +25,9 @@ module div (
         end
     end
 
-    assign quotient = cnt >= randNum;
-    always_ff @(posedge clk or negedge rst_n) begin : proc_out_d1
-        if(~rst_n) begin
-            out_d1 <= 0;
-        end else begin
-            out_d1 <= quotient;
-        end
-    end
+    assign quotient = (cnt >= randNum);
 
     assign inc = dividend;
-    assign dec = out_d1 & divisor;
+    assign dec = quotient & divisor;
 
 endmodule
