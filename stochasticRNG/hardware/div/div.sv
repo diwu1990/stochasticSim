@@ -36,6 +36,6 @@ module div (
     end
 
     assign inc = dividend;
-    assign dec = quotient & divisor;
+    assign dec = out_d1 & divisor;
 
 endmodule
