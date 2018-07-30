@@ -163,15 +163,6 @@ void APCADD::Calc()
     }
     for (int i = 0; i < seqLength; ++i)
     {
-        // printf("%f\n", errRate[seqLength-1-i]);
-        // if (errRate[seqLength-1-i] > 0.05)
-        // {
-        //     printf("larger than 0.05\n");
-        // }
-        // if (errRate[seqLength-1-i] < -0.05)
-        // {
-        //     printf("smaller than -0.05\n");
-        // }
         if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
         {
             lowErrLen = seqLength-i;
