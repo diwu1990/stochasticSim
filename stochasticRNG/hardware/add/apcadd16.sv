@@ -61,6 +61,6 @@ module apcadd16 (
     assign cnt[2] = sum[3];
     assign cnt[3] = co[3];
 
-    assign out = cnt >= randNum;
+    assign out = (cnt >= randNum);
 
 endmodule
