@@ -1,0 +1,275 @@
+==12500== Memcheck, a memory error detector
+==12500== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==12500== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==12500== Command: /home/wudidaizi/Project/stochasticSim/stochasticRNG/software/main
+==12500== Parent PID: 3478
+==12500== 
+--12500-- 
+--12500-- Valgrind options:
+--12500--    -v
+--12500--    --tool=memcheck
+--12500--    --leak-check=full
+--12500--    --num-callers=39
+--12500--    --log-file=valgrind.log
+--12500-- Contents of /proc/version:
+--12500--   Linux version 4.13.0-36-generic (buildd@lgw01-amd64-033) (gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.9)) #40~16.04.1-Ubuntu SMP Fri Feb 16 23:25:58 UTC 2018
+--12500-- 
+--12500-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-rdtscp-sse3-avx
+--12500-- Page sizes: currently 4096, max supported 4096
+--12500-- Valgrind library directory: /usr/lib/valgrind
+--12500-- Reading syms from /home/wudidaizi/Project/stochasticSim/stochasticRNG/software/main
+--12500-- Reading syms from /lib/x86_64-linux-gnu/ld-2.23.so
+--12500--   Considering /lib/x86_64-linux-gnu/ld-2.23.so ..
+--12500--   .. CRC mismatch (computed d3da0723 wanted a1c29704)
+--12500--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.23.so ..
+--12500--   .. CRC is valid
+--12500-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--12500--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--12500--   .. CRC mismatch (computed 2535049d wanted 2b024814)
+--12500--    object doesn't have a symbol table
+--12500--    object doesn't have a dynamic symbol table
+--12500-- Scheduler: using generic scheduler lock implementation.
+--12500-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==12500== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-12500-by-wudidaizi-on-???
+==12500== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-12500-by-wudidaizi-on-???
+==12500== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-12500-by-wudidaizi-on-???
+==12500== 
+==12500== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==12500== don't want to do, unless you know exactly what you're doing,
+==12500== or are doing some strange experiment):
+==12500==   /usr/lib/valgrind/../../bin/vgdb --pid=12500 ...command...
+==12500== 
+==12500== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==12500==   /path/to/gdb /home/wudidaizi/Project/stochasticSim/stochasticRNG/software/main
+==12500== and then give GDB the following command
+==12500==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=12500
+==12500== --pid is optional if only one valgrind process is running
+==12500== 
+--12500-- REDIR: 0x401cdc0 (ld-linux-x86-64.so.2:strlen) redirected to 0x3809e181 (???)
+--12500-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--12500--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--12500--   .. CRC mismatch (computed d0558d51 wanted ab599393)
+--12500--    object doesn't have a symbol table
+--12500-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--12500--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--12500--   .. CRC mismatch (computed f5fca1b4 wanted 7dda00ad)
+--12500--    object doesn't have a symbol table
+==12500== WARNING: new redirection conflicts with existing -- ignoring it
+--12500--     old: 0x0401cdc0 (strlen              ) R-> (0000.0) 0x3809e181 ???
+--12500--     new: 0x0401cdc0 (strlen              ) R-> (2007.0) 0x04c31020 strlen
+--12500-- REDIR: 0x401b710 (ld-linux-x86-64.so.2:index) redirected to 0x4c30bc0 (index)
+--12500-- REDIR: 0x401b930 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c320d0 (strcmp)
+--12500-- REDIR: 0x401db20 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c35270 (mempcpy)
+--12500-- Reading syms from /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+--12500--   Considering /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21 ..
+--12500--   .. CRC mismatch (computed 9adedc07 wanted 319402e2)
+--12500--    object doesn't have a symbol table
+--12500-- Reading syms from /lib/x86_64-linux-gnu/libm-2.23.so
+--12500--   Considering /lib/x86_64-linux-gnu/libm-2.23.so ..
+--12500--   .. CRC mismatch (computed f7791cb7 wanted 92acf4be)
+--12500--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libm-2.23.so ..
+--12500--   .. CRC is valid
+--12500-- Reading syms from /lib/x86_64-linux-gnu/libgcc_s.so.1
+--12500--   Considering /lib/x86_64-linux-gnu/libgcc_s.so.1 ..
+--12500--   .. CRC mismatch (computed b9a68419 wanted 29d51b00)
+--12500--    object doesn't have a symbol table
+--12500-- Reading syms from /lib/x86_64-linux-gnu/libc-2.23.so
+--12500--   Considering /lib/x86_64-linux-gnu/libc-2.23.so ..
+--12500--   .. CRC mismatch (computed 2adb2e50 wanted 9b73f606)
+--12500--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.23.so ..
+--12500--   .. CRC is valid
+--12500-- REDIR: 0x5769fd0 (libc.so.6:strcasecmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x5765850 (libc.so.6:strcspn) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x576c2c0 (libc.so.6:strncasecmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x5767cc0 (libc.so.6:strpbrk) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x5768050 (libc.so.6:strspn) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x576971b (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x57679d0 (libc.so.6:rindex) redirected to 0x4c308a0 (rindex)
+--12500-- REDIR: 0x575e550 (libc.so.6:malloc) redirected to 0x4c2db20 (malloc)
+--12500-- REDIR: 0x5765cf0 (libc.so.6:strlen) redirected to 0x4c30f60 (strlen)
+--12500-- REDIR: 0x57691c0 (libc.so.6:__GI_memcmp) redirected to 0x4c33b90 (__GI_memcmp)
+--12500-- REDIR: 0x57642a0 (libc.so.6:strcmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x5779b40 (libc.so.6:__strcmp_sse2_unaligned) redirected to 0x4c31f90 (strcmp)
+--12500-- REDIR: 0x4ec7e60 (libstdc++.so.6:operator new(unsigned long)) redirected to 0x4c2e080 (operator new(unsigned long))
+--12500-- REDIR: 0x576e9c0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x5779df0 (libc.so.6:__memcpy_sse2_unaligned) redirected to 0x4c324a0 (memcpy@@GLIBC_2.14)
+--12500-- REDIR: 0x5769180 (libc.so.6:bcmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x5848c60 (libc.so.6:__memcmp_sse4_1) redirected to 0x4c33cd0 (__memcmp_sse4_1)
+--12500-- REDIR: 0x5769780 (libc.so.6:memset) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--12500-- REDIR: 0x5769810 (libc.so.6:__GI_memset) redirected to 0x4c344c0 (memset)
+--12500-- REDIR: 0x4ec7f10 (libstdc++.so.6:operator new[](unsigned long)) redirected to 0x4c2e7a0 (operator new[](unsigned long))
+--12500-- REDIR: 0x4ec5f10 (libstdc++.so.6:operator delete(void*)) redirected to 0x4c2f1e0 (operator delete(void*))
+--12500-- REDIR: 0x5838c90 (libc.so.6:__memmove_ssse3_back) redirected to 0x4c32230 (memcpy@GLIBC_2.2.5)
+==12500== Invalid read of size 4
+==12500==    at 0x402229: main (div_test.cpp:105)
+==12500==  Address 0x5ab5cac is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x40162E: allocate (new_allocator.h:104)
+==12500==    by 0x40162E: allocate (alloc_traits.h:491)
+==12500==    by 0x40162E: _M_allocate (stl_vector.h:170)
+==12500==    by 0x40162E: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x40162E: _Vector_base (stl_vector.h:136)
+==12500==    by 0x40162E: vector (stl_vector.h:278)
+==12500==    by 0x40162E: main (div_test.cpp:30)
+==12500== 
+==12500== Invalid write of size 4
+==12500==    at 0x40222D: main (div_test.cpp:105)
+==12500==  Address 0x5ab5cac is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x40162E: allocate (new_allocator.h:104)
+==12500==    by 0x40162E: allocate (alloc_traits.h:491)
+==12500==    by 0x40162E: _M_allocate (stl_vector.h:170)
+==12500==    by 0x40162E: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x40162E: _Vector_base (stl_vector.h:136)
+==12500==    by 0x40162E: vector (stl_vector.h:278)
+==12500==    by 0x40162E: main (div_test.cpp:30)
+==12500== 
+==12500== Invalid read of size 4
+==12500==    at 0x402251: main (div_test.cpp:106)
+==12500==  Address 0x5ab5d1c is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x401663: allocate (new_allocator.h:104)
+==12500==    by 0x401663: allocate (alloc_traits.h:491)
+==12500==    by 0x401663: _M_allocate (stl_vector.h:170)
+==12500==    by 0x401663: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x401663: _Vector_base (stl_vector.h:136)
+==12500==    by 0x401663: vector (stl_vector.h:278)
+==12500==    by 0x401663: main (div_test.cpp:31)
+==12500== 
+==12500== Invalid read of size 4
+==12500==    at 0x402292: main (div_test.cpp:108)
+==12500==  Address 0x5ab5d8c is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x401698: allocate (new_allocator.h:104)
+==12500==    by 0x401698: allocate (alloc_traits.h:491)
+==12500==    by 0x401698: _M_allocate (stl_vector.h:170)
+==12500==    by 0x401698: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x401698: _Vector_base (stl_vector.h:136)
+==12500==    by 0x401698: vector (stl_vector.h:278)
+==12500==    by 0x401698: main (div_test.cpp:32)
+==12500== 
+==12500== Invalid write of size 4
+==12500==    at 0x402296: main (div_test.cpp:108)
+==12500==  Address 0x5ab5d8c is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x401698: allocate (new_allocator.h:104)
+==12500==    by 0x401698: allocate (alloc_traits.h:491)
+==12500==    by 0x401698: _M_allocate (stl_vector.h:170)
+==12500==    by 0x401698: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x401698: _Vector_base (stl_vector.h:136)
+==12500==    by 0x401698: vector (stl_vector.h:278)
+==12500==    by 0x401698: main (div_test.cpp:32)
+==12500== 
+--12500-- REDIR: 0x5770d30 (libc.so.6:strchrnul) redirected to 0x4c34da0 (strchrnul)
+--12500-- REDIR: 0x5769980 (libc.so.6:__GI_mempcpy) redirected to 0x4c34fa0 (__GI_mempcpy)
+--12500-- REDIR: 0x576ea40 (libc.so.6:__GI_memcpy) redirected to 0x4c32b00 (__GI_memcpy)
+--12500-- REDIR: 0x575ea70 (libc.so.6:free) redirected to 0x4c2ed80 (free)
+==12500== 
+==12500== HEAP SUMMARY:
+==12500==     in use at exit: 473,024 bytes in 91 blocks
+==12500==   total heap usage: 1,071,455 allocs, 1,071,364 frees, 836,677,220 bytes allocated
+==12500== 
+==12500== Searching for pointers to 91 not-freed blocks
+==12500== Checked 251,536 bytes
+==12500== 
+==12500== 960 bytes in 30 blocks are definitely lost in loss record 1 of 4
+==12500==    at 0x4C2E80F: operator new[](unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x42867D: SOBOL::i4_sobol_generate() (sobol.cpp:188)
+==12500==    by 0x428774: SOBOL::SeqGen() (sobol.cpp:134)
+==12500==    by 0x433B69: SOBOLMulti::SeqGen() (sobolmulti.cpp:183)
+==12500==    by 0x40197F: main (div_test.cpp:46)
+==12500== 
+==12500== 199,680 bytes in 30 blocks are definitely lost in loss record 3 of 4
+==12500==    at 0x4C2E80F: operator new[](unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x42876C: SOBOL::SeqGen() (sobol.cpp:133)
+==12500==    by 0x433B69: SOBOLMulti::SeqGen() (sobolmulti.cpp:183)
+==12500==    by 0x40197F: main (div_test.cpp:46)
+==12500== 
+==12500== 199,680 bytes in 30 blocks are definitely lost in loss record 4 of 4
+==12500==    at 0x4C2E80F: operator new[](unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x428690: SOBOL::i4_sobol_generate() (sobol.cpp:190)
+==12500==    by 0x428774: SOBOL::SeqGen() (sobol.cpp:134)
+==12500==    by 0x433B69: SOBOLMulti::SeqGen() (sobolmulti.cpp:183)
+==12500==    by 0x40197F: main (div_test.cpp:46)
+==12500== 
+==12500== LEAK SUMMARY:
+==12500==    definitely lost: 400,320 bytes in 90 blocks
+==12500==    indirectly lost: 0 bytes in 0 blocks
+==12500==      possibly lost: 0 bytes in 0 blocks
+==12500==    still reachable: 72,704 bytes in 1 blocks
+==12500==         suppressed: 0 bytes in 0 blocks
+==12500== Reachable blocks (those to which a pointer was found) are not shown.
+==12500== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==12500== 
+==12500== ERROR SUMMARY: 39 errors from 8 contexts (suppressed: 0 from 0)
+==12500== 
+==12500== 6 errors in context 1 of 8:
+==12500== Invalid write of size 4
+==12500==    at 0x402296: main (div_test.cpp:108)
+==12500==  Address 0x5ab5d8c is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x401698: allocate (new_allocator.h:104)
+==12500==    by 0x401698: allocate (alloc_traits.h:491)
+==12500==    by 0x401698: _M_allocate (stl_vector.h:170)
+==12500==    by 0x401698: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x401698: _Vector_base (stl_vector.h:136)
+==12500==    by 0x401698: vector (stl_vector.h:278)
+==12500==    by 0x401698: main (div_test.cpp:32)
+==12500== 
+==12500== 
+==12500== 6 errors in context 2 of 8:
+==12500== Invalid read of size 4
+==12500==    at 0x402292: main (div_test.cpp:108)
+==12500==  Address 0x5ab5d8c is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x401698: allocate (new_allocator.h:104)
+==12500==    by 0x401698: allocate (alloc_traits.h:491)
+==12500==    by 0x401698: _M_allocate (stl_vector.h:170)
+==12500==    by 0x401698: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x401698: _Vector_base (stl_vector.h:136)
+==12500==    by 0x401698: vector (stl_vector.h:278)
+==12500==    by 0x401698: main (div_test.cpp:32)
+==12500== 
+==12500== 
+==12500== 6 errors in context 3 of 8:
+==12500== Invalid write of size 4
+==12500==    at 0x40222D: main (div_test.cpp:105)
+==12500==  Address 0x5ab5cac is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x40162E: allocate (new_allocator.h:104)
+==12500==    by 0x40162E: allocate (alloc_traits.h:491)
+==12500==    by 0x40162E: _M_allocate (stl_vector.h:170)
+==12500==    by 0x40162E: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x40162E: _Vector_base (stl_vector.h:136)
+==12500==    by 0x40162E: vector (stl_vector.h:278)
+==12500==    by 0x40162E: main (div_test.cpp:30)
+==12500== 
+==12500== 
+==12500== 6 errors in context 4 of 8:
+==12500== Invalid read of size 4
+==12500==    at 0x402229: main (div_test.cpp:105)
+==12500==  Address 0x5ab5cac is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x40162E: allocate (new_allocator.h:104)
+==12500==    by 0x40162E: allocate (alloc_traits.h:491)
+==12500==    by 0x40162E: _M_allocate (stl_vector.h:170)
+==12500==    by 0x40162E: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x40162E: _Vector_base (stl_vector.h:136)
+==12500==    by 0x40162E: vector (stl_vector.h:278)
+==12500==    by 0x40162E: main (div_test.cpp:30)
+==12500== 
+==12500== 
+==12500== 12 errors in context 5 of 8:
+==12500== Invalid read of size 4
+==12500==    at 0x402251: main (div_test.cpp:106)
+==12500==  Address 0x5ab5d1c is 0 bytes after a block of size 44 alloc'd
+==12500==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12500==    by 0x401663: allocate (new_allocator.h:104)
+==12500==    by 0x401663: allocate (alloc_traits.h:491)
+==12500==    by 0x401663: _M_allocate (stl_vector.h:170)
+==12500==    by 0x401663: _M_create_storage (stl_vector.h:185)
+==12500==    by 0x401663: _Vector_base (stl_vector.h:136)
+==12500==    by 0x401663: vector (stl_vector.h:278)
+==12500==    by 0x401663: main (div_test.cpp:31)
+==12500== 
+==12500== ERROR SUMMARY: 39 errors from 8 contexts (suppressed: 0 from 0)

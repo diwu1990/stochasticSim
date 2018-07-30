@@ -1,0 +1,73 @@
+shift register
+length 512 error
+length 1, 2, 4, 8
+start index, 1, delay, 1,
+0.118, 0.068, 0.143, 0.123, 
+start index, 2, delay, 1,
+0.140, 0.094, 0.098, 0.097, 
+start index, 3, delay, 1,
+0.073, 0.080, 0.091, 0.098, 
+start index, 4, delay, 1,
+0.087, 0.055, 0.076, 0.101, 
+start index, 5, delay, 1,
+0.098, 0.055, 0.086, 0.117, 
+start index, 6, delay, 1,
+0.106, 0.065, 0.096, 0.095, 
+start index, 7, delay, 1,
+0.172, 0.053, 0.088, 0.111, 
+start index, 8, delay, 1,
+0.091, 0.072, 0.080, 0.118, 
+start index, 9, delay, 1,
+0.125, 0.075, 0.081, 0.115, 
+start index, 10, delay, 1,
+0.088, 0.080, 0.108, 0.112, 
+
+
+length 256 error
+length 1, 2, 4, 8
+start index, 1, delay, 1,
+0.121, 0.079, 0.170, 0.165, 
+start index, 2, delay, 1,
+0.138, 0.107, 0.132, 0.170, 
+start index, 3, delay, 1,
+0.071, 0.099, 0.131, 0.164, 
+start index, 4, delay, 1,
+0.089, 0.072, 0.124, 0.176, 
+start index, 5, delay, 1,
+0.096, 0.080, 0.118, 0.166, 
+start index, 6, delay, 1,
+0.107, 0.082, 0.126, 0.147, 
+start index, 7, delay, 1,
+0.167, 0.070, 0.111, 0.161, 
+start index, 8, delay, 1,
+0.087, 0.096, 0.144, 0.204, 
+start index, 9, delay, 1,
+0.125, 0.090, 0.124, 0.194, 
+start index, 10, delay, 1,
+0.086, 0.102, 0.139, 0.170, 
+
+counter register: classical design
+length 512 error
+start index, 1, delay, 1,
+0.120, 0.068, 0.147, 0.119, 
+start index, 2, delay, 1,
+0.138, 0.091, 0.097, 0.102, 
+start index, 3, delay, 1,
+0.072, 0.077, 0.095, 0.095, 
+start index, 4, delay, 1,
+0.087, 0.057, 0.076, 0.097, 
+start index, 5, delay, 1,
+0.099, 0.059, 0.082, 0.112, 
+start index, 6, delay, 1,
+0.106, 0.061, 0.102, 0.098, 
+start index, 7, delay, 1,
+0.172, 0.054, 0.088, 0.112, 
+start index, 8, delay, 1,
+0.089, 0.075, 0.085, 0.126, 
+start index, 9, delay, 1,
+0.126, 0.073, 0.073, 0.107, 
+start index, 10, delay, 1,
+0.085, 0.083, 0.105, 0.112, 
+
+
+length 256 error
