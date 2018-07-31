@@ -53,6 +53,9 @@ void ADD::Help()
 
     printf("14. inst.Report() method:\n");
     printf("Report the configuration for current instance.\n");
+
+    printf("14. inst.PPStage() method:\n");
+    printf("Report the pipeline stage for current instance.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -97,6 +100,10 @@ void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
         theoProb += inProb[i];
     }
     theoProb = theoProb/(float)inDim; // '+' for summation, '*' for multiplication?
+    if (theoProb == 0)
+    {
+        theoProb = 0.0001;
+    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -107,6 +114,7 @@ void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
         errRate[i] = 0;
     }
     lowErrLen = 0;
+    ppStage=0;
 }
 
 void ADD::Report()
@@ -128,18 +136,19 @@ void ADD::Calc()
     inCC = inputCC.OutCC();
 
     unsigned int oneCount = 0;
+    unsigned int accuracyLength = 128;
 
     for (int i = 0; i < seqLength; ++i)
     {
         outSeq[i] = inSeq[randNum[i] >> (bitLength - logInDim)][i];
         oneCount += outSeq[i];
-        if (i < 32)
+        if (i < accuracyLength)
         {
             realProb[i] = (float)oneCount/(float)(i+1);
         }
         else
         {
-            realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
         }
         errRate[i] = (theoProb - realProb[i])/theoProb;
     }
@@ -164,7 +173,7 @@ void ADD::OutPrint()
 {
     printf("Calling OutPrint for ADD instance: ");
     std::cout << m_name << std::endl;
-    printf("Theoretical Probability: %.3f x %.3f = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], theoProb, inCC);
+    printf("Theoretical Probability: (%.3f + %.3f)/%d = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], inDim, theoProb, inCC);
     printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
     printf("Low Error Length (5 percent approximation): %u\n", lowErrLen);
     // for (int i = 0; i < seqLength; ++i)
@@ -225,4 +234,7 @@ unsigned int ADD::LowErrLen()
     return lowErrLen;
 }
 
-
+unsigned int ADD::PPStage()
+{
+    return ppStage;
+}

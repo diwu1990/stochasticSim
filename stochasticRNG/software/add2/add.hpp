@@ -25,6 +25,7 @@ class ADD
     vector<float> errRate;
     string m_name;
     unsigned int lowErrLen;
+    unsigned int ppStage;
 
     public:
         ADD();
@@ -44,4 +45,5 @@ class ADD
         float FinalErrRate();
         unsigned int SeqLen();
         unsigned int LowErrLen();
+        unsigned int PPStage();
 };
