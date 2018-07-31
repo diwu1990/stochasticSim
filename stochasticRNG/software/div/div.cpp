@@ -63,6 +63,9 @@ void DIV::Help()
 
     printf("14. inst.PPStage() method:\n");
     printf("Return the pipline stages required by hardware.\n");
+
+    printf("15. inst.Report() method:\n");
+    printf("Report the current instance.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -101,6 +104,10 @@ void DIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
         printf("Error: Input Length is not the same.\n");
     }
     theoProb = inProb[0] / inProb[1];
+    if (theoProb == 0)
+    {
+        theoProb == 0.0001;
+    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -255,11 +262,12 @@ void DIV::Calc()
     }
     // printf("\n");
     unsigned int oneCount = 0;
+    unsigned int accuracyLength = 128;
 
-    unsigned int effectiveBit = 0;
-    unsigned int effectiveOne = 0;
-    unsigned int reservedBit = 0;
-    unsigned int reservedOne = 0;
+    // unsigned int effectiveBit = 0;
+    // unsigned int effectiveOne = 0;
+    // unsigned int reservedBit = 0;
+    // unsigned int reservedOne = 0;
 
     for (int i = 0; i < seqLength; ++i)
     {
@@ -267,7 +275,7 @@ void DIV::Calc()
         if (divSyncInst.OutSeq()[1][i] == 1)
         {
             // printf("%d: effective\n", i);
-            effectiveBit++;
+            // effectiveBit++;
             outSeq[i] = divSyncInst.OutSeq()[0][i];
             for (int index = 0; index < depth-1; ++index)
             {
@@ -276,42 +284,33 @@ void DIV::Calc()
             }
             traceReg[depth-1] = outSeq[i];
             // printf("%u\n", traceReg[depth-1]);
-            effectiveOne += outSeq[i];
+            // effectiveOne += outSeq[i];
             // printf("%u\n", outSeq[i]);
-            oneCount += outSeq[i];
-            if (i < 32)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
+            
         }
         else if (divSyncInst.OutSeq()[1][i] == 0)
         {
             // printf("%d: reserved, %5u\n", i, (randNum[i] >> (bitLength-logDepth)));
             // printf("reserved, %u\n", );
-            reservedBit++;
+            // reservedBit++;
             outSeq[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
-            oneCount += outSeq[i];
-            reservedOne += outSeq[i];
-            if (i < 32)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
+            // reservedOne += outSeq[i];
             // printf("reserved, %5u, %5u, %5u, %5u, %5u\n", randNum[i],traceReg,outSeq[i],oneCount,reservedOne);
         }
         else
         {
             printf("Error: Seqsence from Class Synchronizer is not bit stream.\n");
         }
+        oneCount += outSeq[i];
+        if (i < accuracyLength)
+        {
+            realProb[i] = (float)oneCount/(float)(i+1);
+        }
+        else
+        {
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
+        }
+        errRate[i] = (theoProb - realProb[i])/theoProb;
         // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     }
 
