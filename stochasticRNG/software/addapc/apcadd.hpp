@@ -11,7 +11,9 @@ using namespace std;
 class APCADD
 {
     vector<vector<unsigned int>> inSeq;
+    vector<unsigned int> randNum;
     vector<float> inProb;
+    unsigned int bitLength;
     unsigned int inDim;
 
     unsigned int seqLength;
@@ -28,7 +30,7 @@ class APCADD
         APCADD();
         ~APCADD();
         void Help();
-        void Init(vector<vector<unsigned int>>, string);
+        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();

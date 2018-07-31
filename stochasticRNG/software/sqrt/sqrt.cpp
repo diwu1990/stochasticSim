@@ -6,22 +6,12 @@ SQRT::SQRT(){}
 SQRT::~SQRT(){}
 void SQRT::Help()
 {
-    // void Init();
-    // void Report();
-    // void CalcQuot();
-    // void OutPrint();
-    // vector<unsigned int> OutSeq();
-    // float OutProb();
-    // float TheoProb();
-    // float ErrRate();
-    // unsigned int PPStage();
-    // unsigned int LowErrLen();
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("Calling SQRT Help. Following are instructions to SQRT Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the SQRT inst.\n");
-    printf("Initial Parameters: Input Vector, Random Number Seqsence, Bit Length of Random Number, Tracing Memory Bit Length, Instance Name.\n");
+    printf("Initial Parameters: Input Vector, Random Number Seqsence, Bit Length of Random Number, Instance Name.\n");
     printf("Recommended Tracing Memory Bit Length: 2\n");
 
     printf("2. inst.Calc() method:\n");
@@ -62,11 +52,14 @@ void SQRT::Help()
 
     printf("14. inst.PPStage() method:\n");
     printf("Return the pipline stages required by hardware.\n");
+
+    printf("15. inst.Report() method:\n");
+    printf("Report the current instance.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
 
-void SQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+void SQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProb probCalc;
@@ -75,16 +68,14 @@ void SQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsign
     inProb = probCalc.OutProb();
     randNum = param2;
     bitLength = param3;
-    depth = param4;
-    // if (ceil(log2(depth)) != floor(log2(depth)))
-    // {
-        // printf("Error: Input tracer bit length is not pow of 2.\n");
-    // }
-    logDepth = (unsigned int)log2(depth);
-    m_name = param5;
+    m_name = param4;
 
     seqLength = (unsigned int)inSeq.size();
     theoProb = sqrt(inProb);
+    if (theoProb == 0)
+    {
+        theoProb = 0.0001;
+    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -95,14 +86,6 @@ void SQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsign
         errRate[i] = 0;
     }
     lowErrLen = seqLength;
-    // for (int i = 0; i < inDim; ++i)
-    // {
-    //     for (int j = 0; j < seqLength; ++j)
-    //     {
-    //         printf("%u,", inSeq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
     ppStage = 0;
 }
 
@@ -111,7 +94,6 @@ void SQRT::Report()
     printf("Current SQRT:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
     printf("Bit Length of RandNum:  %u\n", bitLength);
-    printf("Bit Length of Tracer:   %u\n", depth);
     printf("Seqsence Length:        %u\n", seqLength);
     printf("Input Probability:      %f\n", inProb);
     printf("Theoretical Probability:%f\n", theoProb);
@@ -128,6 +110,7 @@ void SQRT::Calc()
     // // *****************************************************************************
     // // counter based no correlation
     // // *****************************************************************************
+    // unsigned int depth = 2;
     // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
     // unsigned int halfBound = (unsigned int)pow(2,depth-1);
     // unsigned int traceReg = halfBound;
@@ -192,7 +175,7 @@ void SQRT::Calc()
     }
     unsigned int oneCount = 0;
     unsigned int sel = 1;
-    float accuracyLen = 32;
+    unsigned int accuracyLength = 128;
 
     for (int i = 0; i < seqLength; ++i)
     {
@@ -200,31 +183,21 @@ void SQRT::Calc()
         if (sel == 1)
         {
             outSeq[i] = inSeq[i];
-            oneCount += outSeq[i];
-            if (i < accuracyLen)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*accuracyLen+outSeq[i]-outSeq[i-accuracyLen])/accuracyLen;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
         }
         else
         {
             outSeq[i] = 1;
-            oneCount += outSeq[i];
-            if (i < accuracyLen)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*accuracyLen+outSeq[i]-outSeq[i-accuracyLen])/accuracyLen;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
         }
+        oneCount += outSeq[i];
+        if (i < accuracyLength)
+        {
+            realProb[i] = (float)oneCount/(float)(i+1);
+        }
+        else
+        {
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
+        }
+        errRate[i] = (theoProb - realProb[i])/theoProb;
 
         // applying a JK FF
         // J is always 1.
@@ -240,7 +213,6 @@ void SQRT::Calc()
             JKFF[i] = sel;
         }
     }
-
 
     for (int i = 0; i < seqLength; ++i)
     {

@@ -1,6 +1,6 @@
 #include "exp.hpp"
-#include "seqprobmulti.hpp"
-#include "crosscorrelation.hpp"
+#include "seqprob.hpp"
+#include "autocorrelation.hpp"
 #include "add.hpp"
 #include "mul.hpp"
 
@@ -55,6 +55,9 @@ void EXP::Help()
 
     printf("14. inst.Report() method:\n");
     printf("Report the status of current instance.\n");
+
+    printf("15. inst.PPStage() method:\n");
+    printf("Report the required pipeline stage for hardware.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -69,21 +72,18 @@ void EXP::Init(vector<unsigned int> param1, vector<vector<unsigned int>> param2,
     inProb = probCalc.OutProb();
     bitLength = param3;
     m_name = param4;
-    if ((unsigned int)inSel.size() != 4)
-    {
-        printf("Error: Input Sel Dimension is not 4.\n");
-    }
 
     seqLength = (unsigned int)inSeq.size();
-    for (int i = 0; i < 4; ++i)
+    if ((unsigned int)inSeq.size() != (unsigned int)inSel[0].size())
     {
-        if ((unsigned int)inSeq[i].size() != seqLength)
-        {
-            printf("Error: Input Seqsence Length is not the same with the Sel Length.\n");
-        }
+        printf("Error: Input Seqsence Length is not the same with the Sel Length.\n");
     }
 
     theoProb = exp(inProb)/4;
+    if (theoProb == 0)
+    {
+        theoProb = 0.0001;
+    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -95,6 +95,7 @@ void EXP::Init(vector<unsigned int> param1, vector<vector<unsigned int>> param2,
         errRate[i] = 0;
     }
     lowErrLen = 0;
+    ppStage = 0;
 }
 
 void EXP::Report()
@@ -124,12 +125,10 @@ void EXP::Calc()
     // add[3] is for ((1+x)/2 + x^2/2(1+x/2)/2)/2
     addConst[0].resize(seqLength);
     addConst[1].resize(seqLength);
-    addConst[2].resize(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
         addConst[0][i] = 0;
         addConst[1][i] = 1;
-        addConst[2][i] = 1;
     }
 
     // add 0
@@ -139,19 +138,90 @@ void EXP::Calc()
     addIn0[1].resize(seqLength);
     addIn0[1] = addConst[0];
     ADD addInst0;
-    addInst0.Init(addIn0,inSeq[0],"addIn0");
-
-    // add 1
-
-    // add 2
+    addInst0.Init(addIn0,inSel[0],bitLength,"addInst0");
+    addInst0.Calc();
 
     // mul 0
+    vector<vector<unsigned int>> mulIn0(2);
+    vector<unsigned int> d0(seqLength); // dff 0
+    for (int i = 0; i < seqLength; ++i)
+    {
+        d0[i] = inSeq[(i+seqLength-1)%seqLength];
+    }
+    mulIn0[0].resize(seqLength);
+    mulIn0[0] = inSeq;
+    mulIn0[1].resize(seqLength);
+    mulIn0[1] = d0;
+    MUL mulInst0;
+    mulInst0.Init(mulIn0,"mulInst0");
+    mulInst0.Calc();
+
+    // add 1
+    vector<vector<unsigned int>> addIn1(2);
+    addIn1[0].resize(seqLength);
+    addIn1[0] = addInst0.OutSeq();
+    addIn1[1].resize(seqLength);
+    addIn1[1] = addConst[1];
+    ADD addInst1;
+    addInst1.Init(addIn1,inSel[1],bitLength,"addInst1");
+    addInst1.Calc();
 
     // mul 1
+    vector<vector<unsigned int>> mulIn1(2);
+    vector<unsigned int> d1(seqLength);
+    for (int i = 0; i < seqLength; ++i)
+    {
+        d1[i] = mulInst0.OutSeq()[(i+seqLength-1)%seqLength];
+    }
+    mulIn1[0].resize(seqLength);
+    mulIn1[0] = addInst1.OutSeq();
+    mulIn1[1].resize(seqLength);
+    mulIn1[1] = d1;
+    MUL mulInst1;
+    mulInst1.Init(mulIn1,"mulInst1");
+    mulInst1.Calc();
+
+    // add 2
+    vector<vector<unsigned int>> addIn2(2);
+    addIn2[0].resize(seqLength);
+    addIn2[0] = inSeq;
+    addIn2[1].resize(seqLength);
+    addIn2[1] = addConst[1];
+    ADD addInst2;
+    addInst2.Init(addIn2,inSel[0],bitLength,"addInst2");
+    addInst2.Calc();
 
     // add 3
+    vector<vector<unsigned int>> addIn3(2);
+    vector<unsigned int> d2(seqLength);
+    for (int i = 0; i < seqLength; ++i)
+    {
+        d2[i] = mulInst1.OutSeq()[(i+seqLength-1)%seqLength];
+    }
+    addIn3[0].resize(seqLength);
+    addIn3[0] = addInst2.OutSeq();
+    addIn3[1].resize(seqLength);
+    addIn3[1] = d2;
+    ADD addInst3;
+    addInst3.Init(addIn3,inSel[2],bitLength,"addInst3");
+    addInst3.Calc();
 
-
+    unsigned int accuracyLength = 128;
+    outSeq = addInst3.OutSeq();
+    for (int i = 0; i < seqLength; ++i)
+    {
+        oneCount += outSeq[i];
+        // printf("%f\n", oneCount);
+        if (i < accuracyLength)
+        {
+            realProb[i] = (float)oneCount/(float)(i+1);
+        }
+        else
+        {
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
+        }
+        errRate[i] = (theoProb - realProb[i])/theoProb;
+    }
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
     {
@@ -233,4 +303,7 @@ unsigned int EXP::LowErrLen()
     return lowErrLen;
 }
 
-
+unsigned int EXP::PPStage()
+{
+    return ppStage;
+}

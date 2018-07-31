@@ -15,7 +15,6 @@ class SQRT
     float inAC;
     vector<unsigned int> randNum;
     unsigned int bitLength;
-    unsigned int depth;
     unsigned int logDepth;
 
     unsigned int seqLength;
@@ -31,7 +30,7 @@ class SQRT
         SQRT();
         ~SQRT();
         void Help();
-        void Init(vector<unsigned int>, vector<unsigned int>, unsigned int, unsigned int, string);
+        void Init(vector<unsigned int>, vector<unsigned int>, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();

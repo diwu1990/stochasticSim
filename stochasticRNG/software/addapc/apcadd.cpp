@@ -60,14 +60,16 @@ void APCADD::Help()
     printf("**********************************************************\n");
 }
 
-void APCADD::Init(vector<vector<unsigned int>> param1, string param2)
+void APCADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
     probCalc.Init(inSeq,"probCalc");
     probCalc.Calc();
     inProb = probCalc.OutProb();
-    m_name = param2;
+    randNum = param2;
+    bitLength = param3;
+    m_name = param4;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 16)
     {
         inDim = (unsigned int)inSeq.size();
@@ -92,6 +94,11 @@ void APCADD::Init(vector<vector<unsigned int>> param1, string param2)
     {
         theoProb += inProb[i];
     }
+    theoProb /= 16;
+    if (theoProb == 0)
+    {
+        theoProb == 0.0001;
+    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -102,14 +109,6 @@ void APCADD::Init(vector<vector<unsigned int>> param1, string param2)
         errRate[i] = 0;
     }
     lowErrLen = seqLength;
-    // for (int i = 0; i < inDim; ++i)
-    // {
-    //     for (int j = 0; j < seqLength; ++j)
-    //     {
-    //         printf("%u,", inSeq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
     ppStage = 0;
 }
 
@@ -128,39 +127,112 @@ void APCADD::Calc()
     inputCC.Init(inSeq,1,"inputCC");
     inputCC.Calc();
     inCC = inputCC.OutCC();
+    float oneCount = 0;
 
-    unsigned int oneCount = 0;
+    vector<vector<unsigned int>> sumCnt(4);
+    for (int i = 0; i < 4; ++i)
+    {
+        sumCnt[i].resize(seqLength);
+    }
+
+    vector<vector<vector<unsigned int>>> fa(4);
+    // fa[i][0] => a
+    // fa[i][1] => b
+    // fa[i][2] => ci
+    // fa[i][3] => sum
+    // fa[i][4] => co
+    for (int i = 0; i < 4; ++i)
+    {
+        fa[i].resize(5);
+        for (int j = 0; j < 5; ++j)
+        {
+            fa[i][j].resize(seqLength);
+        }
+    }
+
     for (int i = 0; i < seqLength; ++i)
     {
-        if (inSeq[0][i] == 1 && inSeq[1][i] == 1)
+        // approximate parallel counter
+        // fulladder 0
+        fa[0][0][i] = inSeq[0][i] | inSeq[1][i];
+        fa[0][1][i] = inSeq[2][i] & inSeq[3][i];
+        fa[0][2][i] = inSeq[4][i] | inSeq[5][i];
+        fa[0][3][i] = (fa[0][0][i] + fa[0][1][i] + fa[0][2][i]) % 2;
+        fa[0][4][i] = (fa[0][0][i] + fa[0][1][i] + fa[0][2][i]) >> 1;
+
+        // fulladder 1
+        fa[1][0][i] = inSeq[6][i] & inSeq[7][i];
+        fa[1][1][i] = inSeq[8][i] | inSeq[9][i];
+        fa[1][2][i] = inSeq[10][i] & inSeq[11][i];
+        fa[1][3][i] = (fa[1][0][i] + fa[1][1][i] + fa[1][2][i]) % 2;
+        fa[1][4][i] = (fa[1][0][i] + fa[1][1][i] + fa[1][2][i]) >> 1;
+
+        // fulladder 2
+        fa[2][0][i] = fa[0][3][i];
+        fa[2][1][i] = fa[1][3][i];
+        fa[2][2][i] = inSeq[12][i] | inSeq[13][i];
+        fa[2][3][i] = (fa[2][0][i] + fa[2][1][i] + fa[2][2][i]) % 2;
+        fa[2][4][i] = (fa[2][0][i] + fa[2][1][i] + fa[2][2][i]) >> 1;
+
+        // fulladder 3
+        fa[3][0][i] = fa[0][4][i];
+        fa[3][1][i] = fa[1][4][i];
+        fa[3][2][i] = fa[2][4][i];
+        fa[3][3][i] = (fa[3][0][i] + fa[3][1][i] + fa[3][2][i]) % 2;
+        fa[3][4][i] = (fa[3][0][i] + fa[3][1][i] + fa[3][2][i]) >> 1;
+
+        sumCnt[3][i] = fa[3][4][i];
+        sumCnt[2][i] = fa[3][3][i];
+        sumCnt[1][i] = fa[2][3][i];
+        sumCnt[0][i] = inSeq[14][i] & inSeq[15][i];
+
+        if ((sumCnt[3][i]*8+sumCnt[2][i]*4+sumCnt[1][i]*2+sumCnt[0][i]*2) >= (randNum[i] >> (bitLength-4)))
         {
             outSeq[i] = 1;
-            oneCount += 1;
-            // modify the calculation of real time prob, use past 32 bit instead of all bit
-            if (i < 32)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
         }
         else
         {
             outSeq[i] = 0;
-            if (i < 32)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
         }
+
+
+        // // accumulative parallel counter
+        // unsigned int temp = 0;
+        // for (int j = 0; j < inDim; ++j)
+        // {
+        //     temp += inSeq[j][i];
+        // }
+        // if (temp >= (randNum[i] >> (bitLength-4)))
+        // {
+        //     outSeq[i] = 1;
+        // }
+        // else
+        // {
+        //     outSeq[i] = 0;
+        // }
+
+        // // 16-1 mux
+        // unsigned int temp = 0;
+        // outSeq[i] = inSeq[randNum[i] >> (bitLength-4)][i];
+
     }
+
+    unsigned int accuracyLength = 128;
+    for (int i = 0; i < seqLength; ++i)
+    {
+        oneCount += outSeq[i];
+        // printf("%f\n", oneCount);
+        if (i < accuracyLength)
+        {
+            realProb[i] = (float)oneCount/(float)(i+1);
+        }
+        else
+        {
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
+        }
+        errRate[i] = (theoProb - realProb[i])/theoProb;
+    }
+    // find the convergence point
     for (int i = 0; i < seqLength; ++i)
     {
         if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
