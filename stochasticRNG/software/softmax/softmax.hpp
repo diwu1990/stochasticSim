@@ -12,8 +12,8 @@ class SOFTMAX
 {
     vector<vector<unsigned int>> inSeq;
     vector<vector<unsigned int>> randNum;
-    vector<float> inProb;
     unsigned int bitLength;
+    vector<float> inProb;
     unsigned int inSeqDim;
     unsigned int inRandDim;
 
@@ -25,12 +25,11 @@ class SOFTMAX
     vector<vector<float>> errRate;
     vector<float> mse;
     string m_name;
-    unsigned int lowErrLen;
 
     public:
         SOFTMAX();
         ~SOFTMAX();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, vector<vector<unsigned int>>, unsigned int, string);
         void Calc();
-        vecrot<vector<unsigned int>> OutSeq();
+        vector<vector<unsigned int>> OutSeq();
 };
