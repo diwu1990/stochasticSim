@@ -10,7 +10,7 @@ SOFTMAX::SOFTMAX(){}
 
 SOFTMAX::~SOFTMAX(){}
 
-void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned int>> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -20,44 +20,70 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<unsigned int> par
     randNum = param2;
     bitLength = param3;
     m_name = param4;
+
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 16)
     {
-        inDim = (unsigned int)inSeq.size();
+        inSeqDim = (unsigned int)inSeq.size();
     }
     else
     {
-        printf("Error: Input Dimension is not 16.\n");
+        printf("Error: Input Sequence Dimension is not 16.\n");
+    }
+
+    if ((unsigned int)param2.size() = 4)
+    {
+        inRandDim = (unsigned int)randNum.size();
+    }
+    else
+    {
+        printf("Error: Input Random Number Dimension is not 4.\n");
     }
 
     seqLength = (unsigned int)inSeq[0].size();
-    for (int i = 0; i < inDim; ++i)
+    for (int i = 0; i < inSeqDim; ++i)
     {
         if ((unsigned int)inSeq[i].size() != seqLength)
         {
-            printf("Error: Input Length is not the same.\n");
+            printf("Error: Input Sequence Length is not the same.\n");
             break;
         }
     }
 
-    theoProb = 0;
-    for (int i = 0; i < inDim; ++i)
+    for (int i = 0; i < inRandDim; ++i)
     {
-        theoProb += inProb[i];
+        if ((unsigned int)randNum[i].size() != seqLength)
+        {
+            printf("Error: Input Random Number Length is not the same.\n");
+            break;
+        }
     }
-    theoProb /= 16;
-    if (theoProb == 0)
+
+    float sum = 0;
+    for (int i = 0; i < inSeqDim; ++i)
     {
-        theoProb == 0.0001;
+        sum += exp(inProb[i]);
     }
-    outSeq.resize(seqLength);
-    realProb.resize(seqLength);
-    errRate.resize(seqLength);
-    for (int i = 0; i < seqLength; ++i)
+    for (int i = 0; i < inSeqDim; ++i)
     {
-        outSeq[i] = 0;
-        realProb[i] = 0;
-        errRate[i] = 0;
+        theoProb[i] = exp(inProb[i])/sum;
     }
+
+    outSeq.resize(inSeqDim);
+    realProb.resize(inSeqDim);
+    errRate.resize(inSeqDim);
+    for (int i = 0; i < inSeqDim; ++i)
+    {
+        outSeq[i].resize(seqLength);
+        realProb[i].resize(seqLength);
+        errRate[i].resize(seqLength);
+        for (int j = 0; j < seqLength; ++j) 
+        {
+            outSeq[i][j] = 0;
+            realProb[i][j] = 0;
+            errRate[i][j] = 0;
+        }
+    }
+
     lowErrLen = seqLength;
     ppStage = 0;
 }
@@ -68,24 +94,39 @@ void SOFTMAX::Calc()
     inputCC.Init(inSeq,1,"inputCC");
     inputCC.Calc();
     inCC = inputCC.OutCC();
-    float oneCount = 0;
+    vector<float> oneCount(inSeqDim);
+    for (int i = 0; i < inSeqDim; ++i)
+    {
+        oneCount[i] = 0;
+    }
+
+    // exp for each input
+    vector<unsigned int> expOut(inSeqDim);
+    for (int i = 0; i < inSeqDim; ++i)
+    {
+        EXP expInst;
+        expInst.Init(, "expInst");
+    }
 
 
     unsigned int accuracyLength = 128;
-    for (int i = 0; i < seqLength; ++i)
+    for (int i = 0; i < inSeqDim; ++i)
     {
-        oneCount += outSeq[i];
-        // printf("%f\n", oneCount);
-        if (i < accuracyLength)
+        for (int z = 0; z < seqLength; ++z)
         {
-            realProb[i] = (float)oneCount/(float)(i+1);
+            oneCount[i] += outSeq[i][z];
+            if (z < accuracyLength)
+            {
+                realProb[i][z] = (float)oneCount[i]/(float)(z+1);
+            }
+            else
+            {
+                realProb[i][z] = (realProb[i][z-1]*(float)accuracyLength+outSeq[i][z]-outSeq[i][z-accuracyLength])/(float)accuracyLength;
+            }
+            errRate[i][z] = (theoProb[i] - realProb[i][z])/theoProb[i];
         }
-        else
-        {
-            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
-        }
-        errRate[i] = (theoProb - realProb[i])/theoProb;
     }
+    
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
     {

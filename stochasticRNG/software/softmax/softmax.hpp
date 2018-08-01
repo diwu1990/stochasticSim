@@ -12,8 +12,8 @@ class SOFTMAX
 {
     vector<vector<unsigned int>> inSeq;
     vector<vector<unsigned int>> randNum;
-    vector<float> inProb;
     unsigned int bitLength;
+    vector<float> inProb;
     unsigned int inSeqDim;
     unsigned int inRandDim;
 
