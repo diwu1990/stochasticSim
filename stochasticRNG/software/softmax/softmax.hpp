@@ -25,7 +25,6 @@ class SOFTMAX
     vector<vector<float>> errRate;
     vector<float> mse;
     string m_name;
-    unsigned int lowErrLen;
 
     public:
         SOFTMAX();

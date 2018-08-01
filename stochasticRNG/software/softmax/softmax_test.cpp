@@ -17,7 +17,7 @@ int main()
     unsigned int totalSeqNum = SeqDim+RandNumDim;
     string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 10000;
+    unsigned int totalIter = 1;
     unsigned int seqLength = (unsigned int)pow(2,bitLength);
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
@@ -87,25 +87,25 @@ int main()
             // instance.Report();
             instance.Calc();
 
-            tenFoldErr[(unsigned int)floor(theoreticalProb*10)] += (instance.FinalRealProb()-theoreticalProb)/theoreticalProb * (instance.FinalRealProb()-theoreticalProb)/theoreticalProb;
-            tenFoldNum[(unsigned int)floor(theoreticalProb*10)] += 1;
-            tenFoldLowErrLen[(unsigned int)floor(theoreticalProb*10)] += instance.LowErrLen();
+            // tenFoldErr[(unsigned int)floor(theoreticalProb*10)] += (instance.FinalRealProb()-theoreticalProb)/theoreticalProb * (instance.FinalRealProb()-theoreticalProb)/theoreticalProb;
+            // tenFoldNum[(unsigned int)floor(theoreticalProb*10)] += 1;
+            // tenFoldLowErrLen[(unsigned int)floor(theoreticalProb*10)] += instance.LowErrLen();
         }
-        for (int y = 0; y < foldNum; ++y)
-        {
-            // printf("11111\n");
-            tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
-            tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
-        }
+        // for (int y = 0; y < foldNum; ++y)
+        // {
+        //     // printf("11111\n");
+        //     tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
+        //     tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
+        // }
         
 
-        printf("Ten Fold with Depth %u, initial sobolIdx %u, delay %u.\n", depth, rngInitIdx, delay);
-        printf("Value range index, Freq, Final Error, LowErrLen:\n");
-        for (int i = 0; i < foldNum; ++i)
-        {
-            printf("%3d, %5u, %-.3f, %-3.3f\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldLowErrLen[i]);
-        }
-        printf("\n");
+        // printf("Ten Fold with Depth %u, initial sobolIdx %u, delay %u.\n", depth, rngInitIdx, delay);
+        // printf("Value range index, Freq, Final Error, LowErrLen:\n");
+        // for (int i = 0; i < foldNum; ++i)
+        // {
+        //     printf("%3d, %5u, %-.3f, %-3.3f\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldLowErrLen[i]);
+        // }
+        // printf("\n");
     }
     
 }

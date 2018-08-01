@@ -86,6 +86,11 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned i
 
     lowErrLen = seqLength;
     ppStage = 0;
+    
+    for (int i = 0; i < seqLength; ++i)
+    {
+        mse[i] = 0;
+    }
 }
 
 void SOFTMAX::Calc()
@@ -102,12 +107,44 @@ void SOFTMAX::Calc()
 
     // exp for each input
     vector<unsigned int> expOut(inSeqDim);
+    vector<unsigned int> expSel(3);
+    for (int i = 0; i < 3; ++i)
+    {
+        expSel[i] = randNum[i];
+    }
+
     for (int i = 0; i < inSeqDim; ++i)
     {
         EXP expInst;
-        expInst.Init(, "expInst");
+        expInst.Init(inSeq[i], expSel, bitLength, "expInst");
+        expInst.Calc();
+        expOut[i] = expInst.OutSeq();
     }
 
+    // sum for all exp output
+    ADD sumInst;
+    sumInst.Init(expOut, randNum[3] , bitLength, "addInst");
+    sumInst.Calc();
+
+    // division for output
+    vector<vector<unsigned int>> divInSeq(2);
+    for (int i = 0; i < 2; ++i)
+    {
+        divInSeq[i].resize(seqLength);
+    }
+    divInSeq[1] = sumInst.OutSeq();
+    unsigned int depth = 2;
+    for (int i = 0; i < inSeqDim; ++i)
+    {
+        for (int j = 0; j < seqLength; ++j)
+        {
+            divInSeq[0][j] = (randNum[3][j] == 0) ? expOut[i][j] : 0;
+        }
+        DIV divInst;
+        divInst.Init(divInSeq, randNum[3], bitLength, depth, "divInst");
+        divInst.Calc();
+        outSeq[i] = divInst.OutSeq();
+    }
 
     unsigned int accuracyLength = 128;
     for (int i = 0; i < inSeqDim; ++i)
@@ -128,14 +165,25 @@ void SOFTMAX::Calc()
     }
     
     // find the convergence point
+    // for (int i = 0; i < seqLength; ++i)
+    // {
+    //     if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
+    //     {
+    //         lowErrLen = seqLength-i;
+    //         break;
+    //     }
+    // }
+
     for (int i = 0; i < seqLength; ++i)
     {
-        if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
+        for (int j = 0; j < inSeqDim; ++j)
         {
-            lowErrLen = seqLength-i;
-            break;
+            mse[i] += errRate[j][i]*errRate[j][i];
         }
+        mse[i] /= sqrt(mse[i]/(float)inSeqDim);
+        printf("%.3f,", mse[i]);
     }
+    printf("\n");
 }
 
 vector<unsigned int> SOFTMAX::OutSeq()
