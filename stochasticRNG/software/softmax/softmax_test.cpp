@@ -6,24 +6,24 @@
 #include "lfsrmulti.hpp"
 #include <cstdlib>
 #include <ctime>
-#include "apcadd.hpp"
+#include "softmax.hpp"
 
 int main()
 {
     srand(time(NULL));
     unsigned int bitLength = 8;
     unsigned int SeqDim = 16;
-    unsigned int RandNumDim = 1;
+    unsigned int RandNumDim = 5;
     unsigned int totalSeqNum = SeqDim+RandNumDim;
     string mode = "incremental";
     // string mode = "delayed";
     unsigned int totalIter = 1;
     unsigned int seqLength = (unsigned int)pow(2,bitLength);
-    unsigned int foldNum = 11;
+    unsigned int foldNum = 1;
     vector<float> tenFoldErr(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
-    for (int index = 0; index < 10; ++index)
+    for (int index = 0; index < 1; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
         {
@@ -50,8 +50,10 @@ int main()
             for (int l = 0; l < SeqDim; ++l)
             {
                 bitLengthVec[l] = bitLength;
-                probVec[l] = (float)((float)(rand()%(int)pow(2,bitLength))/(float)pow(2,bitLength));
+                // probVec[l] = (float)((float)(rand()%(int)pow(2,bitLength))/(float)pow(2,bitLength));
+                probVec[l] = 0.2;
             }
+            probVec[1] = 0.5;
 
             vector<vector<unsigned int>> inRandNum(SeqDim);
             for (int i = 0; i < SeqDim; ++i)
@@ -82,8 +84,9 @@ int main()
             // num2bitInst.Report();
             // num2bitInst.SeqPrint();
 
-            APCADD instance;
-            instance.Init(num2bitInst.OutSeq(),RandSeq[0],bitLength,"instance");
+            // printf("aaaaa\n");
+            SOFTMAX instance;
+            instance.Init(num2bitInst.OutSeq(),RandSeq,bitLength,"instance");
             // instance.Report();
             instance.Calc();
 

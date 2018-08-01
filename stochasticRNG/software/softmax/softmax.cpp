@@ -3,6 +3,7 @@
 #include "exp.hpp"
 #include "div.hpp"
 #include "softmax.hpp"
+#include "seqprob.hpp"
 #include "seqprobmulti.hpp"
 #include "crosscorrelation.hpp"
 
@@ -21,6 +22,8 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned i
     bitLength = param3;
     m_name = param4;
 
+    // printf("%d\n", inSeq.size());
+    // printf("%d\n", inProb.size());
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 16)
     {
         inSeqDim = (unsigned int)inSeq.size();
@@ -30,16 +33,18 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned i
         printf("Error: Input Sequence Dimension is not 16.\n");
     }
 
-    if ((unsigned int)param2.size() = 4)
+    // printf("%d\n", randNum.size());
+    if ((unsigned int)randNum.size() == 5)
     {
         inRandDim = (unsigned int)randNum.size();
     }
     else
     {
-        printf("Error: Input Random Number Dimension is not 4.\n");
+        printf("Error: Input Random Number Dimension is not 5.\n");
     }
 
     seqLength = (unsigned int)inSeq[0].size();
+    // printf("%d\n", seqLength);
     for (int i = 0; i < inSeqDim; ++i)
     {
         if ((unsigned int)inSeq[i].size() != seqLength)
@@ -61,13 +66,19 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned i
     float sum = 0;
     for (int i = 0; i < inSeqDim; ++i)
     {
-        sum += exp(inProb[i]);
+        sum += exp(inProb[i]*16);
     }
+    // printf("%f\n", sum/16/4);
+
+    // printf("bbbb\n");
+    theoProb.resize(inSeqDim);
     for (int i = 0; i < inSeqDim; ++i)
     {
-        theoProb[i] = exp(inProb[i])/sum;
+        theoProb[i] = exp(inProb[i]*16)/sum;
+        printf("softmax(%d): %f\n", i, theoProb[i]);
     }
 
+    // printf("cccc\n");
     outSeq.resize(inSeqDim);
     realProb.resize(inSeqDim);
     errRate.resize(inSeqDim);
@@ -84,9 +95,8 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned i
         }
     }
 
-    lowErrLen = seqLength;
-    ppStage = 0;
-    
+    // printf("dddd\n");
+    mse.resize(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
         mse[i] = 0;
@@ -106,8 +116,9 @@ void SOFTMAX::Calc()
     }
 
     // exp for each input
-    vector<unsigned int> expOut(inSeqDim);
-    vector<unsigned int> expSel(3);
+    // scale exp by 4
+    vector<vector<unsigned int>> expOut(inSeqDim);
+    vector<vector<unsigned int>> expSel(3);
     for (int i = 0; i < 3; ++i)
     {
         expSel[i] = randNum[i];
@@ -119,12 +130,19 @@ void SOFTMAX::Calc()
         expInst.Init(inSeq[i], expSel, bitLength, "expInst");
         expInst.Calc();
         expOut[i] = expInst.OutSeq();
+        printf("exp(%d): %.3f,%.3f,%.3f\n", i, expInst.InProb(), expInst.TheoProb(), expInst.FinalRealProb());
     }
 
     // sum for all exp output
+    // scale sum by 16
     ADD sumInst;
     sumInst.Init(expOut, randNum[3] , bitLength, "addInst");
     sumInst.Calc();
+
+    // SeqProb sumProbInst;
+    // sumProbInst.Init(sumInst.OutSeq() , "sumProbInst");
+    // sumProbInst.Calc();
+    // printf("%f\n", sumProbInst.OutProb());
 
     // division for output
     vector<vector<unsigned int>> divInSeq(2);
@@ -138,12 +156,13 @@ void SOFTMAX::Calc()
     {
         for (int j = 0; j < seqLength; ++j)
         {
-            divInSeq[0][j] = (randNum[3][j] == 0) ? expOut[i][j] : 0;
+            divInSeq[0][j] = ((randNum[4][j] >> (bitLength - (unsigned int)log2(inSeqDim))) == 0) ? expOut[i][j] : 0;
         }
         DIV divInst;
-        divInst.Init(divInSeq, randNum[3], bitLength, depth, "divInst");
+        divInst.Init(divInSeq, randNum[4], bitLength, depth, "divInst");
         divInst.Calc();
         outSeq[i] = divInst.OutSeq();
+        printf("div(%d): %.3f,%.3f,%.3f,%.3f\n", i, divInst.InProb()[0], divInst.InProb()[1], divInst.TheoProb(), divInst.FinalRealProb());
     }
 
     unsigned int accuracyLength = 128;
@@ -181,59 +200,21 @@ void SOFTMAX::Calc()
             mse[i] += errRate[j][i]*errRate[j][i];
         }
         mse[i] /= sqrt(mse[i]/(float)inSeqDim);
-        printf("%.3f,", mse[i]);
+        // printf("%.3f,", mse[i]);
     }
-    printf("\n");
+    // printf("\n");
+    // for (int i = 0; i < inSeqDim; ++i)
+    // {
+    //     for (int j = 0; j < seqLength; ++j)
+    //     {
+    //         // printf("%f,", errRate[i][j]);
+    //         printf("%f,", realProb[i][j]);
+    //     }
+    //     printf("\n");
+    // }
 }
 
-vector<unsigned int> SOFTMAX::OutSeq()
+vector<vector<unsigned int>> SOFTMAX::OutSeq()
 {
     return outSeq;
 }
-
-unsigned int SOFTMAX::PPStage()
-{
-    return ppStage;
-}
-
-vector<float> SOFTMAX::InCC()
-{
-    return inCC;
-}
-
-vector<float> SOFTMAX::InProb()
-{
-    return inProb;
-}
-
-float SOFTMAX::TheoProb()
-{
-    return theoProb;
-}
-
-vector<float> SOFTMAX::RealProb()
-{
-    return realProb;
-}
-
-float SOFTMAX::FinalRealProb()
-{
-    return realProb[seqLength-1];
-}
-
-vector<float> SOFTMAX::ErrRate()
-{
-    return errRate;
-}
-
-float SOFTMAX::FinalErrRate()
-{
-    return errRate[seqLength-1];
-}
-
-unsigned int SOFTMAX::LowErrLen()
-{
-    return lowErrLen;
-}
-
-

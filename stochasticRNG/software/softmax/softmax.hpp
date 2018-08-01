@@ -29,7 +29,7 @@ class SOFTMAX
     public:
         SOFTMAX();
         ~SOFTMAX();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, vector<vector<unsigned int>>, unsigned int, string);
         void Calc();
-        vecrot<vector<unsigned int>> OutSeq();
+        vector<vector<unsigned int>> OutSeq();
 };
