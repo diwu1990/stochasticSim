@@ -4,6 +4,8 @@
 #include "sobolmulti.hpp"
 #include "lfsr.hpp"
 #include "lfsrmulti.hpp"
+#include "systemrand.hpp"
+#include "systemrandmulti.hpp"
 #include <cstdlib>
 #include <ctime>
 #include "sqrt.hpp"
@@ -13,25 +15,28 @@ int main()
     
     srand(time(NULL));
     unsigned int sobolNum = 3;
-    unsigned int sobolBitLen = 8;
+    unsigned int sobolBitLen = 12;
     string mode = "incremental";
     // string mode = "delayed";
     unsigned int totalIter = 1000;
     unsigned int seqLength = (unsigned int)pow(2,sobolBitLen);
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
+    vector<float> tenFoldBias(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
-    for (int index = 0; index < 10; ++index)
+    for (int index = 0; index < 5; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
         {
             tenFoldErr[i] = 0;
+            tenFoldBias[i] = 0;
             tenFoldNum[i] = 0;
             tenFoldLowErrLen[i] = 0;
         }
-        unsigned int sobolInitIdx = 1+index;
+        unsigned int sobolInitIdx = 5+index;
         unsigned int delay = 1;
+        // SystemRandMulti sobolinst;
         SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
@@ -90,7 +95,7 @@ int main()
             // }
 
             tenFoldErr[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.FinalErrRate() * sqrtInst.FinalErrRate();
-            // tenFoldErr[(unsigned int)floor(sqrtInst.TheoProb()*10)] += ((sqrtInst.FinalRealProb()-sqrt(prob0))/sqrt(prob0)) * ((sqrtInst.FinalRealProb()-sqrt(prob0))/sqrt(prob0));
+            tenFoldBias[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.FinalErrRate();
             tenFoldNum[(unsigned int)floor(sqrtInst.TheoProb()*10)] += 1;
             // printf("%u\n", sqrtInst.LowErrLen());
             tenFoldLowErrLen[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.LowErrLen();
@@ -98,17 +103,17 @@ int main()
         }
         for (int y = 0; y < foldNum; ++y)
         {
-            // printf("11111\n");
             tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
+            tenFoldBias[y] = tenFoldErr[y]/tenFoldNum[y];
             tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
         }
         
 
         printf("Ten Fold with Depth %u, initial sobolIdx %u, delay %u.\n", depth, sobolInitIdx, delay);
-        printf("Value range index, Freq, Final Error, LowErrLen:\n");
+        printf("Value range index, Freq, Final Error, Bias, LowErrLen:\n");
         for (int i = 0; i < foldNum; ++i)
         {
-            printf("%3d, %5u, %-.3f, %-3.3f\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldLowErrLen[i]);
+            printf("%5d, %5u, %.5f, %.5f, %.5f\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldBias[i], tenFoldLowErrLen[i]);
         }
         printf("\n");
     }

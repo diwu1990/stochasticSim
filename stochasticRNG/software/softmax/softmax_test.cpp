@@ -11,7 +11,7 @@
 int main()
 {
     srand(time(NULL));
-    unsigned int bitLength = 8;
+    unsigned int bitLength = 12;
     unsigned int SeqDim = 16;
     unsigned int RandNumDim = 5;
     unsigned int totalSeqNum = SeqDim+RandNumDim;
@@ -44,6 +44,11 @@ int main()
         unsigned int depth;
         // depth = (unsigned int)pow(2,3);
         depth = 2;
+
+        // [1.25430465][-1.06685638][0.000981966][0.000339819759][0.000149245345][-0.000163379416][-0.00037153][-0.00114523713][0]
+        // [3.98658204][-3.1342392][0.00213337643][0.000707507716][0.000307342445][-0.000319205][-0.000741768163][-0.00247943401][1]
+        // [7.52857876][-5.44600296][0.00426732376][0.00141658867][0.000625585904][-0.00051455549][-0.00121756934][-0.00415382581][2]
+
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
@@ -51,9 +56,30 @@ int main()
             {
                 bitLengthVec[l] = bitLength;
                 // probVec[l] = (float)((float)(rand()%(int)pow(2,bitLength))/(float)pow(2,bitLength));
-                probVec[l] = 0.2;
+                probVec[l] = 0;
             }
-            probVec[1] = 0.5;
+
+            // probVec[0] = 7.52857876/4+0.5;
+            // probVec[1] = -5.44600296/4+0.5;
+            // probVec[2] = 0.00426732376/4+0.5;
+            // probVec[3] = 0.00141658867/4+0.5;
+            // probVec[4] = 0.000625585904/4+0.5;
+            // probVec[5] = -0.00051455549/4+0.5;
+            // probVec[6] = -0.00121756934/4+0.5;
+            // probVec[7] = -0.00415382581/4+0.5;
+            // probVec[8] = 0/4+0.5;
+            // probVec[9] = 0/4+0.5;
+
+            probVec[0] = 1.25430465/4+0.5;
+            probVec[1] = -1.06685638/4+0.5;
+            probVec[2] = 0.000981966/4+0.5;
+            probVec[3] = 0.000339819759/4+0.5;
+            probVec[4] = 0.000149245345/4+0.5;
+            probVec[5] = -0.000163379416/4+0.5;
+            probVec[6] = -0.00037153/4+0.5;
+            probVec[7] = -0.00114523713/4+0.5;
+            probVec[8] = 0/4+0.5;
+            probVec[9] = 0/4+0.5;
 
             vector<vector<unsigned int>> inRandNum(SeqDim);
             for (int i = 0; i < SeqDim; ++i)

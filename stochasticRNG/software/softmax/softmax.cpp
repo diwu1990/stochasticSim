@@ -1,6 +1,7 @@
 #include "add.hpp"
 #include "apcadd.hpp"
 #include "exp.hpp"
+#include "expscaled.hpp"
 #include "div.hpp"
 #include "softmax.hpp"
 #include "seqprob.hpp"
@@ -75,7 +76,7 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned i
     for (int i = 0; i < inSeqDim; ++i)
     {
         theoProb[i] = exp(inProb[i]*16)/sum;
-        printf("softmax(%d): %f\n", i, theoProb[i]);
+        printf("softmax(%d): %f, %f\n", i, inProb[i], theoProb[i]);
     }
 
     // printf("cccc\n");
@@ -109,6 +110,10 @@ void SOFTMAX::Calc()
     inputCC.Init(inSeq,1,"inputCC");
     inputCC.Calc();
     inCC = inputCC.OutCC();
+    // for (int i = 0; i < inSeqDim*inSeqDim - inSeqDim; ++i)
+    // {
+    //     printf("%.3f\n", inCC[i]);
+    // }
     vector<float> oneCount(inSeqDim);
     for (int i = 0; i < inSeqDim; ++i)
     {
@@ -126,18 +131,29 @@ void SOFTMAX::Calc()
 
     for (int i = 0; i < inSeqDim; ++i)
     {
-        EXP expInst;
+        EXPSCALED expInst;
         expInst.Init(inSeq[i], expSel, bitLength, "expInst");
         expInst.Calc();
         expOut[i] = expInst.OutSeq();
         printf("exp(%d): %.3f,%.3f,%.3f\n", i, expInst.InProb(), expInst.TheoProb(), expInst.FinalRealProb());
     }
 
-    // sum for all exp output
-    // scale sum by 16
-    ADD sumInst;
-    sumInst.Init(expOut, randNum[3] , bitLength, "addInst");
-    sumInst.Calc();
+    // // sum for all exp output
+    // // scale sum by 16
+    // ADD sumInst;
+    // sumInst.Init(expOut, randNum[3] , bitLength, "addInst");
+    // sumInst.Calc();
+
+    // Or all the sums
+    vector<unsigned int> sumArray(seqLength);
+    for (int i = 0; i < seqLength; ++i)
+    {
+        sumArray[i] = 0;
+        for (int j = 0; j < inSeqDim; ++j)
+        {
+            sumArray[i] |= expOut[j][i];
+        }
+    }
 
     // SeqProb sumProbInst;
     // sumProbInst.Init(sumInst.OutSeq() , "sumProbInst");
@@ -150,13 +166,15 @@ void SOFTMAX::Calc()
     {
         divInSeq[i].resize(seqLength);
     }
-    divInSeq[1] = sumInst.OutSeq();
-    unsigned int depth = 2;
+    // divInSeq[1] = sumInst.OutSeq();
+    divInSeq[1] = sumArray;
+    unsigned int depth = 4;
     for (int i = 0; i < inSeqDim; ++i)
     {
         for (int j = 0; j < seqLength; ++j)
         {
-            divInSeq[0][j] = ((randNum[4][j] >> (bitLength - (unsigned int)log2(inSeqDim))) == 0) ? expOut[i][j] : 0;
+            // divInSeq[0][j] = ((randNum[4][j] >> (bitLength - (unsigned int)log2(inSeqDim))) == 0) ? expOut[i][j] : 0;
+            divInSeq[0][j] = expOut[i][j];
         }
         DIV divInst;
         divInst.Init(divInSeq, randNum[4], bitLength, depth, "divInst");

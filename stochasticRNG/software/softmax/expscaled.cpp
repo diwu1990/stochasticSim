@@ -113,7 +113,7 @@ void EXPSCALED::Report()
 void EXPSCALED::Calc()
 {
     AutoCorrelation inputAC;
-    inputAC.Init(inSeq,1,inProb,"inputAC"); 
+    inputAC.Init(inSeq,1,inProb,"inputAC");
     inputAC.Calc();
     inAC = inputAC.OutAC();
 
@@ -171,14 +171,7 @@ void EXPSCALED::Calc()
     }
     // mulIn2[0] = mulInst0.OutSeq();
     mulIn2[0] = mulInst1.OutSeq();
-    // SeqProb probMul0;
-    // probMul0.Init(mulInst0.OutSeq(),"probMul0");
-    // probMul0.Calc();
-    // printf("%.5f\n", probMul0.OutProb());
-    // SeqProb probMul1;
-    // probMul1.Init(mulInst1.OutSeq(),"probMul1");
-    // probMul1.Calc();
-    // printf("%.5f\n", probMul1.OutProb());
+    
     // for (int i = 0; i < seqLength; ++i)
     // {
     //     if (mulInst0.OutSeq()[i] != mulInst1.OutSeq()[i])
@@ -191,12 +184,19 @@ void EXPSCALED::Calc()
     mulInst2.Init(mulIn2, "mulInst2");
     mulInst2.Calc();
 
-    // SeqProb probMul2;
-    // probMul2.Init(mulInst2.OutSeq(),"probMul0");
-    // probMul2.Calc();
-    // printf("%.5f\n", probMul2.OutProb());
+    mulIn2[0] = d[0];
+    SeqProb probMul0;
+    probMul0.Init(mulInst0.OutSeq(),"probMul0");
+    probMul0.Calc();
+    SeqProb probMul1;
+    probMul1.Init(mulInst1.OutSeq(),"probMul1");
+    probMul1.Calc();
+    SeqProb probMul2;
+    probMul2.Init(mulInst2.OutSeq(),"probMul0");
+    probMul2.Calc();
+    printf("x  (%.5f): %.5f\nx^2(%.5f): %.5f\nx^3(%.5f): %.5f\nx^6(%.5f): %.5f\n", inProb, inProb, inProb*inProb, probMul0.OutProb(), inProb*inProb*inProb, probMul1.OutProb(), inProb*inProb*inProb*inProb*inProb*inProb, probMul2.OutProb());
 
-    outSeq = mulInst2.OutSeq();
+    outSeq = mulInst1.OutSeq();
 
     unsigned int accuracyLength = 128;
     for (int i = 0; i < seqLength; ++i)

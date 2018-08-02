@@ -197,11 +197,13 @@ void SQRT::Calc()
         {
             realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
         }
-        errRate[i] = (theoProb - realProb[i])/theoProb;
+        // errRate[i] = (theoProb - realProb[i])/theoProb;
+        errRate[i] = (theoProb - realProb[i]);
 
         // applying a JK FF
         // J is always 1.
         // K is outSeq[i].
+        // if (outSeq[(i+seqLength-1)%seqLength] == 1)
         if (outSeq[i] == 1)
         {
             sel = 1-sel;
