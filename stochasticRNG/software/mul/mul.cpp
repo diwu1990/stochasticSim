@@ -103,7 +103,7 @@ void MUL::Init(vector<vector<unsigned int>> param1, string param2)
         realProb[i] = 0;
         errRate[i] = 0;
     }
-    lowErrLen = seqLength;
+    lowErrLen = 0;
     // for (int i = 0; i < inDim; ++i)
     // {
     //     for (int j = 0; j < seqLength; ++j)

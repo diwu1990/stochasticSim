@@ -4,13 +4,14 @@
 #include "sobolmulti.hpp"
 #include "lfsr.hpp"
 #include "lfsrmulti.hpp"
+#include "systemrand.hpp"
+#include "systemrandmulti.hpp"
 #include <cstdlib>
 #include <ctime>
 #include "div.hpp"
 
 int main()
 {
-    
     srand(time(NULL));
     unsigned int sobolNum = 3;
     unsigned int sobolBitLen = 8;
@@ -20,19 +21,24 @@ int main()
     unsigned int seqLength = (unsigned int)pow(2,sobolBitLen);
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
+    vector<float> tenFoldBias(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
+    vector<float> tenFoldCorr(foldNum);
     for (int index = 0; index < 10; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
         {
             tenFoldErr[i] = 0;
+            tenFoldCorr[i] = 0;
+            tenFoldBias[i] = 0;
             tenFoldNum[i] = 0;
             tenFoldLowErrLen[i] = 0;
         }
         unsigned int sobolInitIdx = 1+index;
         unsigned int delay = 0;
-         SOBOLMulti sobolinst;
+        SystemRandMulti sobolinst;
+        // SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
@@ -42,8 +48,10 @@ int main()
         vector<float> probVec(2);
         vector<float> val(2);
         unsigned int depth;
+        unsigned int depthSync;
         // depth = (unsigned int)pow(2,3);
         depth = 2;
+        depthSync = 4;
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
@@ -90,29 +98,31 @@ int main()
             //     /* code */
             // }
             DIV divInst;
-            divInst.Init(num2bitMultiInst.OutSeq(),RandSeq,sobolBitLen,depth,"divInst");
+            divInst.Init(num2bitMultiInst.OutSeq(),RandSeq,sobolBitLen,depth,depthSync,"divInst");
             // divInst.Report();
             divInst.Calc();
 
             tenFoldErr[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.FinalErrRate() * divInst.FinalErrRate();
+            tenFoldBias[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.FinalErrRate();
             tenFoldNum[(unsigned int)floor(divInst.TheoProb()*10)] += 1;
-            // printf("%u\n", divInst.LowErrLen());
             tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.LowErrLen();
-            // printf("%u\n", tenFoldLowErrLen[(unsigned int)floor(divInst.TheoProb()*10)]);
+            tenFoldCorr[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.InCC();
         }
         for (int y = 0; y < foldNum; ++y)
         {
             // printf("11111\n");
             tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
+            tenFoldBias[y] = tenFoldBias[y]/tenFoldNum[y];
             tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
+            tenFoldCorr[y] = tenFoldCorr[y]/tenFoldNum[y];
         }
         
 
         printf("Ten Fold with Depth %u, initial sobolIdx %u, delay %u.\n", depth, sobolInitIdx, delay);
-        printf("Value range index, Freq, Final Error, LowErrLen:\n");
+        printf("Range, Freq, Correlation, Error Rate, Stat Bias, LowErrLen:\n");
         for (int i = 0; i < foldNum; ++i)
         {
-            printf("%3d, %5u, %-.3f, %-3.3f\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldLowErrLen[i]);
+            printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
         }
         printf("\n");
     }

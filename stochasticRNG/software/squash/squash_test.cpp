@@ -114,7 +114,7 @@ int main()
             // num2bitInst.SeqPrint();
 
             // printf("aaaaa\n");
-            SOFTMAX instance;
+            SQUASH instance;
             instance.Init(num2bitInst.OutSeq(),RandSeq,bitLength,"instance");
             // instance.Report();
             instance.Calc();

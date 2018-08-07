@@ -194,7 +194,7 @@ void EXPSCALED::Calc()
     SeqProb probMul2;
     probMul2.Init(mulInst2.OutSeq(),"probMul0");
     probMul2.Calc();
-    printf("x  (%.5f): %.5f\nx^2(%.5f): %.5f\nx^3(%.5f): %.5f\nx^6(%.5f): %.5f\n", inProb, inProb, inProb*inProb, probMul0.OutProb(), inProb*inProb*inProb, probMul1.OutProb(), inProb*inProb*inProb*inProb*inProb*inProb, probMul2.OutProb());
+    printf("\nx  (%.5f): %.5f\nx^2(%.5f): %.5f\nx^3(%.5f): %.5f\nx^6(%.5f): %.5f\n", inProb, inProb, inProb*inProb, probMul0.OutProb(), inProb*inProb*inProb, probMul1.OutProb(), inProb*inProb*inProb*inProb*inProb*inProb, probMul2.OutProb());
 
     outSeq = mulInst1.OutSeq();
 

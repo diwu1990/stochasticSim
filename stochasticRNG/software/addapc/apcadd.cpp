@@ -108,7 +108,7 @@ void APCADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> para
         realProb[i] = 0;
         errRate[i] = 0;
     }
-    lowErrLen = seqLength;
+    lowErrLen = 0;
     ppStage = 0;
 }
 

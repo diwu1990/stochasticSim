@@ -3,16 +3,16 @@
 #include "exp.hpp"
 #include "expscaled.hpp"
 #include "div.hpp"
-#include "softmax.hpp"
+#include "squash.hpp"
 #include "seqprob.hpp"
 #include "seqprobmulti.hpp"
 #include "crosscorrelation.hpp"
 
-SOFTMAX::SOFTMAX(){}
+SQUASH::SQUASH(){}
 
-SOFTMAX::~SOFTMAX(){}
+SQUASH::~SQUASH(){}
 
-void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned int>> param2, unsigned int param3, string param4)
+void SQUASH::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned int>> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -104,7 +104,7 @@ void SOFTMAX::Init(vector<vector<unsigned int>> param1, vector<vector<unsigned i
     }
 }
 
-void SOFTMAX::Calc()
+void SQUASH::Calc()
 {
     CrossCorrelation inputCC;
     inputCC.Init(inSeq,1,"inputCC");
@@ -232,7 +232,7 @@ void SOFTMAX::Calc()
     // }
 }
 
-vector<vector<unsigned int>> SOFTMAX::OutSeq()
+vector<vector<unsigned int>> SQUASH::OutSeq()
 {
     return outSeq;
 }
