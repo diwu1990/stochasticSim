@@ -14,7 +14,6 @@
 
 int main()
 {
-    
     srand(time(NULL));
     unsigned int sobolNum = 2;
     unsigned int sobolBitLen = 8;
@@ -34,7 +33,7 @@ int main()
         SystemRandMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
-        // sobolinst.SeqPrint();
+        sobolinst.SeqPrint();
 
         vector<unsigned int> bitLengthVec(2);
         vector<float> probVec(2);

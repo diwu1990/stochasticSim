@@ -1,4 +1,3 @@
-#include "systemrand.hpp"
 #include "systemrandmulti.hpp"
 
 void SystemRandMulti::Init(unsigned int param1, unsigned int param2, unsigned int param3, unsigned int param4, string param5, string param6)
@@ -104,12 +103,13 @@ void SystemRandMulti::SeqPrint()
 
 void SystemRandMulti::SeqGen()
 {
+    srand(time(NULL));
     for (int i = 0; i < dimNum; ++i)
     {
-        SystemRand SystemRandInst;
-        SystemRandInst.Init(bitLength,dimIndex,0,"SystemRandInst");
-        SystemRandInst.SeqGen();
-        outSeq[i] = SystemRandInst.OutSeq();
+        for (int j = 0; j < outputLen; ++j)
+        {
+            outSeq[i][j] = (unsigned int)(rand()%(unsigned int)pow(2,bitLength));
+        }
     }
 }
 
