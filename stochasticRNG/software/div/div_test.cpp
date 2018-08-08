@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <ctime>
 #include "div.hpp"
+#include "synchronizer.hpp"
+#include "desynchronizer.hpp"
 
 int main()
 {
@@ -37,8 +39,8 @@ int main()
         }
         unsigned int sobolInitIdx = 1+index;
         unsigned int delay = 0;
-        SystemRandMulti sobolinst;
-        // SOBOLMulti sobolinst;
+        // SystemRandMulti sobolinst;
+        SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
@@ -51,7 +53,7 @@ int main()
         unsigned int depthSync;
         // depth = (unsigned int)pow(2,3);
         depth = 2;
-        depthSync = 4;
+        depthSync = 3;
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
@@ -89,16 +91,14 @@ int main()
             RandNum2BitMulti num2bitMultiInst;
             num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
             num2bitMultiInst.SeqGen();
-            // num2bitMultiInst.Report();
-            // num2bitMultiInst.SeqPrint();
+            
+            // DeSynchronizer syncInst;
+            Synchronizer syncInst;
+            syncInst.Init(num2bitMultiInst.OutSeq(),1,"syncInst");
+            syncInst.SeqGen();
 
-            // for (int ooo = 0; ooo < sobolinst.SeqLen(); ++ooo)
-            // {
-            //     printf("%d: %u, %u", i, sobolinst.OutSeq()[2][ooo], sobolinst.OutSeq()[2][ooo]);
-            //     /* code */
-            // }
             DIV divInst;
-            divInst.Init(num2bitMultiInst.OutSeq(),RandSeq,sobolBitLen,depth,depthSync,"divInst");
+            divInst.Init(syncInst.OutSeq(),RandSeq,sobolBitLen,depth,depthSync,"divInst");
             // divInst.Report();
             divInst.Calc();
 

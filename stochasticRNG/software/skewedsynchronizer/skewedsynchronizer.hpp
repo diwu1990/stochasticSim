@@ -19,7 +19,7 @@ class SkewedSynchronizer
     vector<float> outProb;
     float inCC;
     float outCC;
-    float errRate;
+    vector<float> errRate;
     unsigned int ppStage;
     string m_name;
 
@@ -37,7 +37,7 @@ public:
     vector<vector<unsigned int>> OutSeq();
     float InCC();
     float OutCC();
-    float ErrRate();
+    vector<float> ErrRate();
     vector<float> InProb();
     vector<float> OutProb();
     unsigned int PPStage();

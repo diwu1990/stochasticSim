@@ -88,6 +88,7 @@ void SkewedSynchronizer::Init(vector<vector<unsigned int>> param1, unsigned int 
         }
     }
     ppStage = 1;
+    errRate.resize(inDim);
 }
 
 void SkewedSynchronizer::Report()
@@ -96,7 +97,7 @@ void SkewedSynchronizer::Report()
     std::cout << "Instance name:          " << m_name << std::endl;
     printf("Input Dimension:        %-5u\n", inDim);
     printf("Input Length:           %-5u\n", inLen);
-    printf("BUffer Depth:           %-5u\n", depth);
+    printf("Buffer Depth:           %-5u\n", depth);
     printf("Pipeline Stage:         %-5u\n", ppStage);
 }
 
@@ -154,7 +155,8 @@ void SkewedSynchronizer::SeqGen()
     outCCInst.Calc();
     outCC = outCCInst.OutCC()[0];
 
-    errRate = (outProb[0] - inProb[0]) / inProb[0];
+    errRate[0] = (outProb[0] - inProb[0]);
+    errRate[1] = (outProb[1] - inProb[1]);
 }
 
 vector<vector<unsigned int>> SkewedSynchronizer::OutSeq()
@@ -192,7 +194,7 @@ unsigned int SkewedSynchronizer::SeqLen()
     return inLen;
 }
 
-float SkewedSynchronizer::ErrRate()
+vector<float> SkewedSynchronizer::ErrRate()
 {
     return errRate;
 }
@@ -208,7 +210,8 @@ void SkewedSynchronizer::ErrPrint()
 {
     printf("Calling ErrPrint for SkewedSynchronizer instance: ");
     std::cout << m_name << std::endl;
-    printf("Error rate of input sequence 0: %-.3f\n", errRate);
+    printf("Error rate of input sequence 0: %-.3f\n", errRate[0]);
+    printf("Error rate of input sequence 1: %-.3f\n", errRate[1]);
 }
 
 void SkewedSynchronizer::ProbPrint()
