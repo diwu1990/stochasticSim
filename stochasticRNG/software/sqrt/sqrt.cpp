@@ -1,6 +1,7 @@
 #include "sqrt.hpp"
 #include "seqprob.hpp"
 #include "autocorrelation.hpp"
+#include "crosscorrelation.hpp"
 
 SQRT::SQRT(){}
 SQRT::~SQRT(){}
@@ -154,103 +155,21 @@ void SQRT::Calc()
 
 
 
-    // // *****************************************************************************
-    // // bit inserting
-    // // *****************************************************************************
-    // vector<unsigned int> JKFF(seqLength);
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     JKFF[i] = 1;
-    // }
-    // unsigned int oneCount = 0;
-    // unsigned int sel = 1;
-
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     // printf("%u,", sel);
-    //     if (sel == 1)
-    //     {
-    //         outSeq[i] = inSeq[i];
-    //     }
-    //     else
-    //     {
-    //         outSeq[i] = 1;
-    //     }
-    //     oneCount += outSeq[i];
-    //     if (i < accuracyLength)
-    //     {
-    //         realProb[i] = (float)oneCount/(float)(i+1);
-    //     }
-    //     else
-    //     {
-    //         realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
-    //     }
-    //     // errRate[i] = (theoProb - realProb[i])/theoProb;
-    //     errRate[i] = (theoProb - realProb[i]);
-
-    //     // applying a JK FF
-    //     // J is always 1.
-    //     // K is outSeq[i].
-    //     // if (outSeq[(i+seqLength-1)%seqLength] == 1)
-    //     if (outSeq[i] == 1)
-    //     {
-    //         sel = 1-sel;
-    //         JKFF[i] = sel;
-    //     }
-    //     else
-    //     {
-    //         sel = 1;
-    //         JKFF[i] = sel;
-    //     }
-    // }
-
-    // SeqProb jkProb;
-    // jkProb.Init(JKFF, "jkProb");
-    // jkProb.Calc();
-    // AutoCorrelation jkACin;
-    // jkACin.Init(outSeq, 1, theoProb, "jkACin");
-    // jkACin.Calc();
-    // AutoCorrelation jkACout;
-    // jkACout.Init(JKFF, 1, 1/(1+theoProb), "jkACout");
-    // jkACout.Calc();
-    
-
-    // printf("jkACin: %f\n", jkACin.OutAC());
-    // printf("jkACout: %f\n", jkACout.OutAC());
-    // printf("InProb: %.5f\n", inProb);
-    // printf("Theo OutProb: %.5f\n", theoProb);
-    // printf("Real OutProb: %.5f\n", realProb[seqLength-1]);
-    // printf("Theo Sel Prob: %.5f\n", 1/(1+sqrt(inProb)));
-    // printf("Real Sel Prob: %.5f\n", jkProb.OutProb());
-
-
-
     // *****************************************************************************
-    // bit inserting with traceReg
+    // bit inserting
     // *****************************************************************************
-    unsigned int depth = 4;
-    unsigned int depth2 = 4;
-    unsigned int upperBound = (unsigned int)pow(2,depth)-1;
-    unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    vector<unsigned int> traceReg(depth);
-    vector<unsigned int> traceReg2(depth2);
-    for (int i = 0; i < depth; ++i)
-    {
-        traceReg[i] = i%2;
-        traceReg2[i] = i%2;
-    }
     vector<unsigned int> JKFF(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
         JKFF[i] = 1;
     }
     unsigned int oneCount = 0;
-    vector<unsigned int> sel(seqLength);
+    unsigned int sel = 1;
 
     for (int i = 0; i < seqLength; ++i)
     {
-        sel[i] = traceReg[randNum[i] >> (bitLength - (unsigned int)log2(depth))];
-        if (sel[i] == 1)
+        // printf("%u,", sel);
+        if (sel == 1)
         {
             outSeq[i] = inSeq[i];
         }
@@ -276,19 +195,14 @@ void SQRT::Calc()
         // if (outSeq[(i+seqLength-1)%seqLength] == 1)
         if (outSeq[i] == 1)
         {
-            sel[i] = 1-sel[i];
-            JKFF[i] = sel[i];
+            sel = 1-sel;
+            JKFF[i] = sel;
         }
         else
         {
-            sel[i] = 1;
-            JKFF[i] = sel[i];
+            sel = 1;
+            JKFF[i] = sel;
         }
-        for (int j = 0; j < depth-1; ++j)
-        {
-            traceReg[j] = traceReg[j+1];
-        }
-        traceReg[depth-1] = JKFF[i];
     }
 
     SeqProb jkProb;
@@ -300,15 +214,109 @@ void SQRT::Calc()
     AutoCorrelation jkACout;
     jkACout.Init(JKFF, 1, 1/(1+theoProb), "jkACout");
     jkACout.Calc();
-    
+    vector<vector<unsigned int>> selinSeq(2);
+    selinSeq[0] = inSeq;
+    selinSeq[1] = JKFF;
+    CrossCorrelation selCC;
+    selCC.Init(selinSeq, 1, "selCC");
+    selCC.Calc();
 
-    printf("%f\n", jkACin.OutAC());
-    printf("%f\n", jkACout.OutAC());
+
+    printf("jkACin: %f\n", jkACin.OutAC());
+    printf("jkACout: %f\n", jkACout.OutAC());
+    printf("selinCC: %f\n", selCC.OutCC());
     printf("InProb: %.5f\n", inProb);
     printf("Theo OutProb: %.5f\n", theoProb);
     printf("Real OutProb: %.5f\n", realProb[seqLength-1]);
     printf("Theo Sel Prob: %.5f\n", 1/(1+sqrt(inProb)));
     printf("Real Sel Prob: %.5f\n", jkProb.OutProb());
+
+
+
+    // // *****************************************************************************
+    // // bit inserting with traceReg
+    // // *****************************************************************************
+    // unsigned int depth = 4;
+    // unsigned int depth2 = 4;
+    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
+    // unsigned int halfBound = (unsigned int)pow(2,depth-1);
+    // vector<unsigned int> traceReg(depth);
+    // vector<unsigned int> traceReg2(depth2);
+    // for (int i = 0; i < depth; ++i)
+    // {
+    //     traceReg[i] = i%2;
+    //     traceReg2[i] = i%2;
+    // }
+    // vector<unsigned int> JKFF(seqLength);
+    // for (int i = 0; i < seqLength; ++i)
+    // {
+    //     JKFF[i] = 1;
+    // }
+    // unsigned int oneCount = 0;
+    // vector<unsigned int> sel(seqLength);
+
+    // for (int i = 0; i < seqLength; ++i)
+    // {
+    //     sel[i] = traceReg[randNum[i] >> (bitLength - (unsigned int)log2(depth))];
+    //     if (sel[i] == 1)
+    //     {
+    //         outSeq[i] = inSeq[i];
+    //     }
+    //     else
+    //     {
+    //         outSeq[i] = 1;
+    //     }
+    //     oneCount += outSeq[i];
+    //     if (i < accuracyLength)
+    //     {
+    //         realProb[i] = (float)oneCount/(float)(i+1);
+    //     }
+    //     else
+    //     {
+    //         realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
+    //     }
+    //     // errRate[i] = (theoProb - realProb[i])/theoProb;
+    //     errRate[i] = (theoProb - realProb[i]);
+
+    //     // applying a JK FF
+    //     // J is always 1.
+    //     // K is outSeq[i].
+    //     // if (outSeq[(i+seqLength-1)%seqLength] == 1)
+    //     if (outSeq[i] == 1)
+    //     {
+    //         sel[i] = 1-sel[i];
+    //         JKFF[i] = sel[i];
+    //     }
+    //     else
+    //     {
+    //         sel[i] = 1;
+    //         JKFF[i] = sel[i];
+    //     }
+    //     for (int j = 0; j < depth-1; ++j)
+    //     {
+    //         traceReg[j] = traceReg[j+1];
+    //     }
+    //     traceReg[depth-1] = JKFF[i];
+    // }
+
+    // SeqProb jkProb;
+    // jkProb.Init(JKFF, "jkProb");
+    // jkProb.Calc();
+    // AutoCorrelation jkACin;
+    // jkACin.Init(outSeq, 1, theoProb, "jkACin");
+    // jkACin.Calc();
+    // AutoCorrelation jkACout;
+    // jkACout.Init(JKFF, 1, 1/(1+theoProb), "jkACout");
+    // jkACout.Calc();
+    
+
+    // printf("%f\n", jkACin.OutAC());
+    // printf("%f\n", jkACout.OutAC());
+    // printf("InProb: %.5f\n", inProb);
+    // printf("Theo OutProb: %.5f\n", theoProb);
+    // printf("Real OutProb: %.5f\n", realProb[seqLength-1]);
+    // printf("Theo Sel Prob: %.5f\n", 1/(1+sqrt(inProb)));
+    // printf("Real Sel Prob: %.5f\n", jkProb.OutProb());
 
 
     // *****************************************************************************

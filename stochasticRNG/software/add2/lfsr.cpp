@@ -304,7 +304,7 @@ void LFSR::SeqGen()
     vector<unsigned int> delayed(outputLen);
     for (int i = 0; i < outputLen; ++i)
     {
-        delayed[i] = outSeq[(i+delay) % outputLen];
+        delayed[i] = outSeq[(i+outputLen-delay) % outputLen];
     }
     for (int i = 0; i < outputLen; ++i)
     {

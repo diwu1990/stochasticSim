@@ -15,7 +15,7 @@ int main()
     
     srand(time(NULL));
     unsigned int sobolNum = 2;
-    unsigned int sobolBitLen = 8;
+    unsigned int sobolBitLen = 12;
     string mode = "incremental";
     // string mode = "delayed";
     unsigned int totalIter = 1;

@@ -100,10 +100,6 @@ void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
         theoProb += inProb[i];
     }
     theoProb = theoProb/(float)inDim; // '+' for summation, '*' for multiplication?
-    if (theoProb == 0)
-    {
-        theoProb = 0.0001;
-    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -150,7 +146,7 @@ void ADD::Calc()
         {
             realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
         }
-        errRate[i] = (theoProb - realProb[i])/theoProb;
+        errRate[i] = (theoProb - realProb[i]);
     }
 
     // find the convergence point
