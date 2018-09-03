@@ -1,18 +1,19 @@
-#include "add.hpp"
+#include "muxadd.hpp"
+#include "seqprob.hpp"
 #include "seqprobmulti.hpp"
 #include "crosscorrelation.hpp"
 
-ADD::ADD(){}
+MUXADD::MUXADD(){}
 
-ADD::~ADD(){}
+MUXADD::~MUXADD(){}
 
-void ADD::Help()
+void MUXADD::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
-    printf("Calling ADD Help. Following are instructions to ADD Instance Usage:\n");
+    printf("Calling MUXADD Help. Following are instructions to MUXADD Instance Usage:\n");
     printf("1. inst.Init() method:\n");
-    printf("Configure the ADD inst.\n");
+    printf("Configure the MUXADD inst.\n");
     printf("Initial Parameters: Input Vectors, Random NUmbers, Bit Length of Input Random Number, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
@@ -60,7 +61,7 @@ void ADD::Help()
     printf("**********************************************************\n");
 }
 
-void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void MUXADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -79,6 +80,7 @@ void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
         printf("Error: Input Dimensions of Sequences and Probabilities mismatch.\n");
     }
 
+
     seqLength = (unsigned int)inSeq[0].size();
     for (int i = 0; i < inDim; ++i)
     {
@@ -88,12 +90,32 @@ void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
             break;
         }
     }
+
+    for (int i = 0; i < seqLength; ++i)
+    {
+        if (randNum[i] > inDim-1)
+        {
+            printf("Error: Iput Random Number is larger than the expected range(%d).\n",inDim);
+            break;
+        }
+    }
+
     theoProb = inProb[0];
     for (int i = 1; i < inDim; ++i)
     {
         theoProb += inProb[i];
     }
-    theoProb = theoProb/(float)inDim; // '+' for summation, '*' for multiplication?
+    if (inDim == 2)
+    {
+        SeqProb selProbCalc;
+        selProbCalc.Init(randNum,"selProbCalc");
+        selProbCalc.Calc();
+        theoProb = inProb[0]*(1 - selProbCalc.OutProb()) + inProb[1]*selProbCalc.OutProb();
+    }
+    else
+    {
+        theoProb = theoProb/(float)inDim; // '+' for summation, '*' for multiplication?
+    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -107,9 +129,9 @@ void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
     ppStage=0;
 }
 
-void ADD::Report()
+void MUXADD::Report()
 {
-    printf("Current ADD:\n");
+    printf("Current MUXADD:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
     printf("Number of Seqsences:    %u\n", inDim);
     printf("Seqsence Length:        %u\n", seqLength);
@@ -117,7 +139,7 @@ void ADD::Report()
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
-void ADD::Calc()
+void MUXADD::Calc()
 {
     CrossCorrelation inputCC;
     inputCC.Init(inSeq,1,"inputCC");
@@ -154,14 +176,14 @@ void ADD::Calc()
     }
 }
 
-vector<unsigned int> ADD::OutSeq()
+vector<unsigned int> MUXADD::OutSeq()
 {
     return outSeq;
 }
 
-void ADD::OutPrint()
+void MUXADD::OutPrint()
 {
-    printf("Calling OutPrint for ADD instance: ");
+    printf("Calling OutPrint for MUXADD instance: ");
     std::cout << m_name << std::endl;
     printf("Theoretical Probability: (%.3f + %.3f)/%d = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], inDim, theoProb, inCC);
     printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
@@ -179,52 +201,52 @@ void ADD::OutPrint()
     // printf("\n");
 }
 
-vector<float>  ADD::InCC()
+vector<float>  MUXADD::InCC()
 {
     return inCC;
 }
 
-vector<float> ADD::InProb()
+vector<float> MUXADD::InProb()
 {
     return inProb;
 }
 
-float ADD::TheoProb()
+float MUXADD::TheoProb()
 {
     return theoProb;
 }
 
-vector<float> ADD::RealProb()
+vector<float> MUXADD::RealProb()
 {
     return realProb;
 }
 
-float ADD::FinalRealProb()
+float MUXADD::FinalRealProb()
 {
     return realProb[seqLength-1];
 }
 
-vector<float> ADD::ErrRate()
+vector<float> MUXADD::ErrRate()
 {
     return errRate;
 }
 
-float ADD::FinalErrRate()
+float MUXADD::FinalErrRate()
 {
     return errRate[seqLength-1];
 }
 
-unsigned int ADD::SeqLen()
+unsigned int MUXADD::SeqLen()
 {
     return seqLength;
 }
 
-unsigned int ADD::LowErrLen()
+unsigned int MUXADD::LowErrLen()
 {
     return lowErrLen;
 }
 
-unsigned int ADD::PPStage()
+unsigned int MUXADD::PPStage()
 {
     return ppStage;
 }

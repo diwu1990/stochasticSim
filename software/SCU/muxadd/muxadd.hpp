@@ -8,7 +8,7 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class ADD
+class MUXADD
 {
     vector<vector<unsigned int>> inSeq;
     vector<unsigned int> randNum;
@@ -27,8 +27,8 @@ class ADD
     unsigned int ppStage;
 
     public:
-        ADD();
-        ~ADD();
+        MUXADD();
+        ~MUXADD();
         void Help();
         void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, string);
         void Report();
