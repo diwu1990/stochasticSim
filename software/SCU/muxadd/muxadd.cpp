@@ -73,12 +73,6 @@ void ADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() >= 2)
     {
         inDim = (unsigned int)inSeq.size();
-        float logInDimfloat = log2(inDim);
-        if (ceil(logInDimfloat) != floor(logInDimfloat))
-        {
-            printf("Error: Input Dimension is not power of 2.\n");
-        }
-        logInDim = (unsigned int)logInDimfloat;
     }
     else
     {
@@ -136,7 +130,7 @@ void ADD::Calc()
 
     for (int i = 0; i < seqLength; ++i)
     {
-        outSeq[i] = inSeq[randNum[i] >> (bitLength - logInDim)][i];
+        outSeq[i] = inSeq[randNum[i]][i];
         oneCount += outSeq[i];
         if (i < accuracyLength)
         {

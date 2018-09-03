@@ -14,7 +14,6 @@ class ADD
     vector<unsigned int> randNum;
     vector<float> inProb;
     unsigned int inDim;
-    unsigned int logInDim;
 
     unsigned int bitLength;
     unsigned int seqLength;
