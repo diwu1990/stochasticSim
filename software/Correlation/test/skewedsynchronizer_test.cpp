@@ -19,7 +19,7 @@ int main()
     unsigned int sobolBitLen = 6;
     string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 1;
+    unsigned int totalIter = 10000;
     unsigned int totalDepth = 8;
     vector<float> inCC(totalDepth);
     vector<float> outCC(totalDepth);

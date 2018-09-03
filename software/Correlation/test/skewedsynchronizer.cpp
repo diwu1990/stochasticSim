@@ -106,7 +106,7 @@ void SkewedSynchronizer::SeqGen()
     /*keep no reg for sequence 1*/
     /*it has high accuracy, but low correlation ()*/
     /*correlation is can be less than 95%*/
-    
+    /*
     unsigned int upperbound = (unsigned int)pow(2,depth)-1;
 
     unsigned int saturateCnt = 0;
@@ -155,13 +155,14 @@ void SkewedSynchronizer::SeqGen()
             }
         }
     }
+    */
     
 
     /*keep one reg for sequence 1*/
     /*it has low accuracy, but high correlation*/
     /*error rate is always larger than 0.1% at length 2^8*/
     /*correlation is always larger than 99%*/
-    /*
+    
     unsigned int upperbound = (unsigned int)pow(2,depth)-1;
 
     unsigned int saturateCnt = 0;
@@ -223,7 +224,6 @@ void SkewedSynchronizer::SeqGen()
             }
         }
     }
-    */
 
     CrossCorrelation inCCInst;
     inCCInst.Init(inSeq, 1, "inCCInst");
