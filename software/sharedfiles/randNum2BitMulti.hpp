@@ -1,1 +1,1 @@
-../RNG/randNum2BitMulti/randNum2BitMulti.hpp
+../rng/randNum2BitMulti/randNum2BitMulti.hpp

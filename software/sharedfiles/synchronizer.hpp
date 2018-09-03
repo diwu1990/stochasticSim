@@ -1,1 +1,1 @@
-../Correlation/synchronizer/synchronizer.hpp
+../correlation/synchronizer/synchronizer.hpp

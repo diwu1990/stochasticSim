@@ -1,1 +1,1 @@
-../RNG/seqprob/seqprob.cpp
+../rng/seqprob/seqprob.cpp

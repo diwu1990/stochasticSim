@@ -1,1 +1,1 @@
-../RNG/lfsrmulti/lfsrmulti.hpp
+../rng/lfsrmulti/lfsrmulti.hpp

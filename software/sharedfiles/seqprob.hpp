@@ -1,1 +1,1 @@
-../RNG/seqprob/seqprob.hpp
+../rng/seqprob/seqprob.hpp

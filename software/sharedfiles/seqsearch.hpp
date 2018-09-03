@@ -1,1 +1,1 @@
-../RNG/seqsearch/seqsearch.hpp
+../rng/seqsearch/seqsearch.hpp

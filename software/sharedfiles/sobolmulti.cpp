@@ -1,1 +1,1 @@
-../RNG/sobolmulti/sobolmulti.cpp
+../rng/sobolmulti/sobolmulti.cpp

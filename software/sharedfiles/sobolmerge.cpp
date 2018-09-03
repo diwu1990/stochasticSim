@@ -1,1 +1,1 @@
-../RNG/sobolmerge/sobolmerge.cpp
+../rng/sobolmerge/sobolmerge.cpp

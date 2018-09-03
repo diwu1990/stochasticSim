@@ -1,1 +1,1 @@
-../RNG/sobolmerge/sobolmerge.hpp
+../rng/sobolmerge/sobolmerge.hpp

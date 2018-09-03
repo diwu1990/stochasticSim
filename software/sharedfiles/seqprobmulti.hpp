@@ -1,1 +1,1 @@
-../RNG/seqprobmulti/seqprobmulti.hpp
+../rng/seqprobmulti/seqprobmulti.hpp

@@ -1,1 +1,1 @@
-../RNG/randNum2Bit/randNum2Bit.cpp
+../rng/randNum2Bit/randNum2Bit.cpp

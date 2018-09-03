@@ -1,1 +1,1 @@
-../RNG/sobol/sobol.hpp
+../rng/sobol/sobol.hpp

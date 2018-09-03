@@ -1,1 +1,1 @@
-../RNG/sobol/sobol.cpp
+../rng/sobol/sobol.cpp

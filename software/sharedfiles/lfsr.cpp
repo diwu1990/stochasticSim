@@ -1,1 +1,1 @@
-../RNG/lfsr/lfsr.cpp
+../rng/lfsr/lfsr.cpp
