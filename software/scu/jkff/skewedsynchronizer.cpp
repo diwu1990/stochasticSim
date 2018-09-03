@@ -59,10 +59,10 @@ void SkewedSynchronizer::Init(vector<vector<unsigned int>> param1, unsigned int 
     SeqProbMulti inProbInst;
     inProbInst.Init(inSeq,"inProbInst");
     inProbInst.Calc();
-    if (inProbInst.OutProb()[0] > inProbInst.OutProb()[1])
-    {
-        printf("Error: Probability of input sequence 0 (%-.3f) is larger than that of input sequence 1 (%-.3f).\n", inProbInst.OutProb()[0], inProbInst.OutProb()[1]);
-    }
+    // if (inProbInst.OutProb()[0] > inProbInst.OutProb()[1])
+    // {
+    //     // printf("Error: Probability of input sequence 0 (%-.3f) is larger than that of input sequence 1 (%-.3f).\n", inProbInst.OutProb()[0], inProbInst.OutProb()[1]);
+    // }
     inLen = (unsigned int)inSeq[0].size();
     if (inLen != (unsigned int)inSeq[1].size())
     {
@@ -103,6 +103,10 @@ void SkewedSynchronizer::Report()
 
 void SkewedSynchronizer::SeqGen()
 {
+    /*keep no reg for sequence 1*/
+    /*it has high accuracy, but low correlation ()*/
+    /*correlation is can be less than 95%*/
+
     unsigned int upperbound = (unsigned int)pow(2,depth)-1;
 
     unsigned int saturateCnt = 0;
@@ -127,17 +131,98 @@ void SkewedSynchronizer::SeqGen()
             }
             outSeq[1][i] = 1;
         }
-        else if (inSeq[1][i] == 0)
+        else if (inSeq[0][i] == 0 && inSeq[1][i] == 0)
         {
             outSeq[0][i] = 0;
             outSeq[1][i] = 0;
-            saturateCnt = saturateCnt + inSeq[0][i];
-            if (saturateCnt > upperbound)
+        }
+        else if (inSeq[0][i] == 1 && inSeq[1][i] == 0)
+        {
+            if (saturateCnt == upperbound)
             {
-                saturateCnt = upperbound;
+                outSeq[0][i] = 1;
+                outSeq[1][i] = 0;
+            }
+            else
+            {
+                outSeq[0][i] = 0;
+                outSeq[1][i] = 0;
+                saturateCnt = saturateCnt + 1;
+                if (saturateCnt > upperbound)
+                {
+                    saturateCnt = upperbound;
+                }
             }
         }
     }
+
+
+    /*keep one reg for sequence 1*/
+    /*it has low accuracy, but high correlation*/
+    /*error rate is always larger than 0.1% at length 2^8*/
+    /*correlation is always larger than 99%*/
+    
+    // unsigned int upperbound = (unsigned int)pow(2,depth)-1;
+
+    // unsigned int saturateCnt = 0;
+    // unsigned int saturateCnt2 = 0;
+    // for (int i = 0; i < inLen; ++i)
+    // {
+    //     if (inSeq[0][i] == 0 && inSeq[1][i] == 0)
+    //     {
+    //         outSeq[0][i] = 0;
+    //         outSeq[1][i] = 0;
+    //     }
+    //     else if (inSeq[0][i] == 1 && inSeq[1][i] == 1)
+    //     {
+    //         outSeq[0][i] = 1;
+    //         outSeq[1][i] = 1;
+    //     }
+    //     else if (inSeq[0][i] == 0 && inSeq[1][i] == 1)
+    //     {
+    //         if (saturateCnt > 0)
+    //         {
+    //             outSeq[0][i] = 1;
+    //             outSeq[1][i] = 1;
+    //             saturateCnt--;
+    //         }
+    //         else
+    //         {
+    //             outSeq[0][i] = 0;
+    //             if (saturateCnt2 == 1)
+    //             {
+    //                 outSeq[1][i] = 1;
+    //             }
+    //             else
+    //             {
+    //                 outSeq[1][i] = 0;
+    //                 saturateCnt2++;
+    //             }
+    //         }
+    //     }
+    //     else if (inSeq[0][i] == 1 && inSeq[1][i] == 0)
+    //     {
+    //         if (saturateCnt2 > 0)
+    //         {
+    //             outSeq[0][i] = 1;
+    //             outSeq[1][i] = 1;
+    //             saturateCnt2--;
+    //         }
+    //         else
+    //         {
+    //             outSeq[1][i] = 0;
+    //             if (saturateCnt == upperbound)
+    //             {
+    //                 outSeq[0][i] = 1;
+    //             }
+    //             else
+    //             {
+    //                 outSeq[0][i] = 0;
+    //                 saturateCnt++;
+    //             }
+    //         }
+    //     }
+    // }
 
     CrossCorrelation inCCInst;
     inCCInst.Init(inSeq, 1, "inCCInst");

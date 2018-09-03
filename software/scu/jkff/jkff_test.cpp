@@ -11,6 +11,7 @@
 #include "jkff.hpp"
 #include "synchronizer.hpp"
 #include "desynchronizer.hpp"
+#include "autocorrelation.hpp"
 
 int main()
 {
@@ -19,7 +20,7 @@ int main()
     unsigned int sobolBitLen = 8;
     string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 1;
+    unsigned int totalIter = 10000;
     unsigned int seqLength = (unsigned int)pow(2,sobolBitLen);
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
@@ -57,6 +58,7 @@ int main()
             // val[1] = max(prob0,prob1);
             val[0] = prob0;
             val[1] = prob1;
+            val[0] = 1;
             for (int l = 0; l < 2; ++l)
             {
                 bitLengthVec[l] = sobolBitLen;
@@ -81,26 +83,35 @@ int main()
             num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
             num2bitMultiInst.SeqGen();
             
-            DeSynchronizer syncInst;
-            // Synchronizer syncInst;
+            // DeSynchronizer syncInst;
+            Synchronizer syncInst;
             syncInst.Init(num2bitMultiInst.OutSeq(),1,"syncInst");
             syncInst.SeqGen();
 
+            AutoCorrelation autoPortKInst;
+            autoPortKInst.Init(num2bitMultiInst.OutSeq()[1], 1, val[1], "autoPortKInst");
+            autoPortKInst.Calc();
+
             JKFF computingInst;
-            // computingInst.Init(num2bitMultiInst.OutSeq(),"computingInst");
-            computingInst.Init(syncInst.OutSeq(),"computingInst");
+            computingInst.Init(num2bitMultiInst.OutSeq(),"computingInst");
+            // computingInst.Init(syncInst.OutSeq(),"computingInst");
             computingInst.Calc();
-            for (int aaa = 0; aaa < seqLength; ++aaa)
-            {
-                printf("%.3f,", computingInst.ErrRate()[aaa]);
-            }
-            printf("\n");
+            // for (int aaa = 0; aaa < seqLength; ++aaa)
+            // {
+            //     printf("%.3f,", computingInst.ErrRate()[aaa]);
+            // }
+            // printf("\n");
 
             tenFoldErr[(unsigned int)floor(computingInst.TheoProb()*10)] += computingInst.FinalErrRate() * computingInst.FinalErrRate();
             tenFoldBias[(unsigned int)floor(computingInst.TheoProb()*10)] += computingInst.FinalErrRate();
             tenFoldNum[(unsigned int)floor(computingInst.TheoProb()*10)] += 1;
             tenFoldLowErrLen[(unsigned int)floor(computingInst.TheoProb()*10)] += computingInst.LowErrLen();
-            tenFoldCorr[(unsigned int)floor(computingInst.TheoProb()*10)] += computingInst.InCC();
+            tenFoldCorr[(unsigned int)floor(computingInst.TheoProb()*10)] += autoPortKInst.OutAC();
+            // if (autoPortKInst.OutAC() > 0.4 || autoPortKInst.OutAC() < -0.4)
+            // // if (computingInst.FinalErrRate() > 0.05 || computingInst.FinalErrRate() < -0.05)
+            // {
+            //     printf("(in)%f, (out)%f, (sac)%f, (WBS)%f\n", val[1], 1/(1+val[1]), autoPortKInst.OutAC(), computingInst.FinalErrRate());
+            // }
         }
         for (int y = 0; y < foldNum; ++y)
         {

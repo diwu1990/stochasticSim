@@ -15,10 +15,10 @@ int main()
     
     srand(time(NULL));
     unsigned int sobolNum = 2;
-    unsigned int sobolBitLen = 12;
+    unsigned int sobolBitLen = 8;
     string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 1;
+    unsigned int totalIter = 10000;
     unsigned int seqLength = (unsigned int)pow(2,sobolBitLen);
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
@@ -26,7 +26,7 @@ int main()
     vector<float> tenFoldCorr(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
-    unsigned int initialDim = 5;
+    unsigned int initialDim = 0;
     for (int index = initialDim; index < initialDim+foldNum-1; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
@@ -37,10 +37,10 @@ int main()
             tenFoldNum[i] = 0;
             tenFoldLowErrLen[i] = 0;
         }
-        unsigned int sobolInitIdx = 5+index;
+        unsigned int sobolInitIdx = 1+index;
         unsigned int delay = 1;
-        SystemRandMulti sobolinst;
-        // SOBOLMulti sobolinst;
+        // SystemRandMulti sobolinst;
+        SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
@@ -62,14 +62,16 @@ int main()
             for (int l = 0; l < 2; ++l)
             {
                 bitLengthVec[l] = sobolBitLen;
-                probVec[l] = val[l];
+                probVec[l] = val[0];
             }
 
             vector<unsigned int> inRandNum(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
                 inRandNum[z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
+                // printf("%d,", inRandNum[z]);
             }
+            // printf("\n");
             vector<unsigned int> RandSeq;
             RandSeq.resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
@@ -77,7 +79,7 @@ int main()
                 RandSeq[z] = sobolinst.OutSeq()[1][z%(unsigned int)(pow(2,sobolBitLen))];
             }
             RandNum2Bit num2bitInst;
-            num2bitInst.Init(prob0,bitLengthVec[0],inRandNum,"num2bitInst");
+            num2bitInst.Init(probVec[0],bitLengthVec[0],inRandNum,"num2bitInst");
             num2bitInst.SeqGen();
             // num2bitInst.Report();
             // num2bitInst.SeqPrint();

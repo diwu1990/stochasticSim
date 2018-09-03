@@ -104,7 +104,14 @@ void DIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2,
     {
         printf("Error: Input Length is not the same.\n");
     }
-    theoProb = inProb[0] / inProb[1];
+    if (inProb[1] == 0)
+    {
+        theoProb = 0;
+    }
+    else
+    {
+        theoProb = inProb[0] / inProb[1];
+    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);

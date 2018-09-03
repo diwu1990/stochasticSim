@@ -13,6 +13,7 @@ class SQRT
     vector<unsigned int> inSeq;
     float inProb;
     float inAC;
+    float outAC;
     vector<unsigned int> randNum;
     unsigned int bitLength;
     unsigned int logDepth;
@@ -37,6 +38,7 @@ class SQRT
         vector<unsigned int> OutSeq();
         float InProb();
         float InAC();
+        float OutAC();
         float TheoProb();
         vector<float> RealProb();
         float FinalRealProb();

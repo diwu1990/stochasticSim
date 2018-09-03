@@ -16,10 +16,10 @@ int main()
 {
     srand(time(NULL));
     unsigned int sobolNum = 3;
-    unsigned int sobolBitLen = 6;
+    unsigned int sobolBitLen = 8;
     string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 1;
+    unsigned int totalIter = 10000;
     unsigned int seqLength = (unsigned int)pow(2,sobolBitLen);
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
@@ -27,8 +27,9 @@ int main()
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
     vector<float> tenFoldCorr(foldNum);
-    for (int index = 0; index < 10; ++index)
+    for (int index = 8; index < 9; ++index)
     {
+        // printf("flag0: %d\n", index);
         for (int i = 0; i < foldNum; ++i)
         {
             tenFoldErr[i] = 0;
@@ -39,8 +40,8 @@ int main()
         }
         unsigned int sobolInitIdx = 1+index;
         unsigned int delay = 0;
-        SystemRandMulti sobolinst;
-        // SOBOLMulti sobolinst;
+        // SystemRandMulti sobolinst;
+        SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
@@ -53,7 +54,7 @@ int main()
         unsigned int depthSync;
         // depth = (unsigned int)pow(2,3);
         depth = 2;
-        depthSync = 3;
+        depthSync = 6;
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
@@ -73,15 +74,9 @@ int main()
             for (int z = 0; z < seqLength; ++z)
             {
                 inRandNum[0][z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
-                inRandNum[1][z] = sobolinst.OutSeq()[1][z%(unsigned int)(pow(2,sobolBitLen))];
+                inRandNum[1][z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
             }
-            // for (int z = 0; z < seqLength; ++z)
-            // {
-            //     inRandNum[0][z] = (unsigned int)(rand()%(unsigned int)(pow(2,sobolBitLen)));
-            //     inRandNum[1][z] = (unsigned int)(rand()%(unsigned int)(pow(2,sobolBitLen)));
-            //     // printf("(%u,%u,%u,%u,)", sobolBitLen, (unsigned int)(pow(2,sobolBitLen)), inRandNum[0][z], inRandNum[1][z]);
-            // }
-            // // printf("\n");
+            
             vector<unsigned int> RandSeq;
             RandSeq.resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
@@ -101,11 +96,11 @@ int main()
             divInst.Init(syncInst.OutSeq(),RandSeq,sobolBitLen,depth,depthSync,"divInst");
             // divInst.Report();
             divInst.Calc();
-            for (int aaa = 0; aaa < seqLength; ++aaa)
-            {
-                printf("%.4f,", divInst.ErrRate()[aaa]);
-            }
-            printf("\n");
+            // for (int aaa = 0; aaa < seqLength; ++aaa)
+            // {
+            //     printf("%.4f,", divInst.ErrRate()[aaa]);
+            // }
+            // printf("\n");
 
             tenFoldErr[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.FinalErrRate() * divInst.FinalErrRate();
             tenFoldBias[(unsigned int)floor(divInst.TheoProb()*10)] += divInst.FinalErrRate();
