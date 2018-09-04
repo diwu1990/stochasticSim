@@ -40,8 +40,8 @@ int main()
         }
         unsigned int sobolInitIdx = 1+index;
         unsigned int delay = 0;
-        SystemRandMulti sobolinst;
-        // SOBOLMulti sobolinst;
+        // SystemRandMulti sobolinst;
+        SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
