@@ -236,55 +236,65 @@ void SQRT::Calc()
 
 
     // *****************************************************************************
-    // bit inserting with div for 1/(1+Po)
+    // bit inserting with simplified iscvdiv for 1/(1+Po)
     // *****************************************************************************
-    // vector<unsigned int> JKFF(seqLength);
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     JKFF[i] = 1;
-    // }
-    // unsigned int oneCount = 0;
-    // unsigned int sel = 1;
+    vector<unsigned int> DFF(seqLength);
+    vector<unsigned int> INV(seqLength);
+    vector<unsigned int> andGate(seqLength);
+    vector<unsigned int> orGate(seqLength);
+    unsigned int depth = 2;
+    unsigned int logDepth = (unsigned int)log2(depth);
+    vector<unsigned int> traceReg(depth);
 
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     // printf("%u,", sel);
-    //     if (sel == 1)
-    //     {
-    //         outSeq[i] = inSeq[i];
-    //     }
-    //     else
-    //     {
-    //         outSeq[i] = 1;
-    //     }
-    //     oneCount += outSeq[i];
-    //     if (i < accuracyLength)
-    //     {
-    //         realProb[i] = (float)oneCount/(float)(i+1);
-    //     }
-    //     else
-    //     {
-    //         realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
-    //     }
-    //     // errRate[i] = (theoProb - realProb[i])/theoProb;
-    //     errRate[i] = (theoProb - realProb[i]);
+    for (int i = 0; i < depth; ++i)
+    {
+        traceReg[i] = 0;
+    }
 
-    //     // applying a JK FF
-    //     // J is always 1.
-    //     // K is outSeq[i].
-    //     // if (outSeq[(i+seqLength-1)%seqLength] == 1)
-    //     if (outSeq[i] == 1)
-    //     {
-    //         sel = 1-sel;
-    //         JKFF[i] = sel;
-    //     }
-    //     else
-    //     {
-    //         sel = 1;
-    //         JKFF[i] = sel;
-    //     }
-    // }
+    for (int i = 0; i < seqLength; ++i)
+    {
+        DFF[i] = i%2;
+        INV[i] = 1-DFF[i];
+    }
+    unsigned int oneCount = 0; // calc the ones in output seq
+    vector<unsigned int> mux0sel(seqLength);
+    vector<unsigned int> mux1out(seqLength);
+    for (int i = 0; i < seqLength; ++i)
+    {
+        mux1out[i] = 1;
+    }
 
+    for (int i = 0; i < seqLength; ++i)
+    {
+        mux0sel[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
+        // mux0sel[i] = mux1out[(i+seqLength-1)%seqLength];
+        outSeq[i] = mux0sel[i] ? inSeq[i] : 1;
+        andGate[i] = outSeq[i] & INV[i];
+        orGate[i] = andGate[i] | DFF[i];
+        mux1out[i] = orGate[i] ? DFF[i] : mux0sel[i];
+
+        if (orGate[i] == 1)
+        {
+            for (int index = 0; index < depth-1; ++index)
+            {
+                traceReg[index] = traceReg[index+1];
+            }
+            traceReg[depth-1] = mux1out[i];
+        }
+        
+        oneCount += outSeq[i];
+        if (i < accuracyLength)
+        {
+            realProb[i] = (float)oneCount/(float)(i+1);
+        }
+        else
+        {
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
+        }
+        // errRate[i] = (theoProb - realProb[i])/theoProb;
+        errRate[i] = (theoProb - realProb[i]);
+        // printf("(inSeq)%u, (mux0sel)%u, (outSeq)%u, (andGate)%u, (orGate)%u, (mux1out)%u\n", inSeq[i], mux0sel[i], outSeq[i], andGate[i], orGate[i], mux1out[i]);
+    }
 
     for (int i = 0; i < seqLength; ++i)
     {
@@ -298,6 +308,44 @@ void SQRT::Calc()
     // outACinst.Init(outSeq, 1, theoProb, "outACinst");
     // outACinst.Calc();
     // printf("%f\n", outACinst.OutAC());
+
+
+    // printf("%f\n", inProb);
+
+    // SeqProb mux0selProb;
+    // mux0selProb.Init(mux0sel, "mux0selProb");
+    // mux0selProb.Calc();
+    // mux0selProb.ProbPrint();
+
+    // SeqProb andGateProb;
+    // andGateProb.Init(andGate, "andGateProb");
+    // andGateProb.Calc();
+    // andGateProb.ProbPrint();
+
+    // SeqProb orGateProb;
+    // orGateProb.Init(orGate, "orGateProb");
+    // orGateProb.Calc();
+    // orGateProb.ProbPrint();
+
+    // SeqProb mux1outProb;
+    // mux1outProb.Init(mux1out, "mux1outProb");
+    // mux1outProb.Calc();
+    // mux1outProb.ProbPrint();
+
+    // SeqProb outSeqProb;
+    // outSeqProb.Init(outSeq, "outSeqProb");
+    // outSeqProb.Calc();
+    // outSeqProb.ProbPrint();
+
+    // printf("%f, %f\n", 1/(1+outSeqProb.OutProb()), mux1outProb.OutProb());
+    // vector<vector<unsigned int>> selinSeq(2);
+    // selinSeq[0] = inSeq;
+    // selinSeq[1] = mux0sel;
+
+    // CrossCorrelation selCC;
+    // selCC.Init(selinSeq, 1, "selCC");
+    // selCC.Calc();
+    // selCC.CCPrint();
 }
 
 vector<unsigned int> SQRT::OutSeq()
