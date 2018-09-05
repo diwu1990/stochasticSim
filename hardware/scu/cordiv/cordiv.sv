@@ -1,9 +1,11 @@
 module cordiv (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
+    // control port
+    input sel,
+    // data port
     input dividend,
     input divisor,
-    input sel,
     output quotient
 );
     // define the depth of shift register
