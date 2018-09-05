@@ -1,10 +1,10 @@
-module CORDIV (
-	input clk,    // Clock
-	input rst_n,  // Asynchronous reset active low
-	input dividend,
-	input divisor,
-	input sel,
-	output quotient
+module cordiv (
+    input clk,    // Clock
+    input rst_n,  // Asynchronous reset active low
+    input dividend,
+    input divisor,
+    input sel,
+    output quotient
 );
     // define the depth of shift register
     // 2 is recommended for accuracy according to simuation
