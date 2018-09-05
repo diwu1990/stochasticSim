@@ -74,6 +74,7 @@ void MUL::Init(vector<vector<unsigned int>> param1, string param2)
     SeqProbMulti probCalc;
     probCalc.Init(inSeq,"probCalc");
     probCalc.Calc();
+    // probCalc.ProbPrint();
     inProb = probCalc.OutProb();
     m_name = param2;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 2)
@@ -131,6 +132,7 @@ void MUL::Calc()
     inputCC.Init(inSeq,1,"inputCC");
     inputCC.Calc();
     inCC = inputCC.OutCC()[0];
+    unsigned int accuracyLength = seqLength/2;
 
     unsigned int oneCount = 0;
     for (int i = 0; i < seqLength; ++i)
@@ -138,43 +140,24 @@ void MUL::Calc()
         if (inSeq[0][i] == 1 && inSeq[1][i] == 1)
         {
             outSeq[i] = 1;
-            oneCount += 1;
-            // modify the calculation of real time prob, use past 32 bit instead of all bit
-            if (i < 32)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
         }
         else
         {
             outSeq[i] = 0;
-            if (i < 32)
-            {
-                realProb[i] = (float)oneCount/(float)(i+1);
-            }
-            else
-            {
-                realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
-            }
-            errRate[i] = (theoProb - realProb[i])/theoProb;
         }
+        oneCount += outSeq[i];
+        if (i < accuracyLength)
+        {
+            realProb[i] = (float)oneCount/(float)(i+1);
+        }
+        else
+        {
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
+        }
+        errRate[i] = (theoProb - realProb[i]);
     }
     for (int i = 0; i < seqLength; ++i)
     {
-        // printf("%f\n", errRate[seqLength-1-i]);
-        // if (errRate[seqLength-1-i] > 0.05)
-        // {
-        //     printf("larger than 0.05\n");
-        // }
-        // if (errRate[seqLength-1-i] < -0.05)
-        // {
-        //     printf("smaller than -0.05\n");
-        // }
         if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
         {
             lowErrLen = seqLength-i;

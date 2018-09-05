@@ -28,7 +28,7 @@ int main()
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
     vector<float> tenFoldCorr(foldNum);
-    for (int index = 10; index < 15; ++index)
+    for (int index = 0; index < 10; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
         {
@@ -60,7 +60,7 @@ int main()
             float prob1 = (float)((float)(rand()%(int)pow(2,sobolBitLen))/(float)pow(2,sobolBitLen));
             val[0] = 1; // port 0
             val[1] = prob0; // port 1
-            val[2] = prob1; // port sel
+            val[2] = prob1/2+0.5; // port sel
 
             for (int l = 0; l < 3; ++l)
             {
