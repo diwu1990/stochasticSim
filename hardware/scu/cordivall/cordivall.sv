@@ -19,7 +19,7 @@ module cordivall (
         if(~rst_n) begin
             dividend_cnt <= 8'h80;
         end else begin
-            dividend_cnt <= dividend ? dividend_cnt + 1 : dividend_cnt - 0;
+            dividend_cnt <= dividend ? dividend_cnt + 1 : dividend_cnt - 1;
         end
     end
 
