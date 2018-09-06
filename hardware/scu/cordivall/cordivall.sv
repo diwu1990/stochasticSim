@@ -1,3 +1,4 @@
+`include "cordiv.sv"
 module cordivall (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
@@ -10,9 +11,6 @@ module cordivall (
     output quotient
 );
     
-    logic clk;
-    logic rst_n;
-    logic sel;
     logic [7 : 0] dividend_cnt;
     logic [7 : 0] divisor_cnt;
     logic dividend_regen;
