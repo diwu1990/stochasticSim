@@ -32,10 +32,11 @@ module iscbdiv (
     cordiv U_cordiv(
         .clk(clk),
         .rst_n(rst_n),
-        .sel(sel),
+        .srSel(sel),
         .dividend(dividend_corr),
         .divisor(divisor_corr),
         .quotient(quotient)
+        .srOut()
         );
 
 endmodule
