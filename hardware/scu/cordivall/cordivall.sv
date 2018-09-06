@@ -44,7 +44,8 @@ module cordivall (
         // data port
         .dividend(dividend_regen),
         .divisor(divisor_regen),
-        .quotient(quotient)
+        .quotient(quotient),
+        .srout()
         );
 
 
