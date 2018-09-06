@@ -12,6 +12,7 @@ module iscbdivbisqrt (
     logic [1:0] mux;
     logic dff;
     logic inv;
+    logic srout;
 
     assign inv = ~dff;
 
@@ -26,17 +27,16 @@ module iscbdivbisqrt (
     assign mux[0] = 1;
     assign mux[1] = in;
     assign out = sel ? mux[1] : mux[0];
-    assign sel = JKout;
-    assign Kport = out;
-    assign Jport = 1;
+    assign sel = srout;
 
     cordiv U_cordiv(
         .clk(clk),
         .rst_n(rst_n),
         .sel(sel)
-        .dividend(dividend),
-        .divisor(divisor),
-        .quotient(quotient)
+        .dividend(dff),
+        .divisor((inv & out) | dff),
+        .quotient(),
+        .srout(srout)
         );
 
 endmodule
