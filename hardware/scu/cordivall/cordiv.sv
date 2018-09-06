@@ -6,7 +6,8 @@ module cordiv (
     // data port
     input dividend,
     input divisor,
-    output quotient
+    output quotient,
+    output srout
 );
     // define the depth of shift register
     // 2 is recommended for accuracy according to simuation
@@ -14,7 +15,6 @@ module cordiv (
 
     // shift register
     logic [SRDEPTH-1 : 0] shiftReg;
-    logic srout;
 
     assign srout = shiftReg[sel];
     assign quotient = divisor ? dividend : srout;
