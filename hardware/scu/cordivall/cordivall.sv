@@ -4,7 +4,7 @@ module cordivall (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     // control port
-    input [7 : 0]randnum,
+    input [7 : 0]randNum,
     input sel,
     // data port
     input dividend,
@@ -33,8 +33,8 @@ module cordivall (
         end
     end
 
-    assign dividend_regen = (dividend_cnt >= randnum) ? 1 : 0;
-    assign divisor_regen = (divisor_cnt >= randnum) ? 1 : 0;
+    assign dividend_regen = (dividend_cnt >= randNum) ? 1 : 0;
+    assign divisor_regen = (divisor_cnt >= randNum) ? 1 : 0;
 
     cordiv U_cordiv(
         .clk(clk),    // Clock
