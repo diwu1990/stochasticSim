@@ -1,4 +1,4 @@
-module gsqrt (
+module gsqrt4b (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     input [3:0]randNum,
