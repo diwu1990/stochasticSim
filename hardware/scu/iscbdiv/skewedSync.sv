@@ -15,7 +15,7 @@ module skewedSync (
     logic cntEmpty;
 
     assign cntFull = &cnt;
-    assign cntEmpty = |cnt;
+    assign cntEmpty = ~|cnt;
     assign out[1] = in[1];
 
     always_comb begin : proc_out0
