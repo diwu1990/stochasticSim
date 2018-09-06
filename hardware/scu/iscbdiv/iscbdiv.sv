@@ -35,7 +35,7 @@ module iscbdiv (
         .srSel(sel),
         .dividend(dividend_corr),
         .divisor(divisor_corr),
-        .quotient(quotient)
+        .quotient(quotient),
         .srOut()
         );
 
