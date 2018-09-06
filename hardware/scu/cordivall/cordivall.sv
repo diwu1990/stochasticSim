@@ -40,12 +40,12 @@ module cordivall (
         .clk(clk),    // Clock
         .rst_n(rst_n),  // Asynchronous reset active low
         // control port
-        .sel(sel),
+        .srSel(sel),
         // data port
         .dividend(dividend_regen),
         .divisor(divisor_regen),
         .quotient(quotient),
-        .srout()
+        .srOut()
         );
 
 
