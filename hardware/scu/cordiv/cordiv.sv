@@ -19,13 +19,13 @@ module cordiv (
     assign srOut = shiftReg[srSel];
     assign quotient = divisor ? dividend : srOut;
 
-    // <= shiftReg[0] <= shiftReg[1] <= quotient
+    // <= shiftReg[1] <= shiftReg[0] <= quotient
     always_ff @(posedge clk or negedge rst_n) begin : proc_SR
         if(~rst_n) begin
             shiftReg <= 0;
         end else begin
             if(divisor == 1) begin
-                shiftReg <= {shiftReg[1], quotient};
+                shiftReg <= {shiftReg[0], quotient};
             end
             else begin
                 shiftReg <= shiftReg;
