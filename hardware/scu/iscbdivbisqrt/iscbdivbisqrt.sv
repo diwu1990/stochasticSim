@@ -8,7 +8,6 @@ module iscbdivbisqrt (
     output out
 );
     
-    logic sel;
     logic [1:0] mux;
     logic dff;
     logic inv;
@@ -32,7 +31,7 @@ module iscbdivbisqrt (
     cordiv U_cordiv(
         .clk(clk),
         .rst_n(rst_n),
-        .sel(sel)
+        .sel(sel),
         .dividend(dff),
         .divisor((inv & out) | dff),
         .quotient(),
