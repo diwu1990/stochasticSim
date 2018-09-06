@@ -13,22 +13,22 @@ module cordiv (
     parameter SRDEPTH = 2;
 
     // shift register
-    logic [SRDEPTH-1 : 0] SR;
+    logic [SRDEPTH-1 : 0] shiftReg;
     logic srout;
 
-    assign srout = SR[sel];
+    assign srout = shiftReg[sel];
     assign quotient = divisor ? dividend : srout;
 
-    // <= SR[0] <= SR[1] <= quotient
+    // <= shiftReg[0] <= shiftReg[1] <= quotient
     always_ff @(posedge clk or negedge rst_n) begin : proc_SR
         if(~rst_n) begin
-            SR <= 0;
+            shiftReg <= 0;
         end else begin
             if(divisor == 1) begin
-                SR <= {SR[1], quotient};
+                shiftReg <= {shiftReg[1], quotient};
             end
             else begin
-                SR <= SR;
+                shiftReg <= shiftReg;
             end
         end
     end
