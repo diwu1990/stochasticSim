@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : cordivall
 Version: N-2017.09-SP5
-Date   : Thu Sep  6 00:37:11 2018
+Date   : Thu Sep  6 01:18:53 2018
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc
