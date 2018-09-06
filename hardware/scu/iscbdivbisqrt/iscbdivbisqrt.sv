@@ -32,11 +32,11 @@ module iscbdivbisqrt (
     cordiv U_cordiv(
         .clk(clk),
         .rst_n(rst_n),
-        .sel(sel),
+        .srSel(sel),
         .dividend(dff),
         .divisor((inv & out) | dff),
         .quotient(),
-        .srout(srout)
+        .srOut(srout)
         );
 
 endmodule
