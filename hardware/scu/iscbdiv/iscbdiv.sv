@@ -4,7 +4,7 @@
 module iscbdiv (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
-    input randNum,
+    input sel,
     input dividend,
     input divisor,
     output quotient
@@ -14,17 +14,19 @@ module iscbdiv (
     // dividend / divisor = quotient
     // divisor is always larger than dividend
 
-    logic [1:0] divIn;
+    // correlated bit stream after skewed synchronizer
+    logic dividend_corr;
+    logic divisor_corr;
 
     // input is send to a skewed synchronizer first.
     skewedSync #(
-        .DEPTH(4)
+        .DEPTH(2)
         )
     U_skewedSync(
         .clk(clk),
         .rst_n(rst_n),
         .in({divisor,dividend}),
-        .out(divIn)
+        .out({divisor_corr,dividend_corr})
         );
 
     cordiv U_cordiv(
