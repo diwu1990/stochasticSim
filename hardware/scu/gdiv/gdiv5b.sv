@@ -1,19 +1,19 @@
-module div (
+module gdiv5b (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
-    input [5:0]randNum,
+    input [4:0]randNum,
     input dividend,
     input divisor,
     output quotient
 );
     
-    logic [5:0] cnt;
+    logic [4:0] cnt;
     logic inc;
     logic dec;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_cnt
         if(~rst_n) begin
-            cnt <= 6'b100000;
+            cnt <= 5'b10000;
         end else begin
             if(inc & ~dec & ~&cnt) begin
                 cnt <= cnt + 1;
