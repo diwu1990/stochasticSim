@@ -2,12 +2,12 @@ module cordiv (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     // control port
-    input sel,
+    input srSel,
     // data port
     input dividend,
     input divisor,
     output quotient,
-    output srout
+    output srOut
 );
     // define the depth of shift register
     // 2 is recommended for accuracy according to simuation
@@ -16,8 +16,8 @@ module cordiv (
     // shift register
     logic [SRDEPTH-1 : 0] shiftReg;
 
-    assign srout = shiftReg[sel];
-    assign quotient = divisor ? dividend : srout;
+    assign srOut = shiftReg[srSel];
+    assign quotient = divisor ? dividend : srOut;
 
     // <= shiftReg[0] <= shiftReg[1] <= quotient
     always_ff @(posedge clk or negedge rst_n) begin : proc_SR
