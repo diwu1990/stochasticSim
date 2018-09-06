@@ -4,17 +4,32 @@ module skewedSync (
     input [1:0] in,
     output [1:0] out
 );
-    parameter DEPTH = 4;
+    parameter DEPTH = 2;
+
     // bit array of index 1 has a higher value than that of index 0
 
     logic [DEPTH - 1 : 0] cnt;
+    logic cntFull;
+    logic cntEmpty;
 
+    assign cntFull = &cnt;
+    assign cntEmpty = |cnt;
     assign out[1] = in[1];
+
     always_comb begin : proc_out0
         if((in[1] & ~in[0] & ~|cnt) | (in[1] & in[0])) begin
             out[0] = 1;
         end else begin
             out[0] <= 0;
+        end
+        if(in[0] == in[1]) begin
+            out[0] = in[0];
+        end else begin
+            if(in[0]) begin
+                out[0] = cntFull ? 1 : 0;
+            end else begin
+                out[0] = cntEmpty ? 0 : 1;
+            end
         end
     end
 
@@ -22,13 +37,7 @@ module skewedSync (
         if(~rst_n) begin
             cnt <= 0;
         end else begin
-            if(in[1] & ~in[0] & ~|cnt) begin
-                cnt = cnt - 1;
-            end else if(~in[1] & ~&cnt) begin
-                cnt <= cnt + in[0];
-            end else begin
-                cnt <= cnt;
-            end
+            cnt <= cntFull ? cnt : (cnt + in[0]);
         end
     end
 
