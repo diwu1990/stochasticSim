@@ -242,109 +242,68 @@ void GDIV::Calc()
     //     // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     // }
 
-    // *****************************************************************************
-    // shift reg based for correlation
-    // *****************************************************************************
-    CrossCorrelation inputCC;
-    inputCC.Init(inSeq,1,"inputCC");
-    inputCC.Calc();
-    inCC = inputCC.OutCC()[0];
-
-    SkewedSynchronizer divSyncInst;
-    divSyncInst.Init(inSeq, depthSync, "divSyncInst");
-    divSyncInst.SeqGen();
-    // divSyncInst.ProbPrint();
-    // divSyncInst.SeqPrint();
-
-    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
-    // unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    vector<unsigned int> traceReg(depth);
-    for (int i = 0; i < depth; ++i)
-    {
-        traceReg[i] = i%2;
-        // printf("%u, ", traceReg[i]);
-    }
-    // printf("\n");
-    unsigned int oneCount = 0;
-    unsigned int accuracyLength = seqLength/2;
-
-    // unsigned int effectiveBit = 0;
-    // unsigned int effectiveOne = 0;
-    // unsigned int reservedBit = 0;
-    // unsigned int reservedOne = 0;
-
-    for (int i = 0; i < seqLength; ++i)
-    {
-        // printf("%d iter\n", i);
-        if (divSyncInst.OutSeq()[1][i] == 1)
-        {
-            // printf("%d: effective\n", i);
-            // effectiveBit++;
-            outSeq[i] = divSyncInst.OutSeq()[0][i];
-            for (int index = 0; index < depth-1; ++index)
-            {
-                traceReg[index] = traceReg[index+1];
-                // printf("%u, ", traceReg[index]);
-            }
-            traceReg[depth-1] = outSeq[i];
-            // printf("%u\n", traceReg[depth-1]);
-            // effectiveOne += outSeq[i];
-            // printf("%u\n", outSeq[i]);
-            
-        }
-        else if (divSyncInst.OutSeq()[1][i] == 0)
-        {
-            // printf("%d: reserved, %5u\n", i, (randNum[i] >> (bitLength-logDepth)));
-            // printf("reserved, %u\n", );
-            // reservedBit++;
-            outSeq[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
-            // reservedOne += outSeq[i];
-            // printf("reserved, %5u, %5u, %5u, %5u, %5u\n", randNum[i],traceReg,outSeq[i],oneCount,reservedOne);
-        }
-        else
-        {
-            printf("Error: Seqsence from Class Synchronizer is not bit stream.\n");
-        }
-        oneCount += outSeq[i];
-        if (i < accuracyLength)
-        {
-            realProb[i] = (float)oneCount/(float)(i+1);
-        }
-        else
-        {
-            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
-        }
-        errRate[i] = (theoProb - realProb[i]);
-        // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
-    }
-
     // // *****************************************************************************
-    // // counter based no correlation
+    // // shift reg based for correlation
     // // *****************************************************************************
     // CrossCorrelation inputCC;
     // inputCC.Init(inSeq,1,"inputCC");
     // inputCC.Calc();
     // inCC = inputCC.OutCC()[0];
-    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
-    // unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    // unsigned int traceReg = halfBound;
+
+    // SkewedSynchronizer divSyncInst;
+    // divSyncInst.Init(inSeq, depthSync, "divSyncInst");
+    // divSyncInst.SeqGen();
+    // // divSyncInst.ProbPrint();
+    // // divSyncInst.SeqPrint();
+
+    // // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
+    // // unsigned int halfBound = (unsigned int)pow(2,depth-1);
+    // vector<unsigned int> traceReg(depth);
+    // for (int i = 0; i < depth; ++i)
+    // {
+    //     traceReg[i] = i%2;
+    //     // printf("%u, ", traceReg[i]);
+    // }
+    // // printf("\n");
     // unsigned int oneCount = 0;
     // unsigned int accuracyLength = seqLength/2;
 
-    // unsigned int effectiveBit = 0;
-    // unsigned int effectiveOne = 0;
-    // unsigned int reservedBit = 0;
-    // unsigned int reservedOne = 0;
+    // // unsigned int effectiveBit = 0;
+    // // unsigned int effectiveOne = 0;
+    // // unsigned int reservedBit = 0;
+    // // unsigned int reservedOne = 0;
 
     // for (int i = 0; i < seqLength; ++i)
     // {
-    //     if (traceReg >= (randNum[i] >> (bitLength-depth)))
+    //     // printf("%d iter\n", i);
+    //     if (divSyncInst.OutSeq()[1][i] == 1)
     //     {
-    //         outSeq[i] = 1;
+    //         // printf("%d: effective\n", i);
+    //         // effectiveBit++;
+    //         outSeq[i] = divSyncInst.OutSeq()[0][i];
+    //         for (int index = 0; index < depth-1; ++index)
+    //         {
+    //             traceReg[index] = traceReg[index+1];
+    //             // printf("%u, ", traceReg[index]);
+    //         }
+    //         traceReg[depth-1] = outSeq[i];
+    //         // printf("%u\n", traceReg[depth-1]);
+    //         // effectiveOne += outSeq[i];
+    //         // printf("%u\n", outSeq[i]);
+            
+    //     }
+    //     else if (divSyncInst.OutSeq()[1][i] == 0)
+    //     {
+    //         // printf("%d: reserved, %5u\n", i, (randNum[i] >> (bitLength-logDepth)));
+    //         // printf("reserved, %u\n", );
+    //         // reservedBit++;
+    //         outSeq[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
+    //         // reservedOne += outSeq[i];
+    //         // printf("reserved, %5u, %5u, %5u, %5u, %5u\n", randNum[i],traceReg,outSeq[i],oneCount,reservedOne);
     //     }
     //     else
     //     {
-    //         outSeq[i] = 0;
+    //         printf("Error: Seqsence from Class Synchronizer is not bit stream.\n");
     //     }
     //     oneCount += outSeq[i];
     //     if (i < accuracyLength)
@@ -353,30 +312,71 @@ void GDIV::Calc()
     //     }
     //     else
     //     {
-    //         realProb[i] = (realProb[i-1]*accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/accuracyLength;
+    //         realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
     //     }
     //     errRate[i] = (theoProb - realProb[i]);
-    //     // unsigned int andGate = outSeq[i] & inSeq[1][(i+seqLength-1)%seqLength];
-    //     unsigned int andGate = outSeq[i] & inSeq[1][i];
-    //     unsigned int inc = !andGate & inSeq[0][i];
-    //     unsigned int dec = andGate & !inSeq[0][i];
-    //     // printf("%u, %u, %u, %u, %u\n", andGate, inSeq[0][i], inSeq[1][i], inc, dec);
-    //     if (inc == 1 && dec == 0)
-    //     {
-    //         if (traceReg < upperBound)
-    //         {
-    //             traceReg = traceReg + 1;
-    //         }
-    //     }
-    //     else if (inc == 0 && dec == 1)
-    //     {
-    //         if (traceReg > 0)
-    //         {
-    //             traceReg = traceReg - 1;
-    //         }
-    //     }
-    //     // printf("%u\n", traceReg);
+    //     // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     // }
+
+    // *****************************************************************************
+    // counter based no correlation
+    // *****************************************************************************
+    CrossCorrelation inputCC;
+    inputCC.Init(inSeq,1,"inputCC");
+    inputCC.Calc();
+    inCC = inputCC.OutCC()[0];
+    unsigned int upperBound = (unsigned int)pow(2,depth)-1;
+    unsigned int halfBound = (unsigned int)pow(2,depth-1);
+    unsigned int traceReg = halfBound;
+    unsigned int oneCount = 0;
+    unsigned int accuracyLength = seqLength/2;
+
+    unsigned int effectiveBit = 0;
+    unsigned int effectiveOne = 0;
+    unsigned int reservedBit = 0;
+    unsigned int reservedOne = 0;
+
+    for (int i = 0; i < seqLength; ++i)
+    {
+        if (traceReg >= (randNum[i] >> (bitLength-depth)))
+        {
+            outSeq[i] = 1;
+        }
+        else
+        {
+            outSeq[i] = 0;
+        }
+        oneCount += outSeq[i];
+        if (i < accuracyLength)
+        {
+            realProb[i] = (float)oneCount/(float)(i+1);
+        }
+        else
+        {
+            realProb[i] = (realProb[i-1]*accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/accuracyLength;
+        }
+        errRate[i] = (theoProb - realProb[i]);
+        // unsigned int andGate = outSeq[i] & inSeq[1][(i+seqLength-1)%seqLength];
+        unsigned int andGate = outSeq[i] & inSeq[1][i];
+        unsigned int inc = !andGate & inSeq[0][i];
+        unsigned int dec = andGate & !inSeq[0][i];
+        // printf("%u, %u, %u, %u, %u\n", andGate, inSeq[0][i], inSeq[1][i], inc, dec);
+        if (inc == 1 && dec == 0)
+        {
+            if (traceReg < upperBound)
+            {
+                traceReg = traceReg + 1;
+            }
+        }
+        else if (inc == 0 && dec == 1)
+        {
+            if (traceReg > 0)
+            {
+                traceReg = traceReg - 1;
+            }
+        }
+        // printf("%u\n", traceReg);
+    }
 
     // printf("theoretical prob: %-.3f\n", theoProb);
     // printf("effective prob:   %-.3f, One: %5u, Total Bit: %5u\n", (float)effectiveOne/(float)effectiveBit, effectiveOne, effectiveBit);
