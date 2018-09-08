@@ -1,19 +1,19 @@
-#include "iscbdivbisqrt.hpp"
+#include "simplified_iscbdiv_for_bisqrt.hpp"
 #include "seqprob.hpp"
 #include "autocorrelation.hpp"
 #include "crosscorrelation.hpp"
 
-ISCBDIVBISQRT::ISCBDIVBISQRT(){}
-ISCBDIVBISQRT::~ISCBDIVBISQRT(){}
-void ISCBDIVBISQRT::Help()
+SIMPLIFIED_ISCBDIV_FOR_BISQRT::SIMPLIFIED_ISCBDIV_FOR_BISQRT(){}
+SIMPLIFIED_ISCBDIV_FOR_BISQRT::~SIMPLIFIED_ISCBDIV_FOR_BISQRT(){}
+void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
-    printf("Calling ISCBDIVBISQRT Help. Following are instructions to ISCBDIVBISQRT Instance Usage:\n");
+    printf("Calling SIMPLIFIED_ISCBDIV_FOR_BISQRT Help. Following are instructions to SIMPLIFIED_ISCBDIV_FOR_BISQRT Instance Usage:\n");
     printf("1. inst.Init() method:\n");
-    printf("Configure the ISCBDIVBISQRT inst.\n");
-    printf("Initial Parameters: Input Vector, Random Number Seqsence, Trace Register Depth, Instance Name.\n");
-    printf("Recommended Trace Register Depth: 2\n");
+    printf("Configure the SIMPLIFIED_ISCBDIV_FOR_BISQRT inst.\n");
+    printf("Initial Parameters: Input Vector, Random Number Seqsence, Bit Length of Random Number, Instance Name.\n");
+    printf("Recommended Tracing Memory Bit Length: 2\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
@@ -60,7 +60,7 @@ void ISCBDIVBISQRT::Help()
     printf("**********************************************************\n");
 }
 
-void ISCBDIVBISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProb probCalc;
@@ -68,11 +68,11 @@ void ISCBDIVBISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param
     probCalc.Calc();
     inProb = probCalc.OutProb();
     randNum = param2;
-    depth = param3;
+    bitLength = param3;
     m_name = param4;
 
     seqLength = (unsigned int)inSeq.size();
-    theoProb = sqrt(inProb);
+    theoProb = 1/(1+inProb);
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -84,27 +84,20 @@ void ISCBDIVBISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param
     }
     lowErrLen = 0;
     ppStage = 0;
-
-    for (int i = 0; i < seqLength; ++i)
-    {
-        if (randNum[i] > depth-1)
-        {
-            printf("Error: Range of random number is larger than the depth of trace register.\n");
-        }
-    }
 }
 
-void ISCBDIVBISQRT::Report()
+void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Report()
 {
-    printf("Current ISCBDIVBISQRT:\n");
+    printf("Current SIMPLIFIED_ISCBDIV_FOR_BISQRT:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
+    printf("Bit Length of RandNum:  %u\n", bitLength);
     printf("Seqsence Length:        %u\n", seqLength);
     printf("Input Probability:      %f\n", inProb);
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
-// void ISCBDIVBISQRT::CalcQuot()
-void ISCBDIVBISQRT::Calc()
+// void SIMPLIFIED_ISCBDIV_FOR_BISQRT::CalcQuot()
+void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Calc()
 {
     AutoCorrelation autocorrelationInst;
     autocorrelationInst.Init(inSeq, 1, inProb, "autocorrelationInst");
@@ -119,6 +112,9 @@ void ISCBDIVBISQRT::Calc()
     vector<unsigned int> INV(seqLength);
     vector<unsigned int> andGate(seqLength);
     vector<unsigned int> orGate(seqLength);
+    vector<unsigned int> regOut(seqLength);
+    unsigned int depth = 2;
+    unsigned int logDepth = (unsigned int)log2(depth);
     vector<unsigned int> traceReg(depth);
 
     for (int i = 0; i < depth; ++i)
@@ -132,7 +128,6 @@ void ISCBDIVBISQRT::Calc()
         INV[i] = 1-DFF[i];
     }
     unsigned int oneCount = 0; // calc the ones in output seq
-    vector<unsigned int> mux0sel(seqLength);
     vector<unsigned int> mux1out(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
@@ -141,12 +136,11 @@ void ISCBDIVBISQRT::Calc()
 
     for (int i = 0; i < seqLength; ++i)
     {
-        mux0sel[i] = traceReg[randNum[i]];
-        // mux0sel[i] = mux1out[(i+seqLength-1)%seqLength];
-        outSeq[i] = mux0sel[i] ? inSeq[i] : 1;
-        andGate[i] = outSeq[i] & INV[i];
+        regOut[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
+        andGate[i] = inSeq[i] & INV[i];
         orGate[i] = andGate[i] | DFF[i];
-        mux1out[i] = orGate[i] ? DFF[i] : mux0sel[i];
+        mux1out[i] = orGate[i] ? DFF[i] : regOut[i];
+
 
         if (orGate[i] == 1)
         {
@@ -157,6 +151,7 @@ void ISCBDIVBISQRT::Calc()
             traceReg[depth-1] = mux1out[i];
         }
         
+        outSeq[i] = regOut[i];
         oneCount += outSeq[i];
         if (i < accuracyLength)
         {
@@ -223,21 +218,21 @@ void ISCBDIVBISQRT::Calc()
     // selCC.CCPrint();
 }
 
-vector<unsigned int> ISCBDIVBISQRT::OutSeq()
+vector<unsigned int> SIMPLIFIED_ISCBDIV_FOR_BISQRT::OutSeq()
 {
     return outSeq;
 }
 
-unsigned int ISCBDIVBISQRT::PPStage()
+unsigned int SIMPLIFIED_ISCBDIV_FOR_BISQRT::PPStage()
 {
     return ppStage;
 }
 
-void ISCBDIVBISQRT::OutPrint()
+void SIMPLIFIED_ISCBDIV_FOR_BISQRT::OutPrint()
 {
-    printf("Calling OutPrint for ISCBDIVBISQRT instance: ");
+    printf("Calling OutPrint for SIMPLIFIED_ISCBDIV_FOR_BISQRT instance: ");
     std::cout << m_name << std::endl;
-    printf("Theoretical Probability: sqrt(%.3f) = %.3f with input autocorrelation %.3f\n", inProb, theoProb, inAC);
+    printf("Theoretical Probability: 1/(1+%.3f) = %.3f with input autocorrelation %.3f\n", inProb, theoProb, inAC);
     printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
     printf("Low Error Length (5 percent approximation): %u\n", lowErrLen);
     // for (int i = 0; i < seqLength; ++i)
@@ -253,47 +248,47 @@ void ISCBDIVBISQRT::OutPrint()
     // printf("\n");
 }
 
-float ISCBDIVBISQRT::InAC()
+float SIMPLIFIED_ISCBDIV_FOR_BISQRT::InAC()
 {
     return inAC;
 }
 
-float ISCBDIVBISQRT::InProb()
+float SIMPLIFIED_ISCBDIV_FOR_BISQRT::InProb()
 {
     return inProb;
 }
 
-float ISCBDIVBISQRT::TheoProb()
+float SIMPLIFIED_ISCBDIV_FOR_BISQRT::TheoProb()
 {
     return theoProb;
 }
 
-vector<float> ISCBDIVBISQRT::RealProb()
+vector<float> SIMPLIFIED_ISCBDIV_FOR_BISQRT::RealProb()
 {
     return realProb;
 }
 
-float ISCBDIVBISQRT::FinalRealProb()
+float SIMPLIFIED_ISCBDIV_FOR_BISQRT::FinalRealProb()
 {
     return realProb[seqLength-1];
 }
 
-vector<float> ISCBDIVBISQRT::ErrRate()
+vector<float> SIMPLIFIED_ISCBDIV_FOR_BISQRT::ErrRate()
 {
     return errRate;
 }
 
-float ISCBDIVBISQRT::FinalErrRate()
+float SIMPLIFIED_ISCBDIV_FOR_BISQRT::FinalErrRate()
 {
     return errRate[seqLength-1];
 }
 
-unsigned int ISCBDIVBISQRT::SeqLen()
+unsigned int SIMPLIFIED_ISCBDIV_FOR_BISQRT::SeqLen()
 {
     return seqLength;
 }
 
-unsigned int ISCBDIVBISQRT::LowErrLen()
+unsigned int SIMPLIFIED_ISCBDIV_FOR_BISQRT::LowErrLen()
 {
     return lowErrLen;
 }

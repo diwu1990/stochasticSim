@@ -13,7 +13,7 @@ void GSQRT::Help()
     printf("1. inst.Init() method:\n");
     printf("Configure the GSQRT inst.\n");
     printf("Initial Parameters: Input Vector, Random Number Seqsence, Trace Register Depth, Instance Name.\n");
-    printf("Recommended Tracing Memory Length: 2\n");
+    printf("Recommended Trace Register Depth: 4\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the quotient of two input sequences.\n");

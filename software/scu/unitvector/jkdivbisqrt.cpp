@@ -13,7 +13,7 @@ void JKDIVBISQRT::Help()
     printf("1. inst.Init() method:\n");
     printf("Configure the JKDIVBISQRT inst.\n");
     printf("Initial Parameters: Input Vector, Random Number Seqsence, Trace Register Depth, Instance Name.\n");
-    printf("Recommended Tracing Memory Length: 2\n");
+    printf("Trace Register Depth is not used for JKDIVBISQRT.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
