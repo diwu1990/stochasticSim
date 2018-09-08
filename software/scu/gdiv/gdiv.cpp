@@ -13,7 +13,7 @@ void GDIV::Help()
     printf("1. inst.Init() method:\n");
     printf("Configure the GDIV inst.\n");
     printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Depth of Trace Register, Depth of Synchronizer, Instance Name.\n");
-    printf("Recommended Tracing Memory Length: 4\n");
+    printf("Recommended Depth of Trace Register: 4\n");
     printf("Depth of Synchronizer is not used for GDIV.\n");
 
     printf("2. inst.Calc() method:\n");
