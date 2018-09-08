@@ -22,9 +22,8 @@ void ISCBDIV::Help()
     printf("Calling ISCBDIV Help. Following are instructions to ISCBDIV Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the ISCBDIV inst.\n");
-    printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Depth of Trace Register, Depth of Synchronizer, Instance Name.\n");
-    printf("Recommended Depth of Trace Register Length: 2\n");
-    printf("Recommended Depth of Synchronizer: 2~4\n");
+    printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Bit Length of Random Number, Tracing Memory Bit Length, Instance Name.\n");
+    printf("Recommended Tracing Memory Bit Length: 2\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
@@ -71,7 +70,7 @@ void ISCBDIV::Help()
     printf("**********************************************************\n");
 }
 
-void ISCBDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+void ISCBDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, unsigned int param5, string param6)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -79,9 +78,15 @@ void ISCBDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> par
     probCalc.Calc();
     inProb = probCalc.OutProb();
     randNum = param2;
-    depth = param3;
-    depthSync = param4;
-    m_name = param5;
+    bitLength = param3;
+    depth = param4;
+    depthSync = param5;
+    if (ceil(log2(depth)) != floor(log2(depth)))
+    {
+        printf("Error: Input tracer bit length is not pow of 2.\n");
+    }
+    logDepth = (unsigned int)log2(depth);
+    m_name = param6;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 2)
     {
         inDim = (unsigned int)inSeq.size();
@@ -126,19 +131,13 @@ void ISCBDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> par
     //     printf("\n");
     // }
     ppStage = 0;
-    for (int i = 0; i < seqLength; ++i)
-    {
-        if (randNum[i] > depth-1)
-        {
-            printf("Error: Range of random number is larger than the depth of trace register.\n");
-        }
-    }
 }
 
 void ISCBDIV::Report()
 {
     printf("Current ISCBDIV:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
+    printf("Bit Length of RandNum:  %u\n", bitLength);
     printf("Bit Length of Tracer:   %u\n", depth);
     printf("Number of Seqsences:    %u\n", inDim);
     printf("Seqsence Length:        %u\n", seqLength);
@@ -149,6 +148,99 @@ void ISCBDIV::Report()
 // void ISCBDIV::CalcQuot()
 void ISCBDIV::Calc()
 {
+    
+
+    // *****************************************************************************
+    // counter based for correlation
+    // *****************************************************************************
+    // CrossCorrelation inputCC;
+    // inputCC.Init(inSeq,1,"inputCC");
+    // inputCC.Calc();
+    // inCC = inputCC.OutCC()[0];
+
+    // Synchronizer divSyncInst;
+    // divSyncInst.Init(inSeq, 2, "divSyncInst");
+    // divSyncInst.SeqGen();
+    // // divSyncInst.ProbPrint();
+    // // divSyncInst.SeqPrint();
+    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
+    // unsigned int halfBound = (unsigned int)pow(2,depth-1);
+    // unsigned int traceReg = halfBound;
+    // unsigned int oneCount = 0;
+
+    // unsigned int effectiveBit = 0;
+    // unsigned int effectiveOne = 0;
+    // unsigned int reservedBit = 0;
+    // unsigned int reservedOne = 0;
+
+    // for (int i = 0; i < seqLength; ++i)
+    // {
+    //     // printf("%d iter\n", i);
+    //     if (divSyncInst.OutSeq()[1][i] == 1)
+    //     {
+    //         // printf("effective\n");
+    //         effectiveBit++;
+    //         outSeq[i] = divSyncInst.OutSeq()[0][i];
+    //         if (outSeq[i] == 0)
+    //         {
+    //             // if (traceReg > 0 && effectiveBit < 16)
+    //             if (traceReg > 0)
+    //             {
+    //                 traceReg -= 1;
+    //                 // printf("%d => %5u, %-.3f\n", i, traceReg, (float)traceReg/pow(2,depth));
+    //             }
+    //         }
+    //         else
+    //         {
+    //             effectiveOne++;
+    //             // if (traceReg < upperBound && effectiveBit < 16)
+    //             if (traceReg < upperBound)
+    //             {
+    //                 traceReg += 1;
+    //                 // printf("%d => %5u, %-.3f\n", i, traceReg, (float)traceReg/pow(2,depth));
+    //             }
+    //         }
+    //         // printf("%u\n", outSeq[i]);
+    //         oneCount += outSeq[i];
+    //         if (i < 32)
+    //         {
+    //             realProb[i] = (float)oneCount/(float)(i+1);
+    //         }
+    //         else
+    //         {
+    //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+    //         }
+    //         errRate[i] = (theoProb - realProb[i])/theoProb;
+    //     }
+    //     else
+    //     {
+    //         // printf("reserved, %u\n", randNum[i]);
+    //         // printf("reserved, %u\n", (randNum[i] >> (bitLength-depth)));
+    //         reservedBit++;
+    //         if (traceReg <= (randNum[i] >> (bitLength-depth)))
+    //         {
+    //             outSeq[i] = 0;
+    //             // printf("%d => %5u, %5u, %5u\n", i, traceReg, (randNum[i] >> (bitLength-depth)), randNum[i]);
+    //         }
+    //         else
+    //         {
+    //             outSeq[i] = 1;
+    //             // printf("%d => %5u, %5u, %5u\n", i, traceReg, (randNum[i] >> (bitLength-depth)), randNum[i]);
+    //             reservedOne++;
+    //         }
+    //         oneCount += outSeq[i];
+    //         if (i < 32)
+    //         {
+    //             realProb[i] = (float)oneCount/(float)(i+1);
+    //         }
+    //         else
+    //         {
+    //             realProb[i] = (realProb[i-1]*32+outSeq[i]-outSeq[i-32])/32;
+    //         }
+    //         errRate[i] = (theoProb - realProb[i])/theoProb;
+    //     }
+    //     // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
+    // }
 
     // *****************************************************************************
     // shift reg based for correlation
@@ -205,7 +297,7 @@ void ISCBDIV::Calc()
             // printf("%d: reserved, %5u\n", i, (randNum[i] >> (bitLength-logDepth)));
             // printf("reserved, %u\n", );
             // reservedBit++;
-            outSeq[i] = traceReg[randNum[i]];
+            outSeq[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
             // reservedOne += outSeq[i];
             // printf("reserved, %5u, %5u, %5u, %5u, %5u\n", randNum[i],traceReg,outSeq[i],oneCount,reservedOne);
         }
@@ -225,6 +317,66 @@ void ISCBDIV::Calc()
         errRate[i] = (theoProb - realProb[i]);
         // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     }
+
+    // // *****************************************************************************
+    // // counter based no correlation
+    // // *****************************************************************************
+    // CrossCorrelation inputCC;
+    // inputCC.Init(inSeq,1,"inputCC");
+    // inputCC.Calc();
+    // inCC = inputCC.OutCC()[0];
+    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
+    // unsigned int halfBound = (unsigned int)pow(2,depth-1);
+    // unsigned int traceReg = halfBound;
+    // unsigned int oneCount = 0;
+    // unsigned int accuracyLength = seqLength/2;
+
+    // unsigned int effectiveBit = 0;
+    // unsigned int effectiveOne = 0;
+    // unsigned int reservedBit = 0;
+    // unsigned int reservedOne = 0;
+
+    // for (int i = 0; i < seqLength; ++i)
+    // {
+    //     if (traceReg >= (randNum[i] >> (bitLength-depth)))
+    //     {
+    //         outSeq[i] = 1;
+    //     }
+    //     else
+    //     {
+    //         outSeq[i] = 0;
+    //     }
+    //     oneCount += outSeq[i];
+    //     if (i < accuracyLength)
+    //     {
+    //         realProb[i] = (float)oneCount/(float)(i+1);
+    //     }
+    //     else
+    //     {
+    //         realProb[i] = (realProb[i-1]*accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/accuracyLength;
+    //     }
+    //     errRate[i] = (theoProb - realProb[i]);
+    //     // unsigned int andGate = outSeq[i] & inSeq[1][(i+seqLength-1)%seqLength];
+    //     unsigned int andGate = outSeq[i] & inSeq[1][i];
+    //     unsigned int inc = !andGate & inSeq[0][i];
+    //     unsigned int dec = andGate & !inSeq[0][i];
+    //     // printf("%u, %u, %u, %u, %u\n", andGate, inSeq[0][i], inSeq[1][i], inc, dec);
+    //     if (inc == 1 && dec == 0)
+    //     {
+    //         if (traceReg < upperBound)
+    //         {
+    //             traceReg = traceReg + 1;
+    //         }
+    //     }
+    //     else if (inc == 0 && dec == 1)
+    //     {
+    //         if (traceReg > 0)
+    //         {
+    //             traceReg = traceReg - 1;
+    //         }
+    //     }
+    //     // printf("%u\n", traceReg);
+    // }
 
     // printf("theoretical prob: %-.3f\n", theoProb);
     // printf("effective prob:   %-.3f, One: %5u, Total Bit: %5u\n", (float)effectiveOne/(float)effectiveBit, effectiveOne, effectiveBit);

@@ -8,18 +8,17 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class GDIV
+class MUXADD
 {
     vector<vector<unsigned int>> inSeq;
-    vector<float> inProb;
     vector<unsigned int> randNum;
-    unsigned int depth;
-    unsigned int depthSync;
+    vector<float> inProb;
     unsigned int inDim;
 
+    unsigned int bitLength;
     unsigned int seqLength;
     vector<unsigned int> outSeq;
-    float inCC;
+    vector<float> inCC;
     float theoProb;
     vector<float> realProb;
     vector<float> errRate;
@@ -28,15 +27,15 @@ class GDIV
     unsigned int ppStage;
 
     public:
-        GDIV();
-        ~GDIV();
+        MUXADD();
+        ~MUXADD();
         void Help();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();
         vector<unsigned int> OutSeq();
-        float InCC();
+        vector<float> InCC();
         vector<float> InProb();
         float TheoProb();
         vector<float> RealProb();

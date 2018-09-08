@@ -11,11 +11,12 @@ using namespace std;
 class UNITVECTOR
 {
     vector<vector<unsigned int>> inSeq;
-    vector<vector<unsigned int>> randNum;
+    vector<unsigned int> randAdd;
+    vector<unsigned int> randSqrt;
+    vector<vector<unsigned int>> randDiv;
     unsigned int bitLength;
     vector<float> inProb;
-    unsigned int inSeqDim;
-    unsigned int inRandDim;
+    unsigned int seqDim;
 
     unsigned int seqLength;
     vector<vector<unsigned int>> outSeq;
@@ -26,13 +27,19 @@ class UNITVECTOR
     vector<float> finalErrRate;
     vector<float> mse;
     string m_name;
-    unsigned int lowErrLen;
+    vector<unsigned int> lowErrLen;
 
     public:
         UNITVECTOR();
         ~UNITVECTOR();
-        void Init(vector<vector<unsigned int>>, vector<vector<unsigned int>>, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, vector<unsigned int>, vector<unsigned int>, vector<vector<unsigned int>>, string);
         void Calc();
         vector<vector<unsigned int>> OutSeq();
-        unsigned int LowErrLen();
+        vector<unsigned int> TheoProb();
+        vector<vector<unsigned int>> OutProb();
+        vector<vector<unsigned int>> ErrRate();
+        vector<unsigned int> FinalOutProb();
+        vector<unsigned int> FinalErrRate();
+        vector<unsigned int> MSE();
+        vector<unsigned int> LowErrLen();
 };

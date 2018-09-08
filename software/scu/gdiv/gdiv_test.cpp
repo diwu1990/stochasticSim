@@ -53,7 +53,7 @@ int main()
         unsigned int depth;
         unsigned int depthSync;
         // depth = (unsigned int)pow(2,3);
-        depth = 2;
+        depth = 4;
         depthSync = 6;
         for (int iter = 0; iter < totalIter; ++iter)
         {
@@ -81,7 +81,7 @@ int main()
             RandSeq.resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                RandSeq[z] = sobolinst.OutSeq()[2][z%(unsigned int)(pow(2,sobolBitLen))];
+                RandSeq[z] = sobolinst.OutSeq()[2][z%(unsigned int)(pow(2,sobolBitLen))] >> (sobolBitLen-(unsigned int)log2(depth));
             }
             RandNum2BitMulti num2bitMultiInst;
             num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
@@ -93,7 +93,7 @@ int main()
             syncInst.SeqGen();
 
             GDIV divInst;
-            divInst.Init(syncInst.OutSeq(),RandSeq,sobolBitLen,depth,depthSync,"divInst");
+            divInst.Init(syncInst.OutSeq(),RandSeq,depth,depthSync,"divInst");
             // divInst.Report();
             divInst.Calc();
             // for (int aaa = 0; aaa < seqLength; ++aaa)

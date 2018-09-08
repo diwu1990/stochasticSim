@@ -8,13 +8,10 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class GDIV
+class MUL
 {
     vector<vector<unsigned int>> inSeq;
     vector<float> inProb;
-    vector<unsigned int> randNum;
-    unsigned int depth;
-    unsigned int depthSync;
     unsigned int inDim;
 
     unsigned int seqLength;
@@ -28,10 +25,10 @@ class GDIV
     unsigned int ppStage;
 
     public:
-        GDIV();
-        ~GDIV();
+        MUL();
+        ~MUL();
         void Help();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, string);
         void Report();
         void Calc();
         void OutPrint();

@@ -1,23 +1,33 @@
-#include "gdiv.hpp"
+#include "mul.hpp"
 #include "seqprobmulti.hpp"
 #include "crosscorrelation.hpp"
-#include "skewedsynchronizer.hpp"
 
-GDIV::GDIV(){}
-GDIV::~GDIV(){}
-void GDIV::Help()
+MUL::MUL(){}
+
+MUL::~MUL(){}
+
+void MUL::Help()
 {
+    // void Report();
+    // void OutPrint();
+    // vector<unsigned int> OutSeq();
+    // float InCC();
+    // vector<float> InProb();
+    // float TheoProb();
+    // vector<float> RealProb();
+    // float FinalRealProb();
+    // vector<float> ErrRate();
+    // float FinalErrRate();
+    // unsigned int SeqLen();
     printf("**********************************************************\n");
     printf("**********************************************************\n");
-    printf("Calling GDIV Help. Following are instructions to GDIV Instance Usage:\n");
+    printf("Calling MUL Help. Following are instructions to MUL Instance Usage:\n");
     printf("1. inst.Init() method:\n");
-    printf("Configure the GDIV inst.\n");
-    printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Depth of Trace Register, Depth of Synchronizer, Instance Name.\n");
-    printf("Recommended Tracing Memory Length: 4\n");
-    printf("Depth of Synchronizer is not used for GDIV.\n");
+    printf("Configure the MUL inst.\n");
+    printf("Initial Parameters: Two Input Vectors.\n");
 
     printf("2. inst.Calc() method:\n");
-    printf("Calculate the quotient of two input sequences.\n");
+    printf("Calculate the product of two input sequences.\n");
 
     printf("3. inst.OutSeq() method:\n");
     printf("Return the calculated result.\n");
@@ -54,25 +64,19 @@ void GDIV::Help()
 
     printf("14. inst.PPStage() method:\n");
     printf("Return the pipline stages required by hardware.\n");
-
-    printf("15. inst.Report() method:\n");
-    printf("Report the current instance.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
 
-void GDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+void MUL::Init(vector<vector<unsigned int>> param1, string param2)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
     probCalc.Init(inSeq,"probCalc");
     probCalc.Calc();
+    // probCalc.ProbPrint();
     inProb = probCalc.OutProb();
-    randNum = param2;
-    depth = param3;
-    depthSync = param4;
-    m_name = param5;
-
+    m_name = param2;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 2)
     {
         inDim = (unsigned int)inSeq.size();
@@ -82,7 +86,7 @@ void GDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2
         printf("Error: Input Dimension is not 2.\n");
     }
 
-    if ((unsigned int)inSeq[0].size() == (unsigned int)inSeq[1].size() && (unsigned int)inSeq[0].size() == (unsigned int)randNum.size())
+    if ((unsigned int)inSeq[0].size() == (unsigned int)inSeq[1].size())
     {
         seqLength = (unsigned int)inSeq[0].size();
     }
@@ -90,14 +94,7 @@ void GDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2
     {
         printf("Error: Input Length is not the same.\n");
     }
-    if (inProb[1] == 0)
-    {
-        theoProb = 0;
-    }
-    else
-    {
-        theoProb = inProb[0] / inProb[1];
-    }
+    theoProb = inProb[0] * inProb[1];
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -117,51 +114,30 @@ void GDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2
     //     printf("\n");
     // }
     ppStage = 0;
-    for (int i = 0; i < seqLength; ++i)
-    {
-        if (randNum[i] > depth-1)
-        {
-            printf("Error: Range of random number is larger than the depth of trace register.\n");
-        }
-    }
 }
 
-void GDIV::Report()
+void MUL::Report()
 {
-    printf("Current GDIV:\n");
+    printf("Current MUL:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
-    printf("Bit Length of Tracer:   %u\n", depth);
     printf("Number of Seqsences:    %u\n", inDim);
     printf("Seqsence Length:        %u\n", seqLength);
     printf("Input Probability:      %f,%f\n", inProb[0], inProb[1]);
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
-// void GDIV::CalcQuot()
-void GDIV::Calc()
+void MUL::Calc()
 {
-
-    // *****************************************************************************
-    // counter based no correlation
-    // *****************************************************************************
     CrossCorrelation inputCC;
     inputCC.Init(inSeq,1,"inputCC");
     inputCC.Calc();
     inCC = inputCC.OutCC()[0];
-    unsigned int upperBound = (unsigned int)pow(2,depth)-1;
-    unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    unsigned int traceReg = halfBound;
-    unsigned int oneCount = 0;
     unsigned int accuracyLength = seqLength/2;
 
-    unsigned int effectiveBit = 0;
-    unsigned int effectiveOne = 0;
-    unsigned int reservedBit = 0;
-    unsigned int reservedOne = 0;
-
+    unsigned int oneCount = 0;
     for (int i = 0; i < seqLength; ++i)
     {
-        if (traceReg >= randNum[i])
+        if (inSeq[0][i] == 1 && inSeq[1][i] == 1)
         {
             outSeq[i] = 1;
         }
@@ -176,67 +152,35 @@ void GDIV::Calc()
         }
         else
         {
-            realProb[i] = (realProb[i-1]*accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/accuracyLength;
+            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
         }
         errRate[i] = (theoProb - realProb[i]);
-        // unsigned int andGate = outSeq[i] & inSeq[1][(i+seqLength-1)%seqLength];
-        unsigned int andGate = outSeq[i] & inSeq[1][i];
-        unsigned int inc = !andGate & inSeq[0][i];
-        unsigned int dec = andGate & !inSeq[0][i];
-        // printf("%u, %u, %u, %u, %u\n", andGate, inSeq[0][i], inSeq[1][i], inc, dec);
-        if (inc == 1 && dec == 0)
-        {
-            if (traceReg < upperBound)
-            {
-                traceReg = traceReg + 1;
-            }
-        }
-        else if (inc == 0 && dec == 1)
-        {
-            if (traceReg > 0)
-            {
-                traceReg = traceReg - 1;
-            }
-        }
-        // printf("%u\n", traceReg);
     }
-
     for (int i = 0; i < seqLength; ++i)
     {
-        // printf("%f\n", errRate[seqLength-1-i]);
-        // if (errRate[seqLength-1-i] > 0.05)
-        // {
-        //     printf("larger than 0.05\n");
-        // }
-        // if (errRate[seqLength-1-i] < -0.05)
-        // {
-        //     printf("smaller than -0.05\n");
-        // }
         if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
         {
             lowErrLen = seqLength-i;
             break;
         }
     }
-    // printf("%u\n", lowErrLen);
-    // printf("CalcQuot Done\n");
 }
 
-vector<unsigned int> GDIV::OutSeq()
+vector<unsigned int> MUL::OutSeq()
 {
     return outSeq;
 }
 
-unsigned int GDIV::PPStage()
+unsigned int MUL::PPStage()
 {
     return ppStage;
 }
 
-void GDIV::OutPrint()
+void MUL::OutPrint()
 {
-    printf("Calling OutPrint for GDIV instance: ");
+    printf("Calling OutPrint for MUL instance: ");
     std::cout << m_name << std::endl;
-    printf("Theoretical Probability: %.3f / %.3f = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], theoProb, inCC);
+    printf("Theoretical Probability: %.3f x %.3f = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], theoProb, inCC);
     printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
     printf("Low Error Length (5 percent approximation): %u\n", lowErrLen);
     // for (int i = 0; i < seqLength; ++i)
@@ -252,47 +196,49 @@ void GDIV::OutPrint()
     // printf("\n");
 }
 
-float GDIV::InCC()
+float MUL::InCC()
 {
     return inCC;
 }
 
-vector<float> GDIV::InProb()
+vector<float> MUL::InProb()
 {
     return inProb;
 }
 
-float GDIV::TheoProb()
+float MUL::TheoProb()
 {
     return theoProb;
 }
 
-vector<float> GDIV::RealProb()
+vector<float> MUL::RealProb()
 {
     return realProb;
 }
 
-float GDIV::FinalRealProb()
+float MUL::FinalRealProb()
 {
     return realProb[seqLength-1];
 }
 
-vector<float> GDIV::ErrRate()
+vector<float> MUL::ErrRate()
 {
     return errRate;
 }
 
-float GDIV::FinalErrRate()
+float MUL::FinalErrRate()
 {
     return errRate[seqLength-1];
 }
 
-unsigned int GDIV::SeqLen()
+unsigned int MUL::SeqLen()
 {
     return seqLength;
 }
 
-unsigned int GDIV::LowErrLen()
+unsigned int MUL::LowErrLen()
 {
     return lowErrLen;
 }
+
+

@@ -8,6 +8,11 @@
 #include "systemrandmulti.hpp"
 #include <cstdlib>
 #include <ctime>
+#include "gdiv.hpp"
+#include "iscbdiv.hpp"
+#include "gsqrt.hpp"
+#include "jkdivbisqrt.hpp"
+#include "iscbdivbisqrt.hpp"
 #include "unitvector.hpp"
 
 int main()
