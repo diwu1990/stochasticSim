@@ -61,7 +61,7 @@ void MUXADD::Help()
     printf("**********************************************************\n");
 }
 
-void MUXADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void MUXADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, string param3)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -69,8 +69,7 @@ void MUXADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> para
     probCalc.Calc();
     inProb = probCalc.OutProb();
     randNum = param2;
-    bitLength = param3;
-    m_name = param4;
+    m_name = param3;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() >= 2)
     {
         inDim = (unsigned int)inSeq.size();
@@ -135,7 +134,6 @@ void MUXADD::Report()
     std::cout << "Instance name:          " << m_name << std::endl;
     printf("Number of Seqsences:    %u\n", inDim);
     printf("Seqsence Length:        %u\n", seqLength);
-    printf("Random Num Bit Length:  %u\n", bitLength);
     printf("Theoretical Probability:%f\n", theoProb);
 }
 
