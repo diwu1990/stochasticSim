@@ -30,7 +30,7 @@ class MUXADD
         MUXADD();
         ~MUXADD();
         void Help();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, vector<unsigned int>, string);
         void Report();
         void Calc();
         void OutPrint();
