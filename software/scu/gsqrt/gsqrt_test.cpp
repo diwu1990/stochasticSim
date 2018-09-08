@@ -51,7 +51,7 @@ int main()
         vector<float> val(2);
         unsigned int depth;
         // depth = (unsigned int)pow(2,3);
-        depth = 2;
+        depth = 4;
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
@@ -76,7 +76,7 @@ int main()
             RandSeq.resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                RandSeq[z] = sobolinst.OutSeq()[1][z%(unsigned int)(pow(2,sobolBitLen))];
+                RandSeq[z] = sobolinst.OutSeq()[1][z%(unsigned int)(pow(2,sobolBitLen))] >> (sobolBitLen - (unsigned int)log2(depth));
             }
             RandNum2Bit num2bitInst;
             num2bitInst.Init(probVec[0],bitLengthVec[0],inRandNum,"num2bitInst");
@@ -90,7 +90,7 @@ int main()
             //     /* code */
             // }
             GSQRT sqrtInst;
-            sqrtInst.Init(num2bitInst.OutSeq(),RandSeq,sobolBitLen,"sqrtInst");
+            sqrtInst.Init(num2bitInst.OutSeq(),RandSeq,depth,"sqrtInst");
             // sqrtInst.Report();
             sqrtInst.Calc();
             // sqrtInst.OutPrint();
