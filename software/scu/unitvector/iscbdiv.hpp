@@ -13,10 +13,8 @@ class ISCBDIV
     vector<vector<unsigned int>> inSeq;
     vector<float> inProb;
     vector<unsigned int> randNum;
-    unsigned int bitLength;
     unsigned int depth;
     unsigned int depthSync;
-    unsigned int logDepth;
     unsigned int inDim;
 
     unsigned int seqLength;
@@ -33,7 +31,7 @@ class ISCBDIV
         ISCBDIV();
         ~ISCBDIV();
         void Help();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, unsigned int, string);
+        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();

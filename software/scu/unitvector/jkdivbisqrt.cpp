@@ -12,8 +12,8 @@ void JKDIVBISQRT::Help()
     printf("Calling JKDIVBISQRT Help. Following are instructions to JKDIVBISQRT Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the JKDIVBISQRT inst.\n");
-    printf("Initial Parameters: Input Vector, Random Number Seqsence, Bit Length of Random Number, Instance Name.\n");
-    printf("Recommended Tracing Memory Bit Length: 2\n");
+    printf("Initial Parameters: Input Vector, Random Number Seqsence, Trace Register Depth, Instance Name.\n");
+    printf("Recommended Tracing Memory Length: 2\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
@@ -68,7 +68,7 @@ void JKDIVBISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2,
     probCalc.Calc();
     inProb = probCalc.OutProb();
     randNum = param2;
-    bitLength = param3;
+    depth = param3;
     m_name = param4;
 
     seqLength = (unsigned int)inSeq.size();
@@ -90,7 +90,6 @@ void JKDIVBISQRT::Report()
 {
     printf("Current JKDIVBISQRT:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
-    printf("Bit Length of RandNum:  %u\n", bitLength);
     printf("Seqsence Length:        %u\n", seqLength);
     printf("Input Probability:      %f\n", inProb);
     printf("Theoretical Probability:%f\n", theoProb);
@@ -104,58 +103,6 @@ void JKDIVBISQRT::Calc()
     autocorrelationInst.Calc();
     inAC = autocorrelationInst.OutAC();
     unsigned int accuracyLength = seqLength/2;
-
-    // // *****************************************************************************
-    // // counter based no correlation
-    // // *****************************************************************************
-    // unsigned int depth = 5;
-    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
-    // unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    // unsigned int traceReg = halfBound;
-    // unsigned int oneCount = 0;
-
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     if (traceReg >= (randNum[i] >> (bitLength-depth)))
-    //     {
-    //         outSeq[i] = 1;
-    //     }
-    //     else
-    //     {
-    //         outSeq[i] = 0;
-    //     }
-    //     oneCount += outSeq[i];
-    //     if (i < accuracyLength)
-    //     {
-    //         realProb[i] = (float)oneCount/(float)(i+1);
-    //     }
-    //     else
-    //     {
-    //         realProb[i] = (realProb[i-1]*accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/accuracyLength;
-    //     }
-    //     errRate[i] = (theoProb - realProb[i]);
-    //     unsigned int andGate = outSeq[i] & outSeq[(i+seqLength-1)%seqLength];
-    //     unsigned int inc = inSeq[i];
-    //     unsigned int dec = andGate;
-    //     if (inc == 1 && dec == 0)
-    //     {
-    //         if (traceReg < upperBound)
-    //         {
-    //             traceReg = traceReg + 1;
-    //         }
-    //     }
-    //     else if (inc == 0 && dec == 1)
-    //     {
-    //         if (traceReg > 0)
-    //         {
-    //             traceReg = traceReg - 1;
-    //         }
-    //     }
-    // }
-
-    // AutoCorrelation jkACout;
-    // jkACout.Init(JKFF, 1, 1/(1+theoProb), "jkACout");
-    // jkACout.Calc();
 
 
     // *****************************************************************************
@@ -208,93 +155,6 @@ void JKDIVBISQRT::Calc()
         }
     }
 
-    // SeqProb jkProb;
-    // jkProb.Init(JKFF, "jkProb");
-    // jkProb.Calc();
-    // AutoCorrelation jkACin;
-    // jkACin.Init(outSeq, 1, theoProb, "jkACin");
-    // jkACin.Calc();
-    // AutoCorrelation jkACout;
-    // jkACout.Init(JKFF, 1, 1/(1+theoProb), "jkACout");
-    // jkACout.Calc();
-    // vector<vector<unsigned int>> selinSeq(2);
-    // selinSeq[0] = inSeq;
-    // selinSeq[1] = JKFF;
-    // CrossCorrelation selCC;
-    // selCC.Init(selinSeq, 1, "selCC");
-    // selCC.Calc();
-
-
-    // printf("jkACin: %f\n", jkACin.OutAC());
-    // printf("jkACout: %f\n", jkACout.OutAC());
-    // printf("selinCC: %f\n", selCC.OutCC());
-    // printf("InProb: %.5f\n", inProb);
-    // printf("Theo OutProb: %.5f\n", theoProb);
-    // printf("Real OutProb: %.5f\n", realProb[seqLength-1]);
-    // printf("Theo Sel Prob: %.5f\n", 1/(1+sqrt(inProb)));
-    // printf("Real Sel Prob: %.5f\n", jkProb.OutProb());
-
-
-    // // *****************************************************************************
-    // // bit inserting with simplified iscvdiv for 1/(1+Po)
-    // // *****************************************************************************
-    // vector<unsigned int> DFF(seqLength);
-    // vector<unsigned int> INV(seqLength);
-    // vector<unsigned int> andGate(seqLength);
-    // vector<unsigned int> orGate(seqLength);
-    // unsigned int depth = 2;
-    // unsigned int logDepth = (unsigned int)log2(depth);
-    // vector<unsigned int> traceReg(depth);
-
-    // for (int i = 0; i < depth; ++i)
-    // {
-    //     traceReg[i] = 0;
-    // }
-
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     DFF[i] = i%2;
-    //     INV[i] = 1-DFF[i];
-    // }
-    // unsigned int oneCount = 0; // calc the ones in output seq
-    // vector<unsigned int> mux0sel(seqLength);
-    // vector<unsigned int> mux1out(seqLength);
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     mux1out[i] = 1;
-    // }
-
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     mux0sel[i] = traceReg[(randNum[i] >> (bitLength - logDepth))];
-    //     // mux0sel[i] = mux1out[(i+seqLength-1)%seqLength];
-    //     outSeq[i] = mux0sel[i] ? inSeq[i] : 1;
-    //     andGate[i] = outSeq[i] & INV[i];
-    //     orGate[i] = andGate[i] | DFF[i];
-    //     mux1out[i] = orGate[i] ? DFF[i] : mux0sel[i];
-
-    //     if (orGate[i] == 1)
-    //     {
-    //         for (int index = 0; index < depth-1; ++index)
-    //         {
-    //             traceReg[index] = traceReg[index+1];
-    //         }
-    //         traceReg[depth-1] = mux1out[i];
-    //     }
-        
-    //     oneCount += outSeq[i];
-    //     if (i < accuracyLength)
-    //     {
-    //         realProb[i] = (float)oneCount/(float)(i+1);
-    //     }
-    //     else
-    //     {
-    //         realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
-    //     }
-    //     // errRate[i] = (theoProb - realProb[i])/theoProb;
-    //     errRate[i] = (theoProb - realProb[i]);
-    //     // printf("(inSeq)%u, (mux0sel)%u, (outSeq)%u, (andGate)%u, (orGate)%u, (mux1out)%u\n", inSeq[i], mux0sel[i], outSeq[i], andGate[i], orGate[i], mux1out[i]);
-    // }
 
     for (int i = 0; i < seqLength; ++i)
     {
@@ -304,48 +164,6 @@ void JKDIVBISQRT::Calc()
             break;
         }
     }
-    // AutoCorrelation outACinst;
-    // outACinst.Init(outSeq, 1, theoProb, "outACinst");
-    // outACinst.Calc();
-    // printf("%f\n", outACinst.OutAC());
-
-
-    // printf("%f\n", inProb);
-
-    // SeqProb mux0selProb;
-    // mux0selProb.Init(mux0sel, "mux0selProb");
-    // mux0selProb.Calc();
-    // mux0selProb.ProbPrint();
-
-    // SeqProb andGateProb;
-    // andGateProb.Init(andGate, "andGateProb");
-    // andGateProb.Calc();
-    // andGateProb.ProbPrint();
-
-    // SeqProb orGateProb;
-    // orGateProb.Init(orGate, "orGateProb");
-    // orGateProb.Calc();
-    // orGateProb.ProbPrint();
-
-    // SeqProb mux1outProb;
-    // mux1outProb.Init(mux1out, "mux1outProb");
-    // mux1outProb.Calc();
-    // mux1outProb.ProbPrint();
-
-    // SeqProb outSeqProb;
-    // outSeqProb.Init(outSeq, "outSeqProb");
-    // outSeqProb.Calc();
-    // outSeqProb.ProbPrint();
-
-    // printf("%f, %f\n", 1/(1+outSeqProb.OutProb()), mux1outProb.OutProb());
-    // vector<vector<unsigned int>> selinSeq(2);
-    // selinSeq[0] = inSeq;
-    // selinSeq[1] = mux0sel;
-
-    // CrossCorrelation selCC;
-    // selCC.Init(selinSeq, 1, "selCC");
-    // selCC.Calc();
-    // selCC.CCPrint();
 }
 
 vector<unsigned int> JKDIVBISQRT::OutSeq()
