@@ -16,7 +16,7 @@ class JKDIVBISQRT
     float outAC;
     vector<unsigned int> randNum;
     unsigned int bitLength;
-    unsigned int logDepth;
+    unsigned int depth;
 
     unsigned int seqLength;
     vector<unsigned int> outSeq;
