@@ -14,7 +14,9 @@ class UNITVECTOR
     vector<unsigned int> randAdd;
     vector<unsigned int> randSqrt;
     vector<vector<unsigned int>> randDiv;
-    unsigned int bitLength;
+    unsigned int depthSqrt;
+    unsigned int depthDiv;
+    unsigned int depthDivSync;
     vector<float> inProb;
     unsigned int seqDim;
 
@@ -28,18 +30,23 @@ class UNITVECTOR
     vector<float> mse;
     string m_name;
     vector<unsigned int> lowErrLen;
+    float finalMSE;
+    float avgLowErrLen;
 
     public:
         UNITVECTOR();
         ~UNITVECTOR();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, vector<unsigned int>, vector<vector<unsigned int>>, string);
+        void Init(vector<vector<unsigned int>>, vector<unsigned int>, vector<unsigned int>, vector<vector<unsigned int>>, unsigned int, unsigned int, unsigned int, string);
         void Calc();
         vector<vector<unsigned int>> OutSeq();
-        vector<unsigned int> TheoProb();
-        vector<vector<unsigned int>> OutProb();
-        vector<vector<unsigned int>> ErrRate();
-        vector<unsigned int> FinalOutProb();
-        vector<unsigned int> FinalErrRate();
-        vector<unsigned int> MSE();
+        vector<float> InProb();
+        vector<float> TheoProb();
+        vector<vector<float>> RealProb();
+        vector<vector<float>> ErrRate();
+        vector<float> FinalRealProb();
+        vector<float> FinalErrRate();
+        vector<float> MSE();
         vector<unsigned int> LowErrLen();
+        float FinalMSE();
+        float AvgLowErrLen();
 };

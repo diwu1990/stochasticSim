@@ -1,18 +1,20 @@
-#include "add.hpp"
-#include "apcadd.hpp"
-#include "exp.hpp"
-#include "expscaled.hpp"
-#include "div.hpp"
-#include "softmax.hpp"
+#include "mul.hpp"
+#include "muxadd.hpp"
+#include "gdiv.hpp"
+#include "cordiv.hpp"
+#include "iscbdiv.hpp"
+#include "gsqrt.hpp"
+#include "jkdivbisqrt.hpp"
+#include "iscbdivbisqrt.hpp"
 #include "seqprob.hpp"
 #include "seqprobmulti.hpp"
-#include "crosscorrelation.hpp"
+#include "unitvector.hpp"
 
 UNITVECTOR::UNITVECTOR(){}
 
 UNITVECTOR::~UNITVECTOR(){}
 
-void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<vector<unsigned int>> param4, unsigned int param5, string param6);
+void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<vector<unsigned int>> param4, unsigned int param5, unsigned int param6, unsigned int param7, string param8)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -22,8 +24,10 @@ void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> 
     randAdd = param2;
     randSqrt = param3;
     randDiv = param4;
-    bitLength = param5;
-    m_name = param6;
+    depthSqrt = param5;
+    depthDiv = param6;
+    depthDivSync = param7;
+    m_name = param8;
 
     if ((unsigned int)inSeq.size() == (unsigned int)randDiv.size())
     {
@@ -56,7 +60,7 @@ void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> 
     for (int i = 0; i < seqDim; ++i)
     {
         theoProb[i] = inProb[i]/rms;
-        printf("unitvector(%d): %f, %f\n", i, inProb[i], theoProb[i]);
+        // printf("unitvector(%d): %f, %f\n", i, inProb[i], theoProb[i]);
     }
 
     // printf("cccc\n");
@@ -66,6 +70,7 @@ void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> 
     finalRealProb.resize(seqDim);
     finalErrRate.resize(seqDim);
 
+    // printf("flag1\n");
     for (int i = 0; i < seqDim; ++i)
     {
         outSeq[i].resize(seqLength);
@@ -79,13 +84,25 @@ void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> 
         }
     }
 
+    // printf("flag2\n");
     // printf("dddd\n");
     mse.resize(seqLength);
+    // printf("flag3\n");
     for (int i = 0; i < seqLength; ++i)
     {
         mse[i] = 0;
     }
-    lowErrLen = 0;
+    // printf("flag4\n");
+    lowErrLen.resize(seqDim);
+    for (int i = 0; i < seqDim; ++i)
+    {
+        // printf("start)%d\n", i);
+        lowErrLen[i] = 0;
+        // printf("end)%d\n", i);
+    }
+    // printf("flag5\n");
+    finalMSE = 0;
+    avgLowErrLen = 0;
 }
 
 void UNITVECTOR::Calc()
@@ -97,6 +114,7 @@ void UNITVECTOR::Calc()
     }
     unsigned int  accuracyLength = seqLength/2;
 
+    // printf("start=>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
     // square of input
     vector<vector<unsigned int>> outSquare(seqDim);
     for (int i = 0; i < seqDim; ++i)
@@ -109,75 +127,87 @@ void UNITVECTOR::Calc()
             inSquare[0][j] = inSeq[i][j];
             inSquare[1][j] = inSeq[i][(j-1+seqLength)%seqLength];
         }
-        MUL squareInst(inSquare,"squareInst");
+        MUL squareInst;
+        squareInst.Init(inSquare,"squareInst");
         squareInst.Calc();
         outSquare[i] = squareInst.OutSeq();
+        // printf("%f->%f(%f)\n", squareInst.TheoProb(), squareInst.FinalRealProb(), squareInst.FinalErrRate());
     }
+    // printf("square done!\n\n");
 
     // sum all square
     vector<unsigned int> outMuxAdd(seqLength);
-    MUXADD muxaddInst(outSquare, randAdd, "muxaddInst");
+    MUXADD muxaddInst;
+    muxaddInst.Init(outSquare, randAdd, "muxaddInst");
     muxaddInst.Calc();
     outMuxAdd = muxaddInst.OutSeq();
+    // printf("%f->%f(%f)\n", muxaddInst.TheoProb(), muxaddInst.FinalRealProb(), muxaddInst.FinalErrRate());
+    // printf("sum done!\n\n");
 
     // get the square root of sum
     vector<unsigned int> outSqrt(seqLength);
-    GSQRT sqrtInst(outMuxAdd, randSqrt, "sqrtInst");
-    // JKDIVBISQRT sqrtInst(outMuxAdd, randSqrt, "sqrtInst");
-    // ISCBDIVBISQRT sqrtInst(outMuxAdd, randSqrt, "sqrtInst");
+    // GSQRT sqrtInst;
+    // JKDIVBISQRT sqrtInst;
+    ISCBDIVBISQRT sqrtInst;
+    sqrtInst.Init(outMuxAdd, randSqrt, depthSqrt, "sqrtInst");
     sqrtInst.Calc();
     outSqrt = sqrtInst.OutSeq();
+    // printf("%f->%f(%f)\n", sqrtInst.TheoProb(), sqrtInst.FinalRealProb(), sqrtInst.FinalErrRate());
+    // printf("square root done!\n\n");
 
-    // division for each
-
-
-
-    // // sum for all exp output
-    // // scale sum by 16
-    // ADD sumInst;
-    // sumInst.Init(expOut, randNum[3] , bitLength, "addInst");
-    // sumInst.Calc();
-
-    // Or all the sums
-    vector<unsigned int> sumArray(seqLength);
-    for (int i = 0; i < seqLength; ++i)
+    // get the inProb[i]/seqDim
+    vector<vector<unsigned int>> inSeqSmall(seqDim);
+    vector<vector<unsigned int>> outSeqSmall(seqDim);
+    for (int i = 0; i < seqDim; ++i)
     {
-        sumArray[i] = 0;
+        inSeqSmall[i].resize(seqLength);
+        outSeqSmall[i].resize(seqLength);
+    }
+    for (int i = 0; i < seqDim; ++i)
+    {
         for (int j = 0; j < seqDim; ++j)
         {
-            sumArray[i] |= expOut[j][i];
+            if (i == j)
+            {
+                inSeqSmall[j] = inSeq[j];
+            }
+            else
+            {
+                for (int k = 0; k < seqLength; ++k)
+                {
+                    inSeqSmall[j][k] = 0;
+                }
+            }
         }
+
+        MUXADD inSeqSmallInst;
+        inSeqSmallInst.Init(inSeqSmall, randAdd, "inSeqSmallInst");
+        inSeqSmallInst.Calc();
+        outSeqSmall[i] = inSeqSmallInst.OutSeq();
+        // printf("%f->%f(%f)\n", inSeqSmallInst.TheoProb(), inSeqSmallInst.FinalRealProb(), inSeqSmallInst.FinalErrRate());
     }
+    // printf("input scaling done!\n\n");
 
-    // SeqProb sumProbInst;
-    // sumProbInst.Init(sumInst.OutSeq() , "sumProbInst");
-    // sumProbInst.Calc();
-    // printf("%f\n", sumProbInst.OutProb());
-
-    // division for output
+    // division for each
     vector<vector<unsigned int>> divInSeq(2);
     for (int i = 0; i < 2; ++i)
     {
         divInSeq[i].resize(seqLength);
     }
-    // divInSeq[1] = sumInst.OutSeq();
-    divInSeq[1] = sumArray;
-    unsigned int depth = 4;
+    divInSeq[1] = outMuxAdd;
     for (int i = 0; i < seqDim; ++i)
     {
-        for (int j = 0; j < seqLength; ++j)
-        {
-            // divInSeq[0][j] = ((randNum[4][j] >> (bitLength - (unsigned int)log2(seqDim))) == 0) ? expOut[i][j] : 0;
-            divInSeq[0][j] = expOut[i][j];
-        }
-        DIV divInst;
-        divInst.Init(divInSeq, randNum[4], bitLength, depth, "divInst");
+        divInSeq[0] = outSeqSmall[i];
+        // GDIV divInst;
+        // CORDIV divInst;
+        ISCBDIV divInst;
+        divInst.Init(divInSeq, randDiv[i], depthDiv, depthDivSync, "divInst");
         divInst.Calc();
         outSeq[i] = divInst.OutSeq();
-        printf("div(%d): %.3f,%.3f,%.3f,%.3f\n", i, divInst.InProb()[0], divInst.InProb()[1], divInst.TheoProb(), divInst.FinalRealProb());
+        // printf("(%f,%f)%f->%f(%f)\n", divInst.InProb()[0], divInst.InProb()[1], divInst.TheoProb(), divInst.FinalRealProb(), divInst.FinalErrRate());
     }
+    // printf("division done!\n\n");
 
-    unsigned int accuracyLength = 128;
     for (int i = 0; i < seqDim; ++i)
     {
         for (int z = 0; z < seqLength; ++z)
@@ -193,17 +223,22 @@ void UNITVECTOR::Calc()
             }
             errRate[i][z] = (theoProb[i] - realProb[i][z]);
         }
+        finalRealProb[i] = realProb[i][seqLength-1];
+        finalErrRate[i] = errRate[i][seqLength-1];
     }
-    
-    // find the convergence point
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
-    //     {
-    //         lowErrLen = seqLength-i;
-    //         break;
-    //     }
-    // }
+    // printf("errRate and realProb done!\n\n");
+
+    for (int i = 0; i < seqDim; ++i)
+    {
+        for (int j = 0; j < seqLength; ++j)
+        {
+            if (errRate[i][seqLength-1-j] > 0.05 || errRate[i][seqLength-1-j] < -0.05)
+            {
+                lowErrLen[i] = seqLength-j;
+                break;
+            }
+        }
+    }
 
     for (int i = 0; i < seqLength; ++i)
     {
@@ -211,22 +246,105 @@ void UNITVECTOR::Calc()
         {
             mse[i] += errRate[j][i]*errRate[j][i];
         }
-        mse[i] /= sqrt(mse[i]/(float)seqDim);
+        mse[i] = sqrt(mse[i]/(float)seqDim);
         // printf("%.3f,", mse[i]);
     }
-    // printf("\n");
-    // for (int i = 0; i < seqDim; ++i)
-    // {
-    //     for (int j = 0; j < seqLength; ++j)
-    //     {
-    //         // printf("%f,", errRate[i][j]);
-    //         printf("%f,", realProb[i][j]);
-    //     }
-    //     printf("\n");
-    // }
+    // printf("\nmse done!\n\n");
+    finalMSE = mse[seqLength-1];
+    for (int i = 0; i < seqDim; ++i)
+    {
+        avgLowErrLen += (float)lowErrLen[i];
+    }
+    avgLowErrLen = avgLowErrLen/(float)seqDim;
 }
 
 vector<vector<unsigned int>> UNITVECTOR::OutSeq()
 {
     return outSeq;
+}
+
+vector<float> UNITVECTOR::InProb()
+{
+    // printf("In Prob:\n");
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     printf("%f\n", inProb[i]);
+    // }
+    // printf("\n");
+    return inProb;
+}
+
+vector<float> UNITVECTOR::TheoProb()
+{
+    // printf("Theo Prob:\n");
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     printf("%f\n", theoProb[i]);
+    // }
+    // printf("\n");
+    return theoProb;
+}
+
+vector<vector<float>> UNITVECTOR::RealProb()
+{
+    return realProb;
+}
+
+vector<vector<float>> UNITVECTOR::ErrRate()
+{
+    return errRate;
+}
+
+vector<float> UNITVECTOR::FinalRealProb()
+{
+    // printf("Final Real Prob:\n");
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     printf("%f\n", finalRealProb[i]);
+    // }
+    // printf("\n");
+    return finalRealProb;
+}
+
+vector<float> UNITVECTOR::FinalErrRate()
+{
+    // printf("Final Error Rate:\n");
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     printf("%f\n", finalErrRate[i]);
+    // }
+    // printf("\n");
+    return finalErrRate;
+}
+
+float UNITVECTOR::FinalMSE()
+{
+    // printf("Final MSE:\n");
+    // printf("%f\n", finalMSE);
+    // printf("\n");
+    return finalMSE;
+}
+
+vector<float> UNITVECTOR::MSE()
+{
+    return mse;
+}
+
+vector<unsigned int> UNITVECTOR::LowErrLen()
+{
+    // printf("Low Err Len:\n");
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     printf("%u\n", lowErrLen[i]);
+    // }
+    // printf("\n");
+    return lowErrLen;
+}
+
+float UNITVECTOR::AvgLowErrLen()
+{
+    // printf("Avg Low Err Len:\n");
+    // printf("%u\n", avgLowErrLen);
+    // printf("\n");
+    return avgLowErrLen;
 }
