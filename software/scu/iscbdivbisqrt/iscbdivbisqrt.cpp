@@ -221,6 +221,43 @@ void ISCBDIVBISQRT::Calc()
     // selCC.Init(selinSeq, 1, "selCC");
     // selCC.Calc();
     // selCC.CCPrint();
+
+
+    // muxSCC
+    vector<vector<unsigned int>> muxSCCSeq(2);
+    muxSCCSeq[0].resize(seqLength);
+    muxSCCSeq[0] = inSeq;
+    muxSCCSeq[1].resize(seqLength);
+    muxSCCSeq[1] = mux0sel;
+    
+    CrossCorrelation muxSCCInst;
+    muxSCCInst.Init(muxSCCSeq, 1, "muxSCCInst");
+    muxSCCInst.Calc();
+    muxSCC = muxSCCInst.OutCC()[0];
+
+    // traceSAC
+    float traceSACProb;
+
+    SeqProb selProbCalc;
+    selProbCalc.Init(outSeq,"selProbCalc");
+    selProbCalc.Calc();
+    traceSACProb = selProbCalc.OutProb();
+    
+    AutoCorrelation traceSACInst;
+    traceSACInst.Init(outSeq, 1, realProb[seqLength-1], "traceSACInst");
+    traceSACInst.Calc();
+    traceSAC = traceSACInst.OutAC();
+}
+
+
+float ISCBDIVBISQRT::TraceSAC()
+{
+    return traceSAC;
+}
+
+float ISCBDIVBISQRT::MuxSCC()
+{
+    return muxSCC;
 }
 
 vector<unsigned int> ISCBDIVBISQRT::OutSeq()
