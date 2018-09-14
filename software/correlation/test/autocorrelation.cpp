@@ -80,5 +80,12 @@ void AutoCorrelation::Calc()
         numerator = numerator + (bitVec[i] - expectation) * (bitVec[i+offset] - expectation);
     }
 
-    outAC = numerator/denominator;
+    if (expectation == 1)
+    {
+        outAC = 1;
+    }
+    else
+    {
+        outAC = numerator/denominator;
+    }
 }
