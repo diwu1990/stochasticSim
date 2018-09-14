@@ -26,6 +26,8 @@ int main()
     vector<float> tenFoldCorr(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
+    vector<float> tenFoldMuxSCC(foldNum);
+    vector<float> tenFoldTraceSAC(foldNum);
     unsigned int initialDim = 0;
     for (int index = initialDim; index < initialDim+foldNum-1; ++index)
     {
@@ -36,6 +38,8 @@ int main()
             tenFoldCorr[i] = 0;
             tenFoldNum[i] = 0;
             tenFoldLowErrLen[i] = 0;
+            tenFoldMuxSCC[i] = 0;
+            tenFoldTraceSAC[i] = 0;
         }
         unsigned int sobolInitIdx = 1+index;
         unsigned int delay = 1;
@@ -98,12 +102,13 @@ int main()
             // {
                 // sqrtInst.OutPrint();
             // }
-
             tenFoldErr[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.FinalErrRate() * sqrtInst.FinalErrRate();
             tenFoldBias[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.FinalErrRate();
             tenFoldCorr[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.InAC();
             tenFoldNum[(unsigned int)floor(sqrtInst.TheoProb()*10)] += 1;
             tenFoldLowErrLen[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.LowErrLen();
+            tenFoldMuxSCC[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.MuxSCC();
+            tenFoldTraceSAC[(unsigned int)floor(sqrtInst.TheoProb()*10)] += sqrtInst.TraceSAC();
         }
         for (int y = 0; y < foldNum; ++y)
         {
@@ -111,14 +116,15 @@ int main()
             tenFoldCorr[y] = tenFoldCorr[y]/tenFoldNum[y];
             tenFoldBias[y] = tenFoldErr[y]/tenFoldNum[y];
             tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
+            tenFoldMuxSCC[y] = (tenFoldMuxSCC[y]/tenFoldNum[y]);
+            tenFoldTraceSAC[y] = (tenFoldTraceSAC[y]/tenFoldNum[y]);
         }
-        
 
         printf("Ten Fold with Depth %u, initial sobolIdx %u, delay %u.\n", depth, sobolInitIdx, delay);
-        printf("Range, Freq, Correlation, Error Rate, Stat Bias, LowErrLen:\n");
+        printf("Range, Freq, Correlation, Error Rate, Stat Bias, LowErrLen,    MuxSCC,  TraceSAC:\n");
         for (int i = 0; i < foldNum; ++i)
         {
-            printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
+            printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i], 9, tenFoldMuxSCC[i], 9, tenFoldTraceSAC[i]);
         }
         printf("\n");
     }

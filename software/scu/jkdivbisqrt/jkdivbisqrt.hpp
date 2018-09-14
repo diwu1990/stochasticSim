@@ -26,6 +26,8 @@ class JKDIVBISQRT
     string m_name;
     unsigned int lowErrLen;
     unsigned int ppStage;
+    float muxSCC;
+    float traceSAC;
 
     public:
         JKDIVBISQRT();
@@ -47,4 +49,6 @@ class JKDIVBISQRT
         unsigned int SeqLen();
         unsigned int LowErrLen();
         unsigned int PPStage();
+        float MuxSCC();
+        float TraceSAC();
 };
