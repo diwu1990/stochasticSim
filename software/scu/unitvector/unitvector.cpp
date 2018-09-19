@@ -103,6 +103,13 @@ void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> 
     // printf("flag5\n");
     finalMSE = 0;
     avgLowErrLen = 0;
+    theoSqrtProb = 0;
+    for (int i = 0; i < seqDim; ++i)
+    {
+        theoSqrtProb += inProb[i]*inProb[0];
+    }
+    theoSqrtProb /= seqDim;
+    theoSqrtProb = sqrt(theoSqrtProb);
 }
 
 void UNITVECTOR::Calc()
@@ -152,6 +159,7 @@ void UNITVECTOR::Calc()
     sqrtInst.Init(outMuxAdd, randSqrt, depthSqrt, "sqrtInst");
     sqrtInst.Calc();
     outSqrt = sqrtInst.OutSeq();
+    sqrtMse = sqrt((sqrtInst.FinalRealProb()-theoSqrtProb)*(sqrtInst.FinalRealProb()-theoSqrtProb));
     // printf("%f->%f(%f)\n", sqrtInst.TheoProb(), sqrtInst.FinalRealProb(), sqrtInst.FinalErrRate());
     // printf("square root done!\n\n");
 
@@ -347,4 +355,9 @@ float UNITVECTOR::AvgLowErrLen()
     // printf("%u\n", avgLowErrLen);
     // printf("\n");
     return avgLowErrLen;
+}
+
+float UNITVECTOR::SqrtMSE()
+{
+    return sqrtMse;
 }

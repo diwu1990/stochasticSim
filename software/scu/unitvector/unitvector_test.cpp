@@ -28,6 +28,7 @@ int main()
     unsigned int seqLength = (unsigned int)pow(2,bitLength);
     float avgErr = 0;
     float avgLen = 0;
+    float avgSumMse = 0;
     for (int index = 2; index < 3; ++index)
     {
         avgErr = 0;
@@ -119,10 +120,12 @@ int main()
             // instance.FinalMSE();
             avgErr += instance.FinalMSE();
             avgLen += instance.AvgLowErrLen();
+            avgSumMse += instance.SqrtMSE();
         }
         avgErr /= totalIter;
         avgLen /= totalIter;
-        printf("\nAVG ERR: %f, AVG LEN: %f\n", avgErr, avgLen);
+        avgSumMse /= totalIter;
+        printf("\nAVG ERR: %f, AVG LEN: %f, AVG SUM MESE: %f\n", avgErr, avgLen, avgSumMse);
     }
     
 }

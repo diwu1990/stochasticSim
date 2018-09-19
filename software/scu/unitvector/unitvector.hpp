@@ -33,6 +33,9 @@ class UNITVECTOR
     float finalMSE;
     float avgLowErrLen;
 
+    float theoSqrtProb;
+    float sqrtMse;
+
     public:
         UNITVECTOR();
         ~UNITVECTOR();
@@ -49,4 +52,6 @@ class UNITVECTOR
         vector<unsigned int> LowErrLen();
         float FinalMSE();
         float AvgLowErrLen();
+        float SqrtMSE();
+
 };
