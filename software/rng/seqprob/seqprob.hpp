@@ -10,7 +10,7 @@ using namespace std;
 
 class SeqProb
 {
-    vector<unsigned int> inSeq;
+    vector<char> inSeq;
     string m_name;
     unsigned int seqLength;
     float outProb;
