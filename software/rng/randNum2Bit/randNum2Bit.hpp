@@ -13,7 +13,7 @@ class RandNum2Bit
     float expectation;
     unsigned int bitLength;
     vector<unsigned int> NumVec;
-    vector<unsigned int> bitVec;
+    vector<char> bitVec;
     string m_name;
 
 public:
@@ -24,5 +24,5 @@ public:
     void SeqPrint();
     void Init(float, unsigned int, vector<unsigned int>, string);
     void SeqGen();
-    vector<unsigned int> OutSeq();
+    vector<char> OutSeq();
 };
