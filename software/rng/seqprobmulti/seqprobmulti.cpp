@@ -23,7 +23,7 @@ void SeqProbMulti::Help()
     printf("**********************************************************\n");
 }
 
-void SeqProbMulti::Init(vector<vector<unsigned int>> param1, string param2)
+void SeqProbMulti::Init(vector<vector<char>> param1, string param2)
 {
     inSeq = param1;
     inDim = (unsigned int)inSeq.size();

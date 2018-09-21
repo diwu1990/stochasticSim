@@ -10,7 +10,7 @@ using namespace std;
 
 class SeqProbMulti
 {
-    vector<vector<unsigned int>> inSeq;
+    vector<vector<char>> inSeq;
     unsigned int inDim;
     string m_name;
     vector<unsigned int> seqLength;
