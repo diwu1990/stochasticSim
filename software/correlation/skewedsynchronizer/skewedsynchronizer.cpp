@@ -45,7 +45,7 @@ void SkewedSynchronizer::Help()
     printf("**********************************************************\n");
 }
 
-void SkewedSynchronizer::Init(vector<vector<unsigned int>> param1, unsigned int param2, string param3)
+void SkewedSynchronizer::Init(vector<vector<char>> param1, unsigned int param2, string param3)
 {
     inSeq = param1;
     
@@ -244,7 +244,7 @@ void SkewedSynchronizer::SeqGen()
     errRate[1] = (outProb[1] - inProb[1]);
 }
 
-vector<vector<unsigned int>> SkewedSynchronizer::OutSeq()
+vector<vector<char>> SkewedSynchronizer::OutSeq()
 {
     return outSeq;
 }
