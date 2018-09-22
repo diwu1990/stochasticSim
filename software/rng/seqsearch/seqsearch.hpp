@@ -14,7 +14,7 @@ using namespace std;
 class SeqSearch
 {
     /*find the combination of sequences with low discrepency less than input threshold*/
-    vector<vector<unsigned int>> inSeq;
+    vector<vector<char>> inSeq;
     unsigned int bitLength;
     float threshold;
     unsigned int inDim;
@@ -30,7 +30,7 @@ class SeqSearch
         SeqSearch();
         ~SeqSearch();
         void Help();
-        void Init(vector<vector<unsigned int>>, unsigned int, float, string);
+        void Init(vector<vector<char>>, unsigned int, float, string);
         void Report();
         void Calc();
         void CombPrint();

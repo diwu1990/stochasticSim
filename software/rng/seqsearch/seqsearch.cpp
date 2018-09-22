@@ -124,7 +124,7 @@ void SeqSearch::Calc()
             {
                 // printf("%-3d,%-3d\n", i, j);
                 meansquareCC[index] = 0;
-                vector<vector<unsigned int>> inSeq2(2);
+                vector<vector<char>> inSeq2(2);
                 inSeq2[0] = inSeq[i];
                 inSeq2[1] = inSeq[j];
                 vector<vector<unsigned int>> outSeq2(2);
