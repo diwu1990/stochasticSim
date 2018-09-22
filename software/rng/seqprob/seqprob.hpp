@@ -19,7 +19,7 @@ class SeqProb
         SeqProb();
         ~SeqProb();
         void Help();
-        void Init(vector<unsigned int>, string);
+        void Init(vector<char>, string);
         void Report();
         void ProbPrint();
         void Calc();
