@@ -20,7 +20,7 @@ class SeqProbMulti
         SeqProbMulti();
         ~SeqProbMulti();
         void Help();
-        void Init(vector<vector<unsigned int>>, string);
+        void Init(vector<vector<char>>, string);
         void Calc();
         void Report();
         void ProbPrint();
