@@ -66,7 +66,7 @@ void RandNum2Bit::Init(float param1, unsigned int param2, vector<unsigned int> p
     }
 }
 
-vector<unsigned int> RandNum2Bit::OutSeq()
+vector<char> RandNum2Bit::OutSeq()
 {
     return bitVec;
 }

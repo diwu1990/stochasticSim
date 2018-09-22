@@ -14,7 +14,7 @@ class RandNum2BitMulti
     vector<unsigned int> bitLength;
     unsigned int seqDim;
     vector<vector<unsigned int>> NumVec;
-    vector<vector<unsigned int>> bitVec;
+    vector<vector<char>> bitVec;
     string m_name;
 
 public:
@@ -25,5 +25,5 @@ public:
     void SeqPrint();
     void Init(vector<float>, vector<unsigned int>, vector<vector<unsigned int>>, string);
     void SeqGen();
-    vector<vector<unsigned int>> OutSeq();
+    vector<vector<char>> OutSeq();
 };

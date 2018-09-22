@@ -10,7 +10,7 @@ using namespace std;
 
 class CrossCorrelation
 {
-    vector<vector<unsigned int>> bitVec;
+    vector<vector<char>> bitVec;
     unsigned int bitVecDim;
     unsigned int bitVecLen;
     vector<float> outCC;
@@ -27,7 +27,7 @@ class CrossCorrelation
         CrossCorrelation();
         ~CrossCorrelation();
         void Help();
-        void Init(vector<vector<unsigned int>>, float, string);
+        void Init(vector<vector<char>>, float, string);
         void Calc();
         void Report();
         void CCPrint();

@@ -29,7 +29,7 @@ void SeqProb::Help()
     printf("**********************************************************\n");
 }
 
-void SeqProb::Init(vector<unsigned int> param1, string param2)
+void SeqProb::Init(vector<char> param1, string param2)
 {
     inSeq = param1;
     m_name = param2;
