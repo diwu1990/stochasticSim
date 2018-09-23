@@ -60,7 +60,7 @@ void GSQRT::Help()
     printf("**********************************************************\n");
 }
 
-void GSQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void GSQRT::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProb probCalc;
@@ -169,7 +169,7 @@ void GSQRT::Calc()
     }
 }
 
-vector<unsigned int> GSQRT::OutSeq()
+vector<char> GSQRT::OutSeq()
 {
     return outSeq;
 }
