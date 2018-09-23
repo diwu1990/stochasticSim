@@ -36,7 +36,7 @@ class JKFF
         void Report();
         void Calc();
         void OutPrint();
-        vector<unsigned int> OutSeq();
+        vector<char> OutSeq();
         float InCC();
         vector<float> InAC();
         float OutAC();
