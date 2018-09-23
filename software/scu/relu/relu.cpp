@@ -13,7 +13,8 @@ void RELU::Help()
     printf("Calling RELU Help. Following are instructions to RELU Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the RELU inst.\n");
-    printf("Initial Parameters: Input Vectors and Selection Signal.\n");
+    printf("Initial Parameters: Input Vectors, Instance Name.\n");
+    printf("Suggested Depth: 3.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the reluonent of input.\n");
@@ -60,24 +61,29 @@ void RELU::Help()
     printf("**********************************************************\n");
 }
 
-void RELU::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+// void RELU::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+// {
+//     inSeq = param1;
+//     randSeq = param2;
+//     SeqProb probCalc;
+//     probCalc.Init(inSeq,"probCalc");
+//     probCalc.Calc();
+//     inProb = probCalc.OutProb();
+//     depth = param3;
+//     m_name = param4;
+
+void RELU::Init(vector<char> param1, unsigned int param2, string param3)
 {
     inSeq = param1;
-    randSeq = param2;
     SeqProb probCalc;
     probCalc.Init(inSeq,"probCalc");
     probCalc.Calc();
     inProb = probCalc.OutProb();
-    bitLength = param3;
-    depth = param4;
-    m_name = param5;
+    depth = param2;
+    m_name = param3;
+
 
     seqLength = (unsigned int)inSeq.size();
-    if ((unsigned int)inSeq.size() != (unsigned int)randSeq.size())
-    {
-        printf("Error: Input Seqsence Length is not the same with the Sel Length.\n");
-    }
-
     theoProb = max(0.5,inProb);
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
@@ -98,7 +104,6 @@ void RELU::Report()
     printf("Current RELU:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
     printf("Seqsence Length:        %u\n", seqLength);
-    printf("Random Num Bit Length:  %u\n", bitLength);
     printf("Input Probability:      %f\n", inProb);
     printf("Theoretical Probability:%f\n", theoProb);
 }
@@ -106,15 +111,19 @@ void RELU::Report()
 void RELU::Calc()
 {
     AutoCorrelation inputAC;
-    inputAC.Init(inSeq,1,inProb,"inputAC"); 
+    inputAC.Init(inSeq,1,inProb,"inputAC");
     inputAC.Calc();
     inAC = inputAC.OutAC();
 
     unsigned int upperBound = (unsigned int)pow(2,depth)-1;
     unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    unsigned int lowerBound = 0;
     unsigned int satCnt = halfBound;
 
+    vector<char> dff(seqLength);
+    for (int i = 0; i < seqLength; ++i)
+    {
+        dff[i] = i%2;
+    }
     for (int i = 0; i < seqLength; ++i)
     {
         if (satCnt >= halfBound)
@@ -123,7 +132,7 @@ void RELU::Calc()
         }
         else
         {
-            outSeq[i] = randSeq[i] >> (bitLength-1);
+            outSeq[i] = dff[i];
         }
         if (inSeq[i] == 1)
         {

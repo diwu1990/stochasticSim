@@ -11,8 +11,7 @@ using namespace std;
 class RELU
 {
     vector<char> inSeq; // input operand x with 3 stage delay
-    vector<unsigned int> randSeq; // input selection signal, here the sequence is random source, not binary
-    unsigned int bitLength;
+    // vector<unsigned int> randSeq; // input selection signal, here the sequence is random source, not binary
     unsigned int depth;
     vector<char> outSeq;
 
@@ -30,11 +29,12 @@ class RELU
         RELU();
         ~RELU();
         void Help();
-        void Init(vector<char>, vector<unsigned int>, unsigned int, unsigned int, string);
+        // void Init(vector<char>, vector<unsigned int>, unsigned int, string);
+        void Init(vector<char>, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();
-        vector<unsigned int> OutSeq();
+        vector<char> OutSeq();
         float InAC();
         float InProb();
         float TheoProb();

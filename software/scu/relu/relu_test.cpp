@@ -53,17 +53,11 @@ int main()
             {
                 inRandNum[z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
             }
-            vector<vector<unsigned int>> RandSeq;
-            int RandSeqNum = 1;
-            RandSeq.resize(RandSeqNum);
-            for (int z = 0; z < RandSeqNum; ++z)
-            {
-            	RandSeq[z].resize(seqLength);
-            	for (int j = 0; j < seqLength; ++j)
-            	{
-	            	RandSeq[z][j] = sobolinst.OutSeq()[z+1][j%(unsigned int)(pow(2,sobolBitLen))];
-            	}
-            }
+            vector<unsigned int> RandSeq(seqLength);
+        	for (int j = 0; j < seqLength; ++j)
+        	{
+            	RandSeq[j] = sobolinst.OutSeq()[1][j%(unsigned int)(pow(2,sobolBitLen))] >> (sobolBitLen - depth);
+        	}
             RandNum2Bit num2bitInst;
             num2bitInst.Init(probVec,bitLength,inRandNum,"num2bitInst");
             num2bitInst.SeqGen();
@@ -76,7 +70,8 @@ int main()
             //     /* code */
             // }
             RELU reluInst;
-            reluInst.Init(num2bitInst.OutSeq(),RandSeq[0],sobolBitLen,depth,"reluInst");
+            // reluInst.Init(num2bitInst.OutSeq(),RandSeq,depth,"reluInst");
+            reluInst.Init(num2bitInst.OutSeq(),depth,"reluInst");
             // reluInst.Report();
             reluInst.Calc();
             // printf("%.3f,%.3f,%.3f,%.3f\n",reluInst.InProb(),reluInst.TheoProb(),reluInst.FinalRealProb(),reluInst.FinalErrRate());
