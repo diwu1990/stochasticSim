@@ -14,7 +14,7 @@ UNITVECTOR::UNITVECTOR(){}
 
 UNITVECTOR::~UNITVECTOR(){}
 
-void UNITVECTOR::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<vector<unsigned int>> param4, unsigned int param5, unsigned int param6, unsigned int param7, string param8)
+void UNITVECTOR::Init(vector<vector<char>> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<vector<unsigned int>> param4, unsigned int param5, unsigned int param6, unsigned int param7, string param8)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -123,10 +123,10 @@ void UNITVECTOR::Calc()
 
     // printf("start=>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
     // square of input
-    vector<vector<unsigned int>> outSquare(seqDim);
+    vector<vector<char>> outSquare(seqDim);
     for (int i = 0; i < seqDim; ++i)
     {
-        vector<vector<unsigned int>> inSquare(2);
+        vector<vector<char>> inSquare(2);
         inSquare[0].resize(seqLength);
         inSquare[1].resize(seqLength);
         for (int j = 0; j < seqLength; ++j)
@@ -143,7 +143,7 @@ void UNITVECTOR::Calc()
     // printf("square done!\n\n");
 
     // sum all square
-    vector<unsigned int> outMuxAdd(seqLength);
+    vector<char> outMuxAdd(seqLength);
     MUXADD muxaddInst;
     muxaddInst.Init(outSquare, randAdd, "muxaddInst");
     muxaddInst.Calc();
@@ -152,7 +152,7 @@ void UNITVECTOR::Calc()
     // printf("sum done!\n\n");
 
     // get the square root of sum
-    vector<unsigned int> outSqrt(seqLength);
+    vector<char> outSqrt(seqLength);
     // GSQRT sqrtInst;
     // JKDIVBISQRT sqrtInst;
     ISCBDIVBISQRT sqrtInst;
@@ -164,8 +164,8 @@ void UNITVECTOR::Calc()
     // printf("square root done!\n\n");
 
     // get the inProb[i]/seqDim
-    vector<vector<unsigned int>> inSeqSmall(seqDim);
-    vector<vector<unsigned int>> outSeqSmall(seqDim);
+    vector<vector<char>> inSeqSmall(seqDim);
+    vector<vector<char>> outSeqSmall(seqDim);
     for (int i = 0; i < seqDim; ++i)
     {
         inSeqSmall[i].resize(seqLength);
@@ -197,7 +197,7 @@ void UNITVECTOR::Calc()
     // printf("input scaling done!\n\n");
 
     // division for each
-    vector<vector<unsigned int>> divInSeq(2);
+    vector<vector<char>> divInSeq(2);
     for (int i = 0; i < 2; ++i)
     {
         divInSeq[i].resize(seqLength);
@@ -266,7 +266,7 @@ void UNITVECTOR::Calc()
     avgLowErrLen = avgLowErrLen/(float)seqDim;
 }
 
-vector<vector<unsigned int>> UNITVECTOR::OutSeq()
+vector<vector<char>> UNITVECTOR::OutSeq()
 {
     return outSeq;
 }

@@ -19,7 +19,7 @@ int main()
 {
     srand(time(NULL));
     unsigned int bitLength = 10;
-    unsigned int SeqDim = 16;
+    unsigned int SeqDim = 4;
     unsigned int RandNumDim = SeqDim+2;
     unsigned int totalSeqNum = SeqDim+RandNumDim;
     string mode = "incremental";
@@ -52,7 +52,7 @@ int main()
         {
             if (iter % (totalIter/100) == 0)
             {
-                printf("%.1f%\n", (float)iter/(float)(totalIter/100));
+                printf("%.1f\n", (float)iter/(float)(totalIter/100));
             }
             for (int l = 0; l < SeqDim; ++l)
             {

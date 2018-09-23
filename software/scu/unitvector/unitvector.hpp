@@ -10,7 +10,7 @@ using namespace std;
 
 class UNITVECTOR
 {
-    vector<vector<unsigned int>> inSeq;
+    vector<vector<char>> inSeq;
     vector<unsigned int> randAdd;
     vector<unsigned int> randSqrt;
     vector<vector<unsigned int>> randDiv;
@@ -21,7 +21,7 @@ class UNITVECTOR
     unsigned int seqDim;
 
     unsigned int seqLength;
-    vector<vector<unsigned int>> outSeq;
+    vector<vector<char>> outSeq;
     vector<float> theoProb;
     vector<vector<float>> realProb;
     vector<float> finalRealProb;
@@ -39,9 +39,9 @@ class UNITVECTOR
     public:
         UNITVECTOR();
         ~UNITVECTOR();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, vector<unsigned int>, vector<vector<unsigned int>>, unsigned int, unsigned int, unsigned int, string);
+        void Init(vector<vector<char>>, vector<unsigned int>, vector<unsigned int>, vector<vector<unsigned int>>, unsigned int, unsigned int, unsigned int, string);
         void Calc();
-        vector<vector<unsigned int>> OutSeq();
+        vector<vector<char>> OutSeq();
         vector<float> InProb();
         vector<float> TheoProb();
         vector<vector<float>> RealProb();
