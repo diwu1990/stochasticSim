@@ -8,7 +8,7 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class SkewedSynchronizer
+class Synchronizer
 {
     vector<vector<char>> inSeq;
     vector<vector<char>> outSeq;
@@ -24,8 +24,8 @@ class SkewedSynchronizer
     string m_name;
 
 public:
-    SkewedSynchronizer();
-    ~SkewedSynchronizer();
+    Synchronizer();
+    ~Synchronizer();
     void Help();
     void Init(vector<vector<char>>, unsigned int, string);
     void Report();

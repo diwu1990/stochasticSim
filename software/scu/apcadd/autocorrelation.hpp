@@ -10,7 +10,7 @@ using namespace std;
 
 class AutoCorrelation
 {
-    vector<unsigned int> bitVec;
+    vector<char> bitVec;
     unsigned int offset;
     float expectation;
     float outAC;
@@ -20,7 +20,7 @@ class AutoCorrelation
         AutoCorrelation();
         ~AutoCorrelation();
         void Help();
-        void Init(vector<unsigned int>, unsigned int, float, string);
+        void Init(vector<char>, unsigned int, float, string);
         void Report();
         void Calc();
         float OutAC();

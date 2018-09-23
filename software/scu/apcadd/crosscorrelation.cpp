@@ -1,6 +1,6 @@
 #include "crosscorrelation.hpp"
 
-void CrossCorrelation::Init(vector<vector<unsigned int>> param1, float param2, string param3)
+void CrossCorrelation::Init(vector<vector<char>> param1, float param2, string param3)
 {
     bitVec = param1;
     thresholdGood = param2;
@@ -114,9 +114,9 @@ void CrossCorrelation::Calc()
         {
             if (i < j)
             {
-                vector<unsigned int> bitVecX(bitVecLen);
+                vector<char> bitVecX(bitVecLen);
                 bitVecX = bitVec[i];
-                vector<unsigned int> bitVecY(bitVecLen);
+                vector<char> bitVecY(bitVecLen);
                 bitVecY = bitVec[j];
 
                 int a=0;
@@ -148,12 +148,12 @@ void CrossCorrelation::Calc()
                     }
                 }
 
-                printf("a:%d, b:%d, c=%d, d=%d\n", a,b,c,d);
-                printf("ad:%d, bc:%d\n", a*d, b*c);
-                printf("bitVecLen*min(a+b,a+c):%d\n", bitVecLen*min(a+b,a+c));
-                printf("(a+b)*(a+c):%d\n", (a+b)*(a+c));
-                printf("(a+b)*(a+c):%d\n", (a+b)*(a+c));
-                printf("bitVecLen*max(a-d,0):%d\n", bitVecLen*max(a-d,0));
+                // printf("a:%d, b:%d, c=%d, d=%d\n", a,b,c,d);
+                // printf("ad:%d, bc:%d\n", a*d, b*c);
+                // printf("bitVecLen*min(a+b,a+c):%d\n", bitVecLen*min(a+b,a+c));
+                // printf("(a+b)*(a+c):%d\n", (a+b)*(a+c));
+                // printf("(a+b)*(a+c):%d\n", (a+b)*(a+c));
+                // printf("bitVecLen*max(a-d,0):%d\n", bitVecLen*max(a-d,0));
                 if (a*d > b*c)
                 {
                     int ab = a+b;
@@ -170,7 +170,7 @@ void CrossCorrelation::Calc()
                 else
                 {
                     int ad = a-d;
-                    if ((float)((a+b)*(a+c)-(bitVecLen)*min(ad,0)) != 0)
+                    if ((float)((a+b)*(a+c)-(bitVecLen)*max(ad,0)) != 0)
                     {
                         outCC[CCIndex] = (float)(a*d-b*c)/(float)((a+b)*(a+c)-(bitVecLen)*max(ad,0));
                     }

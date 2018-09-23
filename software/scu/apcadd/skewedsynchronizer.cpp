@@ -45,7 +45,7 @@ void SkewedSynchronizer::Help()
     printf("**********************************************************\n");
 }
 
-void SkewedSynchronizer::Init(vector<vector<unsigned int>> param1, unsigned int param2, string param3)
+void SkewedSynchronizer::Init(vector<vector<char>> param1, unsigned int param2, string param3)
 {
     inSeq = param1;
     
@@ -59,10 +59,10 @@ void SkewedSynchronizer::Init(vector<vector<unsigned int>> param1, unsigned int 
     SeqProbMulti inProbInst;
     inProbInst.Init(inSeq,"inProbInst");
     inProbInst.Calc();
-    if (inProbInst.OutProb()[0] > inProbInst.OutProb()[1])
-    {
-        printf("Error: Probability of input sequence 0 (%-.3f) is larger than that of input sequence 1 (%-.3f).\n", inProbInst.OutProb()[0], inProbInst.OutProb()[1]);
-    }
+    // if (inProbInst.OutProb()[0] > inProbInst.OutProb()[1])
+    // {
+    //     // printf("Error: Probability of input sequence 0 (%-.3f) is larger than that of input sequence 1 (%-.3f).\n", inProbInst.OutProb()[0], inProbInst.OutProb()[1]);
+    // }
     inLen = (unsigned int)inSeq[0].size();
     if (inLen != (unsigned int)inSeq[1].size())
     {
@@ -88,6 +88,7 @@ void SkewedSynchronizer::Init(vector<vector<unsigned int>> param1, unsigned int 
         }
     }
     ppStage = 1;
+    errRate.resize(inDim);
 }
 
 void SkewedSynchronizer::Report()
@@ -96,12 +97,16 @@ void SkewedSynchronizer::Report()
     std::cout << "Instance name:          " << m_name << std::endl;
     printf("Input Dimension:        %-5u\n", inDim);
     printf("Input Length:           %-5u\n", inLen);
-    printf("BUffer Depth:           %-5u\n", depth);
+    printf("Buffer Depth:           %-5u\n", depth);
     printf("Pipeline Stage:         %-5u\n", ppStage);
 }
 
 void SkewedSynchronizer::SeqGen()
 {
+    /*keep no reg for sequence 1*/
+    /*it has high accuracy, but low correlation ()*/
+    /*correlation is can be less than 95%*/
+
     unsigned int upperbound = (unsigned int)pow(2,depth)-1;
 
     unsigned int saturateCnt = 0;
@@ -126,17 +131,98 @@ void SkewedSynchronizer::SeqGen()
             }
             outSeq[1][i] = 1;
         }
-        else if (inSeq[1][i] == 0)
+        else if (inSeq[0][i] == 0 && inSeq[1][i] == 0)
         {
             outSeq[0][i] = 0;
             outSeq[1][i] = 0;
-            saturateCnt = saturateCnt + inSeq[0][i];
-            if (saturateCnt > upperbound)
+        }
+        else if (inSeq[0][i] == 1 && inSeq[1][i] == 0)
+        {
+            if (saturateCnt == upperbound)
             {
-                saturateCnt = upperbound;
+                outSeq[0][i] = 1;
+                outSeq[1][i] = 0;
+            }
+            else
+            {
+                outSeq[0][i] = 0;
+                outSeq[1][i] = 0;
+                saturateCnt = saturateCnt + 1;
+                if (saturateCnt > upperbound)
+                {
+                    saturateCnt = upperbound;
+                }
             }
         }
     }
+
+
+    /*keep one reg for sequence 1*/
+    /*it has low accuracy, but high correlation*/
+    /*error rate is always larger than 0.1% at length 2^8*/
+    /*correlation is always larger than 99%*/
+    
+    // unsigned int upperbound = (unsigned int)pow(2,depth)-1;
+
+    // unsigned int saturateCnt = 0;
+    // unsigned int saturateCnt2 = 0;
+    // for (int i = 0; i < inLen; ++i)
+    // {
+    //     if (inSeq[0][i] == 0 && inSeq[1][i] == 0)
+    //     {
+    //         outSeq[0][i] = 0;
+    //         outSeq[1][i] = 0;
+    //     }
+    //     else if (inSeq[0][i] == 1 && inSeq[1][i] == 1)
+    //     {
+    //         outSeq[0][i] = 1;
+    //         outSeq[1][i] = 1;
+    //     }
+    //     else if (inSeq[0][i] == 0 && inSeq[1][i] == 1)
+    //     {
+    //         if (saturateCnt > 0)
+    //         {
+    //             outSeq[0][i] = 1;
+    //             outSeq[1][i] = 1;
+    //             saturateCnt--;
+    //         }
+    //         else
+    //         {
+    //             outSeq[0][i] = 0;
+    //             if (saturateCnt2 == 1)
+    //             {
+    //                 outSeq[1][i] = 1;
+    //             }
+    //             else
+    //             {
+    //                 outSeq[1][i] = 0;
+    //                 saturateCnt2++;
+    //             }
+    //         }
+    //     }
+    //     else if (inSeq[0][i] == 1 && inSeq[1][i] == 0)
+    //     {
+    //         if (saturateCnt2 > 0)
+    //         {
+    //             outSeq[0][i] = 1;
+    //             outSeq[1][i] = 1;
+    //             saturateCnt2--;
+    //         }
+    //         else
+    //         {
+    //             outSeq[1][i] = 0;
+    //             if (saturateCnt == upperbound)
+    //             {
+    //                 outSeq[0][i] = 1;
+    //             }
+    //             else
+    //             {
+    //                 outSeq[0][i] = 0;
+    //                 saturateCnt++;
+    //             }
+    //         }
+    //     }
+    // }
 
     CrossCorrelation inCCInst;
     inCCInst.Init(inSeq, 1, "inCCInst");
@@ -154,10 +240,11 @@ void SkewedSynchronizer::SeqGen()
     outCCInst.Calc();
     outCC = outCCInst.OutCC()[0];
 
-    errRate = (outProb[0] - inProb[0]) / inProb[0];
+    errRate[0] = (outProb[0] - inProb[0]);
+    errRate[1] = (outProb[1] - inProb[1]);
 }
 
-vector<vector<unsigned int>> SkewedSynchronizer::OutSeq()
+vector<vector<char>> SkewedSynchronizer::OutSeq()
 {
     return outSeq;
 }
@@ -192,7 +279,7 @@ unsigned int SkewedSynchronizer::SeqLen()
     return inLen;
 }
 
-float SkewedSynchronizer::ErrRate()
+vector<float> SkewedSynchronizer::ErrRate()
 {
     return errRate;
 }
@@ -208,7 +295,8 @@ void SkewedSynchronizer::ErrPrint()
 {
     printf("Calling ErrPrint for SkewedSynchronizer instance: ");
     std::cout << m_name << std::endl;
-    printf("Error rate of input sequence 0: %-.3f\n", errRate);
+    printf("Error rate of input sequence 0: %-.3f\n", errRate[0]);
+    printf("Error rate of input sequence 1: %-.3f\n", errRate[1]);
 }
 
 void SkewedSynchronizer::ProbPrint()

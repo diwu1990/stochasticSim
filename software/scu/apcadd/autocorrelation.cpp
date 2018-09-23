@@ -1,6 +1,6 @@
 #include "autocorrelation.hpp"
 
-void AutoCorrelation::Init(vector<unsigned int> param1, unsigned int param2, float param3, string param4)
+void AutoCorrelation::Init(vector<char> param1, unsigned int param2, float param3, string param4)
 {
     bitVec = param1;
     offset = param2;
@@ -80,5 +80,12 @@ void AutoCorrelation::Calc()
         numerator = numerator + (bitVec[i] - expectation) * (bitVec[i+offset] - expectation);
     }
 
-    outAC = numerator/denominator;
+    if (expectation == 1)
+    {
+        outAC = 1;
+    }
+    else
+    {
+        outAC = numerator/denominator;
+    }
 }
