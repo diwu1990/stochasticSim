@@ -2,6 +2,7 @@
 #include "randNum2BitMulti.hpp"
 #include "sobol.hpp"
 #include "sobolmulti.hpp"
+#include "systemrandmulti.hpp"
 #include "lfsr.hpp"
 #include "lfsrmulti.hpp"
 #include <cstdlib>
@@ -33,7 +34,8 @@ int main()
         }
         unsigned int rngInitIdx = 1+index;
         unsigned int delay = 1;
-        SOBOLMulti rngInst;
+        SystemRandMulti rngInst;
+        // SOBOLMulti rngInst;
         // LFSRMulti rngInst;
         rngInst.Init(totalSeqNum,rngInitIdx,delay,bitLength,mode,"rngInst");
         rngInst.SeqGen();
@@ -65,7 +67,12 @@ int main()
 
             // if RandNumDim > 0
             vector<vector<unsigned int>> RandSeq(RandNumDim);
-            for (int i = 0; i < RandNumDim; ++i)
+            RandSeq[0].resize(seqLength);
+            for (int z = 0; z < seqLength; ++z)
+            {
+                RandSeq[0][z] = rngInst.OutSeq()[SeqDim][z%(unsigned int)(pow(2,bitLength))] >> (bitLength-4);
+            }
+            for (int i = 1; i < RandNumDim; ++i)
             {
                 RandSeq[i].resize(seqLength);
                 for (int z = 0; z < seqLength; ++z)
@@ -83,7 +90,7 @@ int main()
             // num2bitInst.SeqPrint();
 
             APCADD instance;
-            instance.Init(num2bitInst.OutSeq(),RandSeq[0],bitLength,"instance");
+            instance.Init(num2bitInst.OutSeq(),RandSeq[0],"instance");
             // instance.Report();
             instance.Calc();
 
