@@ -10,13 +10,13 @@ using namespace std;
 
 class JKFF
 {
-    vector<vector<unsigned int>> inSeq;
+    vector<vector<char>> inSeq;
 
     vector<float> inProb;
     unsigned int inDim;
 
     unsigned int seqLength;
-    vector<unsigned int> outSeq;
+    vector<char> outSeq;
     float inCC;
     vector<float> inAC;
     float outAC;
@@ -32,7 +32,7 @@ class JKFF
         JKFF();
         ~JKFF();
         void Help();
-        void Init(vector<vector<unsigned int>>, string);
+        void Init(vector<vector<char>>, string);
         void Report();
         void Calc();
         void OutPrint();

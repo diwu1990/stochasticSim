@@ -79,7 +79,7 @@ void JKFF::Help()
     printf("**********************************************************\n");
 }
 
-void JKFF::Init(vector<vector<unsigned int>> param1, string param2)
+void JKFF::Init(vector<vector<char>> param1, string param2)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -220,7 +220,7 @@ void JKFF::Calc()
 
     // calc outCC
     outCC.resize(2);
-    vector<vector<unsigned int>> outCCSeq0(2);
+    vector<vector<char>> outCCSeq0(2);
     outCCSeq0[0].resize(seqLength);
     outCCSeq0[1].resize(seqLength);
     outCCSeq0[0] = inSeq[0];
@@ -230,7 +230,7 @@ void JKFF::Calc()
     outCCInst0.Calc();
     outCC[0] = outCCInst0.OutCC()[0];
 
-    vector<vector<unsigned int>> outCCSeq1(2);
+    vector<vector<char>> outCCSeq1(2);
     outCCSeq1[0].resize(seqLength);
     outCCSeq1[1].resize(seqLength);
     outCCSeq1[0] = inSeq[1];
@@ -241,7 +241,7 @@ void JKFF::Calc()
     outCC[1] = outCCInst1.OutCC()[0];
 }
 
-vector<unsigned int> JKFF::OutSeq()
+vector<char> JKFF::OutSeq()
 {
     return outSeq;
 }
