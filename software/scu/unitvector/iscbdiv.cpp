@@ -2,8 +2,7 @@
 #include "seqprobmulti.hpp"
 #include "crosscorrelation.hpp"
 #include "skewedsynchronizer.hpp"
-
-ISCBDIV::ISCBDIV(){}
+ ISCBDIV::ISCBDIV(){}
 ISCBDIV::~ISCBDIV(){}
 void ISCBDIV::Help()
 {
@@ -25,53 +24,38 @@ void ISCBDIV::Help()
     printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Depth of Trace Register, Depth of Synchronizer, Instance Name.\n");
     printf("Recommended Depth of Trace Register Length: 2\n");
     printf("Recommended Depth of Synchronizer: 2~4\n");
-
-    printf("2. inst.Calc() method:\n");
+     printf("2. inst.Calc() method:\n");
     printf("Calculate the quotient of two input sequences.\n");
-
-    printf("3. inst.OutSeq() method:\n");
+     printf("3. inst.OutSeq() method:\n");
     printf("Return the calculated result.\n");
-
-    printf("4. inst.OutPrint() method:\n");
+     printf("4. inst.OutPrint() method:\n");
     printf("Print the information of result.\n");
-
-    printf("5. inst.InCC() method:\n");
+     printf("5. inst.InCC() method:\n");
     printf("Return the input crosscorrelation.\n");
-
-    printf("6. inst.InProb() method:\n");
+     printf("6. inst.InProb() method:\n");
     printf("Return the input probability.\n");
-
-    printf("7. inst.TheoProb() method:\n");
+     printf("7. inst.TheoProb() method:\n");
     printf("Return the theoretical output probability.\n");
-
-    printf("8. inst.RealProb() method:\n");
+     printf("8. inst.RealProb() method:\n");
     printf("Return the array of progressive output probability.\n");
-
-    printf("9. inst.FinalRealProb() method:\n");
+     printf("9. inst.FinalRealProb() method:\n");
     printf("Return the final output probability.\n");
-
-    printf("10. inst.ErrRate() method:\n");
+     printf("10. inst.ErrRate() method:\n");
     printf("Return the array of progressive output error rate.\n");
-
-    printf("11. inst.FinalErrRate() method:\n");
+     printf("11. inst.FinalErrRate() method:\n");
     printf("Return the final output error rate.\n");
-
-    printf("12. inst.SeqLen() method:\n");
+     printf("12. inst.SeqLen() method:\n");
     printf("Return the sequence length.\n");
-
-    printf("13. inst.LowErrLen() method:\n");
+     printf("13. inst.LowErrLen() method:\n");
     printf("Return the sequence length required to converge with less than 5 percent error rate.\n");
-
-    printf("14. inst.PPStage() method:\n");
+     printf("14. inst.PPStage() method:\n");
     printf("Return the pipline stages required by hardware.\n");
-
-    printf("15. inst.Report() method:\n");
+     printf("15. inst.Report() method:\n");
     printf("Report the current instance.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
-
-void ISCBDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+ void ISCBDIV::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -90,8 +74,7 @@ void ISCBDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> par
     {
         printf("Error: Input Dimension is not 2.\n");
     }
-
-    if ((unsigned int)inSeq[0].size() == (unsigned int)inSeq[1].size() && (unsigned int)inSeq[0].size() == (unsigned int)randNum.size())
+     if ((unsigned int)inSeq[0].size() == (unsigned int)inSeq[1].size() && (unsigned int)inSeq[0].size() == (unsigned int)randNum.size())
     {
         seqLength = (unsigned int)inSeq[0].size();
     }
@@ -134,8 +117,7 @@ void ISCBDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> par
         }
     }
 }
-
-void ISCBDIV::Report()
+ void ISCBDIV::Report()
 {
     printf("Current ISCBDIV:\n");
     std::cout << "Instance name:          " << m_name << std::endl;
@@ -145,28 +127,24 @@ void ISCBDIV::Report()
     printf("Input Probability:      %f,%f\n", inProb[0], inProb[1]);
     printf("Theoretical Probability:%f\n", theoProb);
 }
-
-// void ISCBDIV::CalcQuot()
+ // void ISCBDIV::CalcQuot()
 void ISCBDIV::Calc()
 {
-
-    // *****************************************************************************
+     // *****************************************************************************
     // shift reg based for correlation
     // *****************************************************************************
     CrossCorrelation inputCC;
     inputCC.Init(inSeq,1,"inputCC");
     inputCC.Calc();
     inCC = inputCC.OutCC()[0];
-
-    SkewedSynchronizer divSyncInst;
+     SkewedSynchronizer divSyncInst;
     divSyncInst.Init(inSeq, depthSync, "divSyncInst");
     divSyncInst.SeqGen();
     // divSyncInst.ProbPrint();
     // divSyncInst.SeqPrint();
-
-    // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
+     // unsigned int upperBound = (unsigned int)pow(2,depth)-1;
     // unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    vector<unsigned int> traceReg(depth);
+    vector<char> traceReg(depth);
     for (int i = 0; i < depth; ++i)
     {
         traceReg[i] = i%2;
@@ -175,13 +153,11 @@ void ISCBDIV::Calc()
     // printf("\n");
     unsigned int oneCount = 0;
     unsigned int accuracyLength = seqLength/2;
-
-    // unsigned int effectiveBit = 0;
+     // unsigned int effectiveBit = 0;
     // unsigned int effectiveOne = 0;
     // unsigned int reservedBit = 0;
     // unsigned int reservedOne = 0;
-
-    for (int i = 0; i < seqLength; ++i)
+     for (int i = 0; i < seqLength; ++i)
     {
         // printf("%d iter\n", i);
         if (divSyncInst.OutSeq()[1][i] == 1)
@@ -225,8 +201,7 @@ void ISCBDIV::Calc()
         errRate[i] = (theoProb - realProb[i]);
         // printf("%d iter: %u => %u\n\n", i, divSyncInst.OutSeq()[1][i], outSeq[i]);
     }
-
-    // printf("theoretical prob: %-.3f\n", theoProb);
+     // printf("theoretical prob: %-.3f\n", theoProb);
     // printf("effective prob:   %-.3f, One: %5u, Total Bit: %5u\n", (float)effectiveOne/(float)effectiveBit, effectiveOne, effectiveBit);
     // printf("reserved prob :   %-.3f, One: %5u, Total Bit: %5u\n", (float)reservedOne/(float)reservedBit, reservedOne, reservedBit);
     
@@ -250,18 +225,15 @@ void ISCBDIV::Calc()
     // printf("%u\n", lowErrLen);
     // printf("CalcQuot Done\n");
 }
-
-vector<unsigned int> ISCBDIV::OutSeq()
+ vector<char> ISCBDIV::OutSeq()
 {
     return outSeq;
 }
-
-unsigned int ISCBDIV::PPStage()
+ unsigned int ISCBDIV::PPStage()
 {
     return ppStage;
 }
-
-void ISCBDIV::OutPrint()
+ void ISCBDIV::OutPrint()
 {
     printf("Calling OutPrint for ISCBDIV instance: ");
     std::cout << m_name << std::endl;
@@ -280,48 +252,39 @@ void ISCBDIV::OutPrint()
     // }
     // printf("\n");
 }
-
-float ISCBDIV::InCC()
+ float ISCBDIV::InCC()
 {
     return inCC;
 }
-
-vector<float> ISCBDIV::InProb()
+ vector<float> ISCBDIV::InProb()
 {
     return inProb;
 }
-
-float ISCBDIV::TheoProb()
+ float ISCBDIV::TheoProb()
 {
     return theoProb;
 }
-
-vector<float> ISCBDIV::RealProb()
+ vector<float> ISCBDIV::RealProb()
 {
     return realProb;
 }
-
-float ISCBDIV::FinalRealProb()
+ float ISCBDIV::FinalRealProb()
 {
     return realProb[seqLength-1];
 }
-
-vector<float> ISCBDIV::ErrRate()
+ vector<float> ISCBDIV::ErrRate()
 {
     return errRate;
 }
-
-float ISCBDIV::FinalErrRate()
+ float ISCBDIV::FinalErrRate()
 {
     return errRate[seqLength-1];
 }
-
-unsigned int ISCBDIV::SeqLen()
+ unsigned int ISCBDIV::SeqLen()
 {
     return seqLength;
 }
-
-unsigned int ISCBDIV::LowErrLen()
+ unsigned int ISCBDIV::LowErrLen()
 {
     return lowErrLen;
 }

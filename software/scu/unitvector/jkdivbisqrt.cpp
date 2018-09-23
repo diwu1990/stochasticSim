@@ -60,7 +60,7 @@ void JKDIVBISQRT::Help()
     printf("**********************************************************\n");
 }
 
-void JKDIVBISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void JKDIVBISQRT::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProb probCalc;
@@ -108,7 +108,7 @@ void JKDIVBISQRT::Calc()
     // *****************************************************************************
     // bit inserting
     // *****************************************************************************
-    vector<unsigned int> JKFF(seqLength);
+    vector<char> JKFF(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
         JKFF[i] = 1;
@@ -116,9 +116,12 @@ void JKDIVBISQRT::Calc()
     unsigned int oneCount = 0;
     unsigned int sel = 1;
 
+    vector<char> selSeq(seqLength); // add for muxSCC and traceSAC
+
     for (int i = 0; i < seqLength; ++i)
     {
         // printf("%u,", sel);
+        selSeq[i] = sel; // add for muxSCC and traceSAC
         if (sel == 1)
         {
             outSeq[i] = inSeq[i];
@@ -155,7 +158,6 @@ void JKDIVBISQRT::Calc()
         }
     }
 
-
     for (int i = 0; i < seqLength; ++i)
     {
         if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
@@ -164,9 +166,45 @@ void JKDIVBISQRT::Calc()
             break;
         }
     }
+
+    // muxSCC
+    vector<vector<char>> muxSCCSeq(2);
+    muxSCCSeq[0].resize(seqLength);
+    muxSCCSeq[0] = inSeq;
+    muxSCCSeq[1].resize(seqLength);
+    muxSCCSeq[1] = selSeq;
+    
+    CrossCorrelation muxSCCInst;
+    muxSCCInst.Init(muxSCCSeq, 1, "muxSCCInst");
+    muxSCCInst.Calc();
+    muxSCC = muxSCCInst.OutCC()[0];
+
+    // traceSAC
+    float traceSACProb;
+
+    SeqProb selProbCalc;
+    selProbCalc.Init(outSeq,"selProbCalc");
+    selProbCalc.Calc();
+    traceSACProb = selProbCalc.OutProb();
+    
+    AutoCorrelation traceSACInst;
+    traceSACInst.Init(outSeq, 1, realProb[seqLength-1], "traceSACInst");
+    traceSACInst.Calc();
+    traceSAC = traceSACInst.OutAC();
+    // printf("%f,%f\n", traceSACProb,traceSAC);
 }
 
-vector<unsigned int> JKDIVBISQRT::OutSeq()
+float JKDIVBISQRT::TraceSAC()
+{
+    return traceSAC;
+}
+
+float JKDIVBISQRT::MuxSCC()
+{
+    return muxSCC;
+}
+
+vector<char> JKDIVBISQRT::OutSeq()
 {
     return outSeq;
 }

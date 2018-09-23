@@ -61,7 +61,7 @@ void GDIV::Help()
     printf("**********************************************************\n");
 }
 
-void GDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+void GDIV::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -154,11 +154,6 @@ void GDIV::Calc()
     unsigned int oneCount = 0;
     unsigned int accuracyLength = seqLength/2;
 
-    unsigned int effectiveBit = 0;
-    unsigned int effectiveOne = 0;
-    unsigned int reservedBit = 0;
-    unsigned int reservedOne = 0;
-
     for (int i = 0; i < seqLength; ++i)
     {
         if (traceReg >= randNum[i])
@@ -222,7 +217,7 @@ void GDIV::Calc()
     // printf("CalcQuot Done\n");
 }
 
-vector<unsigned int> GDIV::OutSeq()
+vector<char> GDIV::OutSeq()
 {
     return outSeq;
 }

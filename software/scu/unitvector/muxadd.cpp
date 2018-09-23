@@ -61,7 +61,7 @@ void MUXADD::Help()
     printf("**********************************************************\n");
 }
 
-void MUXADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, string param3)
+void MUXADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, string param3)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -106,8 +106,13 @@ void MUXADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> para
     }
     if (inDim == 2)
     {
+        vector<char> randSeq(seqLength);
+        for (int i = 0; i < seqLength; ++i)
+        {
+            randSeq[i] = (char)randNum[i];
+        }
         SeqProb selProbCalc;
-        selProbCalc.Init(randNum,"selProbCalc");
+        selProbCalc.Init(randSeq,"selProbCalc");
         selProbCalc.Calc();
         theoProb = inProb[0]*(1 - selProbCalc.OutProb()) + inProb[1]*selProbCalc.OutProb();
     }
@@ -174,7 +179,7 @@ void MUXADD::Calc()
     }
 }
 
-vector<unsigned int> MUXADD::OutSeq()
+vector<char> MUXADD::OutSeq()
 {
     return outSeq;
 }
@@ -183,7 +188,7 @@ void MUXADD::OutPrint()
 {
     printf("Calling OutPrint for MUXADD instance: ");
     std::cout << m_name << std::endl;
-    printf("Theoretical Probability: (%.3f + %.3f)/%d = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], inDim, theoProb, inCC);
+    printf("Theoretical Probability: (%.3f + %.3f)/%d = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], inDim, theoProb, inCC[0]);
     printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
     printf("Low Error Length (5 percent approximation): %u\n", lowErrLen);
     // for (int i = 0; i < seqLength; ++i)
