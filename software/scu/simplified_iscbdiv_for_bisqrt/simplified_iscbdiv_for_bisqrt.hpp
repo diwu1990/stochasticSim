@@ -10,7 +10,7 @@ using namespace std;
 
 class SIMPLIFIED_ISCBDIV_FOR_BISQRT
 {
-    vector<unsigned int> inSeq;
+    vector<char> inSeq;
     float inProb;
     float inAC;
     float outAC;
@@ -19,7 +19,7 @@ class SIMPLIFIED_ISCBDIV_FOR_BISQRT
     unsigned int logDepth;
 
     unsigned int seqLength;
-    vector<unsigned int> outSeq;
+    vector<char> outSeq;
     float theoProb;
     vector<float> realProb;
     vector<float> errRate;
@@ -31,11 +31,11 @@ class SIMPLIFIED_ISCBDIV_FOR_BISQRT
         SIMPLIFIED_ISCBDIV_FOR_BISQRT();
         ~SIMPLIFIED_ISCBDIV_FOR_BISQRT();
         void Help();
-        void Init(vector<unsigned int>, vector<unsigned int>, unsigned int, string);
+        void Init(vector<char>, vector<unsigned int>, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();
-        vector<unsigned int> OutSeq();
+        vector<char> OutSeq();
         float InProb();
         float InAC();
         float OutAC();

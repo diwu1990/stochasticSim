@@ -60,7 +60,7 @@ void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Help()
     printf("**********************************************************\n");
 }
 
-void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProb probCalc;
@@ -108,14 +108,14 @@ void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Calc()
     // *****************************************************************************
     // bit inserting with simplified iscvdiv for 1/(1+Po)
     // *****************************************************************************
-    vector<unsigned int> DFF(seqLength);
-    vector<unsigned int> INV(seqLength);
-    vector<unsigned int> andGate(seqLength);
-    vector<unsigned int> orGate(seqLength);
-    vector<unsigned int> regOut(seqLength);
+    vector<char> DFF(seqLength);
+    vector<char> INV(seqLength);
+    vector<char> andGate(seqLength);
+    vector<char> orGate(seqLength);
+    vector<char> regOut(seqLength);
     unsigned int depth = 2;
     unsigned int logDepth = (unsigned int)log2(depth);
-    vector<unsigned int> traceReg(depth);
+    vector<char> traceReg(depth);
 
     for (int i = 0; i < depth; ++i)
     {
@@ -128,7 +128,7 @@ void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Calc()
         INV[i] = 1-DFF[i];
     }
     unsigned int oneCount = 0; // calc the ones in output seq
-    vector<unsigned int> mux1out(seqLength);
+    vector<char> mux1out(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
         mux1out[i] = 1;
@@ -218,7 +218,7 @@ void SIMPLIFIED_ISCBDIV_FOR_BISQRT::Calc()
     // selCC.CCPrint();
 }
 
-vector<unsigned int> SIMPLIFIED_ISCBDIV_FOR_BISQRT::OutSeq()
+vector<char> SIMPLIFIED_ISCBDIV_FOR_BISQRT::OutSeq()
 {
     return outSeq;
 }
