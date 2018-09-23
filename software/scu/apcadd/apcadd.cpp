@@ -60,7 +60,7 @@ void APCADD::Help()
     printf("**********************************************************\n");
 }
 
-void APCADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void APCADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, string param3)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -68,8 +68,7 @@ void APCADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsi
     probCalc.Calc();
     inProb = probCalc.OutProb();
     randNum = param2;
-    bitLength = param3;
-    m_name = param4;
+    m_name = param3;
     if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 16)
     {
         inDim = (unsigned int)inSeq.size();
@@ -95,10 +94,6 @@ void APCADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsi
         theoProb += inProb[i];
     }
     theoProb /= 16;
-    if (theoProb == 0)
-    {
-        theoProb == 0.0001;
-    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -186,7 +181,7 @@ void APCADD::Calc()
         sumCnt[1][i] = fa[2][3][i];
         sumCnt[0][i] = inSeq[14][i] & inSeq[15][i];
 
-        if ((sumCnt[3][i]*8+sumCnt[2][i]*4+sumCnt[1][i]*2+sumCnt[0][i]*2) >= (randNum[i] >> (bitLength-4)))
+        if ((sumCnt[3][i]*8+sumCnt[2][i]*4+sumCnt[1][i]*2+sumCnt[0][i]*2) >= randNum[i])
         {
             outSeq[i] = 1;
         }
@@ -195,29 +190,9 @@ void APCADD::Calc()
             outSeq[i] = 0;
         }
 
-
-        // // accumulative parallel counter
-        // unsigned int temp = 0;
-        // for (int j = 0; j < inDim; ++j)
-        // {
-        //     temp += inSeq[j][i];
-        // }
-        // if (temp >= (randNum[i] >> (bitLength-4)))
-        // {
-        //     outSeq[i] = 1;
-        // }
-        // else
-        // {
-        //     outSeq[i] = 0;
-        // }
-
-        // // 16-1 mux
-        // unsigned int temp = 0;
-        // outSeq[i] = inSeq[randNum[i] >> (bitLength-4)][i];
-
     }
 
-    unsigned int accuracyLength = 128;
+    unsigned int accuracyLength = seqLength/2;
     for (int i = 0; i < seqLength; ++i)
     {
         oneCount += outSeq[i];
@@ -230,7 +205,7 @@ void APCADD::Calc()
         {
             realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
         }
-        errRate[i] = (theoProb - realProb[i])/theoProb;
+        errRate[i] = (theoProb - realProb[i]);
     }
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
