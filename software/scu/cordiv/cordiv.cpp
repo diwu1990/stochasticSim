@@ -74,7 +74,7 @@ void CORDIV::Help()
     printf("**********************************************************\n");
 }
 
-void CORDIV::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+void CORDIV::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -181,7 +181,7 @@ void CORDIV::Calc()
         }
     }
 
-    vector<unsigned int> traceReg(depth);
+    vector<char> traceReg(depth);
     for (int i = 0; i < depth; ++i)
     {
         traceReg[i] = i%2;
@@ -191,8 +191,8 @@ void CORDIV::Calc()
     unsigned int oneCount = 0;
     unsigned int accuracyLength = seqLength/2;
 
-    vector<unsigned int> divisorBit(seqLength);
-    vector<unsigned int> dividendBit(seqLength);
+    vector<char> divisorBit(seqLength);
+    vector<char> dividendBit(seqLength);
 
     for (int i = 0; i < seqLength; ++i)
     {
@@ -293,7 +293,7 @@ void CORDIV::Calc()
     // printf("CalcQuot Done\n");
 }
 
-vector<unsigned int> CORDIV::OutSeq()
+vector<char> CORDIV::OutSeq()
 {
     return outSeq;
 }
