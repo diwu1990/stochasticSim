@@ -117,14 +117,8 @@ int main()
             portSeq[1].resize(seqLength);
             portSeq[1] = syncInst.OutSeq()[0];
 
-            vector<unsigned int> selSeq(seqLength);
-            for (int i = 0; i < seqLength; ++i)
-            {
-                selSeq[i] = (unsigned int)(syncInst.OutSeq()[1][i]);
-            }
-
             MUXADD computingInst;
-            computingInst.Init(portSeq,selSeq,"computingInst");
+            computingInst.Init(portSeq,syncInst.OutSeq()[1],"computingInst");
             computingInst.Calc();
             // printf("%f, %f, %f\n", val[0], val[1], val[2]);
             // printf("%f, %f, %f\n", computingInst.TheoProb(), 1*(1-val[2])+val[1]*val[2], computingInst.TheoProb() - 1*(1-val[2]) - val[1]*val[2]);
