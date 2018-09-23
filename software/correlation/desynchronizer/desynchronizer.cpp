@@ -46,7 +46,7 @@ void DeSynchronizer::Help()
     printf("**********************************************************\n");
 }
 
-void DeSynchronizer::Init(vector<vector<unsigned int>> param1, unsigned int param2, string param3)
+void DeSynchronizer::Init(vector<vector<char>> param1, unsigned int param2, string param3)
 {
     inSeq = param1;
     
@@ -195,7 +195,7 @@ void DeSynchronizer::SeqGen()
     errRate[1] = (outProb[1] - inProb[1]);
 }
 
-vector<vector<unsigned int>> DeSynchronizer::OutSeq()
+vector<vector<char>> DeSynchronizer::OutSeq()
 {
     return outSeq;
 }

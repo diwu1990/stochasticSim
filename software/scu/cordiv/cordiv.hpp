@@ -10,7 +10,7 @@ using namespace std;
 
 class CORDIV
 {
-    vector<vector<unsigned int>> inSeq;
+    vector<vector<char>> inSeq;
     vector<float> inProb;
     vector<unsigned int> randNum;
     unsigned int depth;
@@ -18,7 +18,7 @@ class CORDIV
     unsigned int inDim;
 
     unsigned int seqLength;
-    vector<unsigned int> outSeq;
+    vector<char> outSeq;
     float inCC;
     float theoProb;
     vector<float> realProb;
@@ -31,11 +31,11 @@ class CORDIV
         CORDIV();
         ~CORDIV();
         void Help();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, unsigned int, string);
+        void Init(vector<vector<char>>, vector<unsigned int>, unsigned int, unsigned int, string);
         void Report();
         void Calc();
         void OutPrint();
-        vector<unsigned int> OutSeq();
+        vector<char> OutSeq();
         float InCC();
         vector<float> InProb();
         float TheoProb();

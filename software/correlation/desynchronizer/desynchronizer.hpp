@@ -10,8 +10,8 @@ using namespace std;
 
 class DeSynchronizer
 {
-    vector<vector<unsigned int>> inSeq;
-    vector<vector<unsigned int>> outSeq;
+    vector<vector<char>> inSeq;
+    vector<vector<char>> outSeq;
     unsigned int depth;
     unsigned int inDim;
     unsigned int inLen;
@@ -27,14 +27,14 @@ public:
     DeSynchronizer();
     ~DeSynchronizer();
     void Help();
-    void Init(vector<vector<unsigned int>>, unsigned int, string);
+    void Init(vector<vector<char>>, unsigned int, string);
     void Report();
     void SeqGen();
     void CCPrint();
     void ProbPrint();
     void SeqPrint();
     void ErrPrint();
-    vector<vector<unsigned int>> OutSeq();
+    vector<vector<char>> OutSeq();
     float InCC();
     float OutCC();
     vector<float> ErrRate();

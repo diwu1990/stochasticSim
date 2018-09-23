@@ -1,6 +1,6 @@
 #include "autocorrelation.hpp"
 
-void AutoCorrelation::Init(vector<unsigned int> param1, unsigned int param2, float param3, string param4)
+void AutoCorrelation::Init(vector<char> param1, unsigned int param2, float param3, string param4)
 {
     bitVec = param1;
     offset = param2;

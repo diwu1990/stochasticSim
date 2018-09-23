@@ -1,6 +1,6 @@
 #include "crosscorrelation.hpp"
 
-void CrossCorrelation::Init(vector<vector<unsigned int>> param1, float param2, string param3)
+void CrossCorrelation::Init(vector<vector<char>> param1, float param2, string param3)
 {
     bitVec = param1;
     thresholdGood = param2;
@@ -114,9 +114,9 @@ void CrossCorrelation::Calc()
         {
             if (i < j)
             {
-                vector<unsigned int> bitVecX(bitVecLen);
+                vector<char> bitVecX(bitVecLen);
                 bitVecX = bitVec[i];
-                vector<unsigned int> bitVecY(bitVecLen);
+                vector<char> bitVecY(bitVecLen);
                 bitVecY = bitVec[j];
 
                 int a=0;

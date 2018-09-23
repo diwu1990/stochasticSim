@@ -47,7 +47,7 @@ void Synchronizer::Help()
     printf("**********************************************************\n");
 }
 
-void Synchronizer::Init(vector<vector<unsigned int>> param1, unsigned int param2, string param3)
+void Synchronizer::Init(vector<vector<char>> param1, unsigned int param2, string param3)
 {
     inSeq = param1;
     
@@ -183,7 +183,7 @@ void Synchronizer::SeqGen()
     errRate[1] = (outProb[1] - inProb[1]);
 }
 
-vector<vector<unsigned int>> Synchronizer::OutSeq()
+vector<vector<char>> Synchronizer::OutSeq()
 {
     return outSeq;
 }
