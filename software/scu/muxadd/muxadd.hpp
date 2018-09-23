@@ -11,7 +11,7 @@ using namespace std;
 class MUXADD
 {
     vector<vector<char>> inSeq;
-    vector<char> randNum;
+    vector<unsigned int> randNum;
     vector<float> inProb;
     unsigned int inDim;
 
@@ -29,7 +29,7 @@ class MUXADD
         MUXADD();
         ~MUXADD();
         void Help();
-        void Init(vector<vector<char>>, vector<char>, string);
+        void Init(vector<vector<char>>, vector<unsigned int>, string);
         void Report();
         void Calc();
         void OutPrint();

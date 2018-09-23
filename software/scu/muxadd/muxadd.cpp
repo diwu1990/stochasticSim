@@ -61,7 +61,7 @@ void MUXADD::Help()
     printf("**********************************************************\n");
 }
 
-void MUXADD::Init(vector<vector<char>> param1, vector<char> param2, string param3)
+void MUXADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, string param3)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -106,8 +106,13 @@ void MUXADD::Init(vector<vector<char>> param1, vector<char> param2, string param
     }
     if (inDim == 2)
     {
+        vector<char> randSeq(seqLength);
+        for (int i = 0; i < seqLength; ++i)
+        {
+            randSeq[i] = (char)randNum[i];
+        }
         SeqProb selProbCalc;
-        selProbCalc.Init(randNum,"selProbCalc");
+        selProbCalc.Init(randSeq,"selProbCalc");
         selProbCalc.Calc();
         theoProb = inProb[0]*(1 - selProbCalc.OutProb()) + inProb[1]*selProbCalc.OutProb();
     }
