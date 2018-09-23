@@ -234,7 +234,8 @@ void Synchronizer::ErrPrint()
 {
     printf("Calling ErrPrint for Synchronizer instance: ");
     std::cout << m_name << std::endl;
-    printf("Error rate of input sequence 0: %-.3f\n", errRate);
+    printf("Error rate of input sequence 0: %-.3f\n", errRate[0]);
+    printf("Error rate of input sequence 1: %-.3f\n", errRate[1]);
 }
 
 void Synchronizer::ProbPrint()
