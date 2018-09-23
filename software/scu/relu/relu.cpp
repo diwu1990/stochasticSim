@@ -60,7 +60,7 @@ void RELU::Help()
     printf("**********************************************************\n");
 }
 
-void RELU::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+void RELU::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
 {
     inSeq = param1;
     randSeq = param2;
@@ -79,10 +79,6 @@ void RELU::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsign
     }
 
     theoProb = max(0.5,inProb);
-    if (theoProb == 0)
-    {
-        theoProb = 0.0001;
-    }
     outSeq.resize(seqLength);
     realProb.resize(seqLength);
     errRate.resize(seqLength);
@@ -159,7 +155,7 @@ void RELU::Calc()
         {
             realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
         }
-        errRate[i] = (theoProb - realProb[i])/theoProb;
+        errRate[i] = (theoProb - realProb[i]);
     }
     // find the convergence point
     for (int i = 0; i < seqLength; ++i)
@@ -172,7 +168,7 @@ void RELU::Calc()
     }
 }
 
-vector<unsigned int> RELU::OutSeq()
+vector<char> RELU::OutSeq()
 {
     return outSeq;
 }
