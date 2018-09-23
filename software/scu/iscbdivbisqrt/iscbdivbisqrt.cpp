@@ -60,7 +60,7 @@ void ISCBDIVBISQRT::Help()
     printf("**********************************************************\n");
 }
 
-void ISCBDIVBISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void ISCBDIVBISQRT::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProb probCalc;
@@ -115,11 +115,11 @@ void ISCBDIVBISQRT::Calc()
     // *****************************************************************************
     // bit inserting with simplified iscvdiv for 1/(1+Po)
     // *****************************************************************************
-    vector<unsigned int> DFF(seqLength);
-    vector<unsigned int> INV(seqLength);
-    vector<unsigned int> andGate(seqLength);
-    vector<unsigned int> orGate(seqLength);
-    vector<unsigned int> traceReg(depth);
+    vector<char> DFF(seqLength);
+    vector<char> INV(seqLength);
+    vector<char> andGate(seqLength);
+    vector<char> orGate(seqLength);
+    vector<char> traceReg(depth);
 
     for (int i = 0; i < depth; ++i)
     {
@@ -132,8 +132,8 @@ void ISCBDIVBISQRT::Calc()
         INV[i] = 1-DFF[i];
     }
     unsigned int oneCount = 0; // calc the ones in output seq
-    vector<unsigned int> mux0sel(seqLength);
-    vector<unsigned int> mux1out(seqLength);
+    vector<char> mux0sel(seqLength);
+    vector<char> mux1out(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
         mux1out[i] = 1;
@@ -224,7 +224,7 @@ void ISCBDIVBISQRT::Calc()
 
 
     // muxSCC
-    vector<vector<unsigned int>> muxSCCSeq(2);
+    vector<vector<char>> muxSCCSeq(2);
     muxSCCSeq[0].resize(seqLength);
     muxSCCSeq[0] = inSeq;
     muxSCCSeq[1].resize(seqLength);
@@ -260,7 +260,7 @@ float ISCBDIVBISQRT::MuxSCC()
     return muxSCC;
 }
 
-vector<unsigned int> ISCBDIVBISQRT::OutSeq()
+vector<char> ISCBDIVBISQRT::OutSeq()
 {
     return outSeq;
 }
