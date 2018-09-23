@@ -10,12 +10,12 @@ using namespace std;
 
 class MUL
 {
-    vector<vector<unsigned int>> inSeq;
+    vector<vector<char>> inSeq;
     vector<float> inProb;
     unsigned int inDim;
 
     unsigned int seqLength;
-    vector<unsigned int> outSeq;
+    vector<char> outSeq;
     float inCC;
     float theoProb;
     vector<float> realProb;
@@ -28,11 +28,11 @@ class MUL
         MUL();
         ~MUL();
         void Help();
-        void Init(vector<vector<unsigned int>>, string);
+        void Init(vector<vector<char>>, string);
         void Report();
         void Calc();
         void OutPrint();
-        vector<unsigned int> OutSeq();
+        vector<char> OutSeq();
         float InCC();
         vector<float> InProb();
         float TheoProb();

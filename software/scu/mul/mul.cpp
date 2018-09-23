@@ -68,7 +68,7 @@ void MUL::Help()
     printf("**********************************************************\n");
 }
 
-void MUL::Init(vector<vector<unsigned int>> param1, string param2)
+void MUL::Init(vector<vector<char>> param1, string param2)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -166,7 +166,7 @@ void MUL::Calc()
     }
 }
 
-vector<unsigned int> MUL::OutSeq()
+vector<char> MUL::OutSeq()
 {
     return outSeq;
 }
