@@ -61,7 +61,7 @@ void MUXADD::Help()
     printf("**********************************************************\n");
 }
 
-void MUXADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, string param3)
+void MUXADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, string param3)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -174,7 +174,7 @@ void MUXADD::Calc()
     }
 }
 
-vector<unsigned int> MUXADD::OutSeq()
+vector<char> MUXADD::OutSeq()
 {
     return outSeq;
 }

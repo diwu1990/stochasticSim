@@ -97,7 +97,7 @@ int main()
 
             //*******************************************************************************************
             // correlate port 1 and port sel
-            vector<vector<unsigned int>> seqToCorrelate(2);
+            vector<vector<char>> seqToCorrelate(2);
             seqToCorrelate[0].resize(seqLength);
             seqToCorrelate[0] = num2bitMultiInst.OutSeq()[1];
             seqToCorrelate[1].resize(seqLength);
@@ -111,14 +111,20 @@ int main()
             // syncInst.ProbPrint();
 
             // port 0 and 1
-            vector<vector<unsigned int>> portSeq(2);
+            vector<vector<char>> portSeq(2);
             portSeq[0].resize(seqLength);
             portSeq[0] = num2bitMultiInst.OutSeq()[0];
             portSeq[1].resize(seqLength);
             portSeq[1] = syncInst.OutSeq()[0];
 
+            vector<unsigned int> selSeq(seqLength);
+            for (int i = 0; i < seqLength; ++i)
+            {
+                selSeq[i] = (unsigned int)(syncInst.OutSeq()[1][i]);
+            }
+
             MUXADD computingInst;
-            computingInst.Init(portSeq,syncInst.OutSeq()[1],sobolBitLen,"computingInst");
+            computingInst.Init(portSeq,selSeq,"computingInst");
             computingInst.Calc();
             // printf("%f, %f, %f\n", val[0], val[1], val[2]);
             // printf("%f, %f, %f\n", computingInst.TheoProb(), 1*(1-val[2])+val[1]*val[2], computingInst.TheoProb() - 1*(1-val[2]) - val[1]*val[2]);
