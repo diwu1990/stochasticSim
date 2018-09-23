@@ -60,7 +60,7 @@ void APCADD::Help()
     printf("**********************************************************\n");
 }
 
-void APCADD::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void APCADD::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProbMulti probCalc;
@@ -129,13 +129,13 @@ void APCADD::Calc()
     inCC = inputCC.OutCC();
     float oneCount = 0;
 
-    vector<vector<unsigned int>> sumCnt(4);
+    vector<vector<char>> sumCnt(4);
     for (int i = 0; i < 4; ++i)
     {
         sumCnt[i].resize(seqLength);
     }
 
-    vector<vector<vector<unsigned int>>> fa(4);
+    vector<vector<vector<char>>> fa(4);
     // fa[i][0] => a
     // fa[i][1] => b
     // fa[i][2] => ci
@@ -243,7 +243,7 @@ void APCADD::Calc()
     }
 }
 
-vector<unsigned int> APCADD::OutSeq()
+vector<char> APCADD::OutSeq()
 {
     return outSeq;
 }
