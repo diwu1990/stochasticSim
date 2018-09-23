@@ -100,8 +100,6 @@ void DeSynchronizer::Report()
 
 void DeSynchronizer::SeqGen()
 {
-    unsigned int upperbound = (unsigned int)pow(2,depth)-1;
-
     unsigned int saturateCnt = 0;
     unsigned int saturateCnt2 = 0;
     for (int i = 0; i < inLen; ++i)
