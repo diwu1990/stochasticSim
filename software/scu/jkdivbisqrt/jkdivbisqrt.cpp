@@ -60,7 +60,7 @@ void JKDIVBISQRT::Help()
     printf("**********************************************************\n");
 }
 
-void JKDIVBISQRT::Init(vector<unsigned int> param1, vector<unsigned int> param2, unsigned int param3, string param4)
+void JKDIVBISQRT::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, string param4)
 {
     inSeq = param1;
     SeqProb probCalc;
@@ -108,7 +108,7 @@ void JKDIVBISQRT::Calc()
     // *****************************************************************************
     // bit inserting
     // *****************************************************************************
-    vector<unsigned int> JKFF(seqLength);
+    vector<char> JKFF(seqLength);
     for (int i = 0; i < seqLength; ++i)
     {
         JKFF[i] = 1;
@@ -116,7 +116,7 @@ void JKDIVBISQRT::Calc()
     unsigned int oneCount = 0;
     unsigned int sel = 1;
 
-    vector<unsigned int> selSeq(seqLength); // add for muxSCC and traceSAC
+    vector<char> selSeq(seqLength); // add for muxSCC and traceSAC
 
     for (int i = 0; i < seqLength; ++i)
     {
@@ -168,7 +168,7 @@ void JKDIVBISQRT::Calc()
     }
 
     // muxSCC
-    vector<vector<unsigned int>> muxSCCSeq(2);
+    vector<vector<char>> muxSCCSeq(2);
     muxSCCSeq[0].resize(seqLength);
     muxSCCSeq[0] = inSeq;
     muxSCCSeq[1].resize(seqLength);
@@ -204,7 +204,7 @@ float JKDIVBISQRT::MuxSCC()
     return muxSCC;
 }
 
-vector<unsigned int> JKDIVBISQRT::OutSeq()
+vector<char> JKDIVBISQRT::OutSeq()
 {
     return outSeq;
 }
