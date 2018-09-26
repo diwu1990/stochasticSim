@@ -8,29 +8,65 @@ CONV2D::CONV2D(){}
 
 CONV2D::~CONV2D(){}
 
-void CONV2D::Init(vector<vector<unsigned int>> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<vector<unsigned int>> param4, unsigned int param5, unsigned int param6, unsigned int param7, string param8)
+void CONV2D::Init(vector<vector<vector<char>>> param1, vector<vector<vector<char>>> param2, vector<vector<unsigned int>> param3, string param4)
 {
-    inSeq = param1;
-    SeqProbMulti probCalc;
-    probCalc.Init(inSeq,"probCalc");
-    probCalc.Calc();
-    inProb = probCalc.OutProb();
-    randAdd = param2;
-    randSqrt = param3;
-    randDiv = param4;
-    depthSqrt = param5;
-    depthDiv = param6;
-    depthDivSync = param7;
-    m_name = param8;
+    // vector<vector<vector<char>>> iWeight;
+ //    vector<vector<vector<char>>> iFeature;
+ //    vector<vector<float>> iWeightProb;
+ //    vector<vector<float>> iFeatureProb;
+ //    vector<vector<float>> oFeatureProb;
+ //    vector<vector<unsigned int>> randNum;
 
-    if ((unsigned int)inSeq.size() == (unsigned int)randDiv.size())
+ //    unsigned int weightDim;
+ //    unsigned int featureDim;
+ //    unsigned int seqLength;
+ //    vector<vector<vector<char>>> oFeature;
+ //    vector<vector<float>> theoPRrob;
+ //    vector<vector<vector<float>>> realProb;
+ //    vector<vector<float>> finalRealProb;
+ //    vector<vector<vector<float>>> errRate;
+ //    vector<vector<float>> finalErrRate;
+ //    vector<float> mse;
+ //    float finalMSE;
+ //    vector<unsigned int> lowErrLen;
+ //    float avgLowErrLen;
+ //    string m_name;
+
+    iWeight = param1;
+    iFeature = param2;
+    randNum = param3;
+    m_name = param4;
+
+    if ((unsigned int)iWeight.size() == (unsigned int)iWeight[0].size())
     {
-        seqDim = (unsigned int)inSeq.size();
+        weightDim = (unsigned int)iWeight.size();
+        seqLength = (unsigned int)iWeight[0][0].size();
     }
     else
     {
-        printf("Error: Input Sequence Dimension is not the same as that for Division.\n");
+        printf("Error: Weight Dimensions are not the same.\n");
     }
+    
+    if ((unsigned int)iFeature.size() == (unsigned int)iFeature[0].size())
+    {
+        featureDim = (unsigned int)iFeature.size();
+    }
+    else
+    {
+        printf("Error: Feature Dimensions are not the same.\n");
+    }
+
+    for (int i = 0; i < weightDim; ++i)
+    {
+        
+    }
+
+    SeqProbMulti weightProbCalc;
+    weightProbCalc.Init(iWeight,"probCalc");
+    probCalc.Calc();
+    inProb = probCalc.OutProb();
+
+    
 
     seqLength = (unsigned int)inSeq[0].size();
     // printf("%d\n", seqLength);

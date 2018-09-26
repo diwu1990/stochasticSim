@@ -10,38 +10,36 @@ using namespace std;
 
 class CONV2D
 {
-    vector<vector<vector<unsigned int>>> iWeight;
-    vector<vector<vector<unsigned int>>> iFeature;
+    vector<vector<vector<char>>> iWeight;
+    vector<vector<vector<char>>> iFeature;
     vector<vector<float>> iWeightProb;
     vector<vector<float>> iFeatureProb;
     vector<vector<float>> oFeatureProb;
     vector<vector<unsigned int>> randNum;
-    unsigned int sameFlag;
 
     unsigned int weightDim;
     unsigned int featureDim;
     unsigned int seqLength;
-    vector<vector<vector<unsigned int>>> oFeature;
-    vector<float> inCC;
+    vector<vector<vector<char>>> oFeature;
     vector<vector<float>> theoPRrob;
     vector<vector<vector<float>>> realProb;
     vector<vector<float>> finalRealProb;
     vector<vector<vector<float>>> errRate;
     vector<vector<float>> finalErrRate;
     vector<float> mse;
-    string m_name;
-    vector<unsigned int> lowErrLen;
     float finalMSE;
+    vector<unsigned int> lowErrLen;
     float avgLowErrLen;
+    string m_name;
 
     public:
         CONV2D();
         ~CONV2D();
         void Help();
-        void Init(vector<vector<unsigned int>>, vector<unsigned int>, unsigned int, string);
+        void Init(vector<vector<vector<char>>>, vector<vector<vector<char>>>, vector<vector<unsigned int>>, string);
         void Report();
         void Calc();
-        vector<vector<vector<unsigned int>>> OutSeq();
+        vector<vector<vector<char>>> OutSeq();
         vector<vector<float>> InWtProb();
         vector<vector<float>> InFmProb();
         vector<vector<float>> TheoProb();
@@ -50,7 +48,7 @@ class CONV2D
         vector<vector<float>> FinalRealProb();
         vector<vector<float>> FinalErrRate();
         vector<float> MSE();
-        vector<vector<unsigned int>> LowErrLen();
         float FinalMSE();
+        vector<vector<unsigned int>> LowErrLen();
         float AvgLowErrLen();
 };
