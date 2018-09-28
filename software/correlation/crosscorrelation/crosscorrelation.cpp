@@ -25,7 +25,7 @@ void CrossCorrelation::Help()
     printf("Calling CrossCorrelation Help. Following are instructions to CrossCorrelation Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the CrossCorrelation inst.\n");
-    printf("Initial Parameters: Bit Steam Array, Threshold To Be Print, Instance Name.\n");
+    printf("Parameters: Bit Steam Array, Threshold To Be Print, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the Cross-Correlation of input bit vector from inst.Init().\n");
