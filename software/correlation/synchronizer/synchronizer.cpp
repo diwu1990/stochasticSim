@@ -126,7 +126,7 @@ void Synchronizer::Calc(vector<char> param1)
         }
         else
         {
-            oBit[1][i] = 0;
+            oBit[1] = 0;
             if (satCnt0 == upperbound)
             {
                 oBit[0] = 1;
