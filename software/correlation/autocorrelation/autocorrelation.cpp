@@ -23,7 +23,7 @@ void AutoCorrelation::Help()
     printf("\nCalling AutoCorrelation Help. Following are instructions to AutoCorrelation Instance Usage:\n");
     printf("\n1. inst.Init() method:\n");
     printf("Configure the AutoCorrelation inst.\n");
-    printf("Initial Parameters: Input Bit Stream, Auto-Correlation Offset, Expectation of Bit Vector, Instance Name.\n");
+    printf("Parameters: Input Bit Stream, Auto-Correlation Offset, Expectation of Bit Vector, Instance Name.\n");
 
     printf("\n2. inst.Calc() method:\n");
     printf("Calculate the Auto-Correlation of input bit vector from inst.Init().\n");
