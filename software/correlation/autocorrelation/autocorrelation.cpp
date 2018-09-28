@@ -8,16 +8,6 @@ void AutoCorrelation::Init(vector<char> param1, unsigned int param2, float param
     m_name = param4;
 }
 
-AutoCorrelation::AutoCorrelation()
-{
-
-}
-
-AutoCorrelation::~AutoCorrelation()
-{
-        
-}
-
 void AutoCorrelation::Report()
 {
     printf("Current AutoCorrelation:\n");
@@ -28,16 +18,12 @@ void AutoCorrelation::Report()
 
 void AutoCorrelation::Help()
 {
-    // init params: lfsrLen, initState, polyIdx
-    // the legal range of lfsrLen is 4~16
-    // the legal range of initState is non-zero
-    // the legal range of polyIdx is 2,6,6,18,16,48,60,100,100,100,100,100,100 for 4~16
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("\nCalling AutoCorrelation Help. Following are instructions to AutoCorrelation Instance Usage:\n");
     printf("\n1. inst.Init() method:\n");
     printf("Configure the AutoCorrelation inst.\n");
-    printf("Initial Parameters: Bit Vector, Auto-Correlation Offset, Orignal Expectation of Bit Vector, Instance Name.\n");
+    printf("Initial Parameters: Input Bit Stream, Auto-Correlation Offset, Expectation of Bit Vector, Instance Name.\n");
 
     printf("\n2. inst.Calc() method:\n");
     printf("Calculate the Auto-Correlation of input bit vector from inst.Init().\n");
