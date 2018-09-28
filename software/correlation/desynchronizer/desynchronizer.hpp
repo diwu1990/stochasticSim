@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
 #include <cmath>
 #include <string>
@@ -10,36 +10,47 @@ using namespace std;
 
 class DeSynchronizer
 {
-    vector<vector<char>> inSeq;
-    vector<vector<char>> outSeq;
+    // initial input
+    vector<float> iProb;
     unsigned int depth;
-    unsigned int inDim;
-    unsigned int inLen;
-    vector<float> inProb;
-    vector<float> outProb;
-    float inCC;
-    float outCC;
-    vector<float> errRate;
-    unsigned int ppStage;
+    unsigned int wSize;
+    float thdBias;
     string m_name;
 
+    // calc input
+    vector<char> iBit;
+
+    // internal
+    unsigned int iDim;
+    #ifdef PERFSIM
+        unsigned int iLen;
+    #endif
+    unsigned int satCnt0;
+    unsigned int satCnt1;
+
+    // output
+    vector<char> oBit;
+
+    // perfsim output
+    #ifdef PERFSIM
+        vector<vector<char>> oBS;
+        vector<float> wProb;
+        vector<float> theoProb;
+        vector<float> wBias;
+        vector<unsigned int> speed;
+    #endif
+
 public:
-    DeSynchronizer();
-    ~DeSynchronizer();
     void Help();
-    void Init(vector<vector<char>>, unsigned int, string);
-    void Report();
-    void SeqGen();
-    void CCPrint();
-    void ProbPrint();
-    void SeqPrint();
-    void ErrPrint();
-    vector<vector<char>> OutSeq();
-    float InCC();
-    float OutCC();
-    vector<float> ErrRate();
-    vector<float> InProb();
-    vector<float> OutProb();
-    unsigned int PPStage();
-    unsigned int SeqLen();
+    void Init(vector<float>, unsigned int, string);
+    void Calc(vector<char>);
+    vector<char> OutBit();
+
+    #ifdef PERFSIM
+        vector<vector<char>> OutBS();
+        vector<float> WProb();
+        vector<float> TheoProb();
+        vector<float> WBias();
+        vector<unsigned int> Speed();
+    #endif
 };
