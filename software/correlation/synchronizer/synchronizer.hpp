@@ -28,7 +28,8 @@ class Synchronizer
     #endif
     unsigned int satCnt0;
     unsigned int satCnt1;
-
+    unsigned int upperbound;
+    
     // output
     vector<char> oBit;
 

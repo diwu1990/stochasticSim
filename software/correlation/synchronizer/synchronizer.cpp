@@ -58,6 +58,7 @@ void Synchronizer::Init(vector<float> param1, unsigned int param2, unsigned int 
     #endif
     satCnt0 = 0;
     satCnt1 = 0;
+    upperbound = (unsigned int)pow(2,depth)-1;
 
     oBit.resize(iDim);
 
@@ -81,7 +82,6 @@ void Synchronizer::Calc(vector<char> param1)
 {
     iBit = param1;
 
-    unsigned int upperbound = (unsigned int)pow(2,depth)-1;
 
     if (iBit[0] == 0 && iBit[1] == 0)
     {
