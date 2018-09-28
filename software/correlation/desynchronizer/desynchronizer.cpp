@@ -1,6 +1,7 @@
 #include "desynchronizer.hpp"
 #include "crosscorrelation.hpp"
 #include "seqprobmulti.hpp"
+#include "perfsim.hpp"
 
 void DeSynchronizer::Help()
 {
@@ -39,8 +40,14 @@ void DeSynchronizer::Help()
     printf("**********************************************************\n");
 }
 
-void DeSynchronizer::Init(vector<float> iProb, unsigned int depth, unsigned int wSize, float thdBias, string m_name)
+void DeSynchronizer::Init(vector<float> param1, unsigned int param2, unsigned int param3, float param4, string param5)
 {
+    iProb = param1;
+    depth = param2;
+    wSize = param3;
+    thdBias = param4;
+    m_name = param5;
+
     iDim = (unsigned int)iProb.size();
     if (iDim != 2)
     {
@@ -70,8 +77,10 @@ void DeSynchronizer::Init(vector<float> iProb, unsigned int depth, unsigned int 
     #endif
 }
 
-void DeSynchronizer::Calc(vector<char> iBit)
+void DeSynchronizer::Calc(vector<char> param1)
 {
+    iBit = param1;
+
     if (iBit[0] == 0 && iBit[1] == 0)
     {
         if (satCnt0 == 0 && satCnt1 == 0)
@@ -137,7 +146,7 @@ void DeSynchronizer::Calc(vector<char> iBit)
 
     #ifdef PERFSIM
         iLen++;
-        vector<unsigned int> totalSum(2);
+        vector<unsigned int> totalSum(iDim);
         for (int i = 0; i < iDim; ++i)
         {
             totalSum[i] = 0;
@@ -146,22 +155,22 @@ void DeSynchronizer::Calc(vector<char> iBit)
             {
                 for (int j = 0; j < oBS[i].size(); ++j)
                 {
-                    totalSum[i] += iBit[i];
+                    totalSum[i] += oBS[i][j];
                 }
-                wProb[i] = totalSum[i]/iLen;
+                wProb[i] = (float)totalSum[i]/iLen;
             }
             else
             {
                 for (int j = oBS[i].size() - wSize; j < oBS[i].size(); ++j)
                 {
-                    totalSum[i] += iBit[i];
+                    totalSum[i] += oBS[i][j];
                 }
-                wProb[i] = totalSum[i]/iLen;
+                wProb[i] = (float)totalSum[i]/wSize;
             }
             wBias[i] = wProb[i] - theoProb[i];
-            if (wBias[i] > thdBias)
+            if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                speed[i]++;
+                speed[i] = iLen;
             }
         }
     #endif

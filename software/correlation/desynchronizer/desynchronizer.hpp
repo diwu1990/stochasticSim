@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 #include <iostream>
+#include "perfsim.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
@@ -42,7 +43,7 @@ class DeSynchronizer
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, string);
+    void Init(vector<float>, unsigned int, unsigned int, float, string);
     void Calc(vector<char>);
     vector<char> OutBit();
 
