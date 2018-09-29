@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
 #include <cmath>
 #include <string>
@@ -24,8 +24,6 @@ class CrossCorrelation
     string m_name;
 
     public:
-        CrossCorrelation();
-        ~CrossCorrelation();
         void Help();
         void Init(vector<vector<char>>, float, string);
         void Calc();

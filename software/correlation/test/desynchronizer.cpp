@@ -1,289 +1,204 @@
 #include "desynchronizer.hpp"
 #include "crosscorrelation.hpp"
 #include "seqprobmulti.hpp"
-
-DeSynchronizer::DeSynchronizer()
-{}
-
-DeSynchronizer::~DeSynchronizer()
-{}
+#include "perfsim.hpp"
 
 void DeSynchronizer::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("Calling DeSynchronizer Help. Following are instructions to DeSynchronizer Instance Usage:\n");
+
     printf("1. inst.Init() method:\n");
-    printf("Configure the DeSynchronizer inst.\n");
-    printf("Initial Parameters: Input Stochastic Bit Sequence, Buffer Depth, Instance Name.\n");
-    printf("Mainly to match logic ones with logic ones.\n");
-    printf("Buffer Depth is not used in this class.\n");
+    printf("Configure the current inst.\n");
+    printf("Parameters: Input Probability, Buffer Depth, Window Size, Threshold for Window Bias, Instance Name.\n");
+    printf("Buffer Depth is not used in this class, always default to 1.\n");
 
-    printf("2. inst.SeqGen() method:\n");
-    printf("Generate random sequences with max positive correlation based on parameters from inst.Init().\n");
+    printf("2. inst.Calc() method:\n");
+    printf("Match logic ones with logic zeros for max negative correlation with configuration in inst.Init().\n");
+    printf("Parameters: Vectorized Input Bits.\n");
 
-    printf("3. inst.OutSeq() method:\n");
-    printf("Return new sequences from inst.SeqGen().\n");
+    printf("3. inst.OutBit() method:\n");
+    printf("Return output bit from inst.Calc().\n");
 
-    printf("4. inst.Report() method:\n");
-    printf("Get the configuration of the current DeSynchronizer instance.\n");
+    printf(">>>>>>>>The following methods require macro definition of PERFSIM.<<<<<<<<\n");
+    printf("4. inst.OutBS() method:\n");
+    printf("Return output bit stream from inst.Calc().\n");
 
-    printf("5. inst.CCPrint() method:\n");
-    printf("Print the content in the output sequence of current DeSynchronizer instance.\n");
+    printf("5. inst.RealProb() method:\n");
+    printf("Return the real probability.\n");
 
-    printf("6. inst.InCC() method:\n");
-    printf("Return new sequences from inst.SeqGen().\n");
+    printf("6. inst.TheoProb() method:\n");
+    printf("Return the theoretical probability.\n");
 
-    printf("7. inst.OutCC() method:\n");
-    printf("Return new sequences from inst.SeqGen().\n");
+    printf("7. inst.WBias() method:\n");
+    printf("Return the window bias.\n");
 
-    printf("8. inst.PPStage() method:\n");
-    printf("Return new sequences from inst.SeqGen().\n");
-
-    printf("9. inst.SeqLen() method:\n");
-    printf("Return the length of the sequence of current DeSynchronizer instance.\n");
+    printf("8. inst.Speed() method:\n");
+    printf("Return the converge speed.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
 
-void DeSynchronizer::Init(vector<vector<char>> param1, unsigned int param2, string param3)
+void DeSynchronizer::Init(vector<float> param1, unsigned int param2, unsigned int param3, float param4, string param5)
 {
-    inSeq = param1;
-    
+    iProb = param1;
     depth = param2;
-    m_name = param3;
-    inDim = (unsigned int)inSeq.size();
-    if (inDim != 2)
+    wSize = param3;
+    thdBias = param4;
+    m_name = param5;
+
+    iDim = (unsigned int)iProb.size();
+    if (iDim != 2)
     {
-        printf("Error: Input dimension is incorrect (Supposed to be 2).\n");
+        printf("Error: Input dimension is not 2.\n");
     }
-    SeqProbMulti inProbInst;
-    inProbInst.Init(inSeq,"inProbInst");
-    inProbInst.Calc();
-    inLen = (unsigned int)inSeq[0].size();
-    if (inLen != (unsigned int)inSeq[1].size())
-    {
-        printf("Error: Input length of two input sequences are not the same.\n");
-    }
-    inCC = 0;
-    outCC = 0;
-    outSeq.resize(inDim);
-    inProb.resize(inDim);
-    inProb[0] = inProbInst.OutProb()[0];
-    inProb[1] = inProbInst.OutProb()[1];
-    outProb.resize(inDim);
-    for (int i = 0; i < inDim; ++i)
-    {
-        outSeq[i].resize(inLen);
-        for (int j = 0; j < inLen; ++j)
+    #ifdef PERFSIM
+        iLen = 0;
+    #endif
+    satCnt0 = 0;
+    satCnt1 = 0;
+
+    oBit.resize(iDim);
+
+    #ifdef PERFSIM
+        oBS.resize(iDim);
+        wProb.resize(iDim);
+        theoProb.resize(iDim);
+        wBias.resize(iDim);
+        speed.resize(iDim);
+
+        for (int i = 0; i < iDim; ++i)
         {
-            if (inSeq[i][j] != 0 && inSeq[i][j] != 1)
-            {
-                printf("Error: Input sequences are not in bit format.\n");
-                break;
-            }
+            wProb[i] = 0;
+            theoProb[i] = iProb[i];
+            speed[i] = 0;
+        }
+    #endif
+}
+
+void DeSynchronizer::Calc(vector<char> param1)
+{
+    iBit = param1;
+
+    if (iBit[0] == 0 && iBit[1] == 0)
+    {
+        if (satCnt0 == 0 && satCnt1 == 0)
+        {
+            oBit[0] = 0;
+            oBit[1] = 0;
+        }
+        else if (satCnt0 > 0 && satCnt1 == 0)
+        {
+            oBit[0] = 1;
+            oBit[1] = 0;
+            satCnt0--;
+        }
+        else if (satCnt0 == 0 && satCnt1 > 0)
+        {
+            oBit[0] = 0;
+            oBit[1] = 1;
+            satCnt1--;
+        }
+        else
+        {
+            oBit[0] = 0;
+            oBit[1] = 1;
+            satCnt1--;
         }
     }
-    errRate.resize(inDim);
-    ppStage = 1;
-}
-
-void DeSynchronizer::Report()
-{
-    printf("Current DeSynchronizer:\n");
-    std::cout << "Instance name:          " << m_name << std::endl;
-    printf("Input Dimension:        %-5u\n", inDim);
-    printf("Input Length:           %-5u\n", inLen);
-    printf("Buffer Depth:           %-5u\n", depth);
-    printf("Pipeline Stage:         %-5u\n", ppStage);
-}
-
-void DeSynchronizer::SeqGen()
-{
-    unsigned int upperbound = (unsigned int)pow(2,depth)-1;
-
-    unsigned int saturateCnt = 0;
-    unsigned int saturateCnt2 = 0;
-    for (int i = 0; i < inLen; ++i)
+    else if (iBit[0] == 0 && iBit[1] == 1)
     {
-        if (inSeq[0][i] == 0 && inSeq[1][i] == 0)
+        oBit[0] = iBit[0];
+        oBit[1] = iBit[1];
+    }
+    else if (iBit[0] == 1 && iBit[1] == 0)
+    {
+        oBit[0] = iBit[0];
+        oBit[1] = iBit[1];
+    }
+    else if (iBit[0] == 1 && iBit[1] == 1)
+    {
+        if (satCnt0 == 0 && satCnt1 == 0)
         {
-            if (saturateCnt == 0 && saturateCnt2 == 0)
+            oBit[0] = 0;
+            oBit[1] = 1;
+            satCnt0++;
+        }
+        else if (satCnt0 > 0 && satCnt1 == 0)
+        {
+            oBit[0] = 1;
+            oBit[1] = 0;
+            satCnt1++;
+        }
+        else if (satCnt0 == 0 && satCnt1 > 0)
+        {
+            oBit[0] = 0;
+            oBit[1] = 1;
+            satCnt0++;
+        }
+        else
+        {
+            oBit[0] = 1;
+            oBit[1] = 1;
+        }
+    }
+
+    #ifdef PERFSIM
+        iLen++;
+        vector<unsigned int> totalSum(iDim);
+        for (int i = 0; i < iDim; ++i)
+        {
+            totalSum[i] = 0;
+            oBS[i].push_back(oBit[i]);
+            if (oBS[i].size() < wSize)
             {
-                outSeq[0][i] = 0;
-                outSeq[1][i] = 0;
-            }
-            else if (saturateCnt > 0 && saturateCnt2 == 0)
-            {
-                outSeq[0][i] = 1;
-                outSeq[1][i] = 0;
-                saturateCnt--;
-            }
-            else if (saturateCnt == 0 && saturateCnt2 > 0)
-            {
-                outSeq[0][i] = 0;
-                outSeq[1][i] = 1;
-                saturateCnt2--;
+                for (int j = 0; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/iLen;
             }
             else
             {
-                outSeq[0][i] = 0;
-                outSeq[1][i] = 1;
-                saturateCnt2--;
+                for (int j = oBS[i].size() - wSize; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/wSize;
             }
-            // printf("case 1: %u, %u (%u, %u)\n" , outSeq[0][i], outSeq[1][i], saturateCnt, saturateCnt2);
-        }
-        else if (inSeq[0][i] == 0 && inSeq[1][i] == 1)
-        {
-            outSeq[0][i] = inSeq[0][i];
-            outSeq[1][i] = inSeq[1][i];
-            // printf("case 2: %u, %u (%u, %u)\n" , outSeq[0][i], outSeq[1][i], saturateCnt, saturateCnt2);
-        }
-        else if (inSeq[0][i] == 1 && inSeq[1][i] == 0)
-        {
-            outSeq[0][i] = inSeq[0][i];
-            outSeq[1][i] = inSeq[1][i];
-            // printf("case 3: %u, %u (%u, %u)\n" , outSeq[0][i], outSeq[1][i], saturateCnt, saturateCnt2);
-        }
-        else if (inSeq[0][i] == 1 && inSeq[1][i] == 1)
-        {
-            if (saturateCnt == 0 && saturateCnt2 == 0)
+            wBias[i] = wProb[i] - theoProb[i];
+            if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                outSeq[0][i] = 0;
-                outSeq[1][i] = 1;
-                saturateCnt++;
+                speed[i] = iLen;
             }
-            else if (saturateCnt > 0 && saturateCnt2 == 0)
-            {
-                outSeq[0][i] = 1;
-                outSeq[1][i] = 0;
-                saturateCnt2++;
-            }
-            else if (saturateCnt == 0 && saturateCnt2 > 0)
-            {
-                outSeq[0][i] = 0;
-                outSeq[1][i] = 1;
-                saturateCnt++;
-            }
-            else
-            {
-                outSeq[0][i] = 1;
-                outSeq[1][i] = 1;
-            }
-            // printf("case 4: %u, %u (%u, %u)\n" , outSeq[0][i], outSeq[1][i], saturateCnt, saturateCnt2);
         }
-        
-    }
-
-    CrossCorrelation inCCInst;
-    inCCInst.Init(inSeq, 1, "inCCInst");
-    inCCInst.Calc();
-    inCC = inCCInst.OutCC()[0];
-
-    SeqProbMulti outProbInst;
-    outProbInst.Init(outSeq,"outProbInst");
-    outProbInst.Calc();
-    outProb[0] = outProbInst.OutProb()[0];
-    outProb[1] = outProbInst.OutProb()[1];
-
-    CrossCorrelation outCCInst;
-    outCCInst.Init(outSeq, 1, "outCCInst");
-    outCCInst.Calc();
-    outCC = outCCInst.OutCC()[0];
-
-    errRate[0] = (outProb[0] - inProb[0]);
-    errRate[1] = (outProb[1] - inProb[1]);
+    #endif
 }
 
-vector<vector<char>> DeSynchronizer::OutSeq()
+vector<char> DeSynchronizer::OutBit()
 {
-    return outSeq;
+    return oBit;
 }
 
-float DeSynchronizer::InCC()
-{
-    return inCC;
-}
-
-float DeSynchronizer::OutCC()
-{
-    return outCC;
-}
-
-vector<float> DeSynchronizer::InProb()
-{
-    return inProb;
-}
-
-vector<float> DeSynchronizer::OutProb()
-{
-    return outProb;
-}
-
-unsigned int DeSynchronizer::PPStage()
-{
-    return ppStage;
-}
-
-unsigned int DeSynchronizer::SeqLen()
-{
-    return inLen;
-}
-
-vector<float> DeSynchronizer::ErrRate()
-{
-    return errRate;
-}
-
-void DeSynchronizer::CCPrint()
-{
-    printf("Calling CCPrint for DeSynchronizer instance: ");
-    std::cout << m_name << std::endl;
-    printf("Input CC(%-.3f) => Output CC(%-.3f)\n", inCC, outCC);
-}
-
-void DeSynchronizer::ErrPrint()
-{
-    printf("Calling ErrPrint for DeSynchronizer instance: ");
-    std::cout << m_name << std::endl;
-    printf("Error rate of input sequence 0: %-.3f\n", errRate);
-}
-
-void DeSynchronizer::ProbPrint()
-{
-    printf("Calling ProbPrint for DeSynchronizer instance: ");
-    std::cout << m_name << std::endl;
-    printf("Input Prob[0](%-.3f) => Output Prob[0](%-.3f)\n", inProb[0], outProb[0]);
-    printf("Input Prob[1](%-.3f) => Output Prob[1](%-.3f)\n", inProb[1], outProb[1]);
-}
-
-void DeSynchronizer::SeqPrint()
-{
-    printf("Calling SeqPrint for DeSynchronizer instance: ");
-    std::cout << m_name << std::endl;
-    printf("Input Sequence 0:\n");
-    for (int i = 0; i < inLen; ++i)
+#ifdef PERFSIM
+    vector<float> DeSynchronizer::WProb()
     {
-        printf("%u, ", inSeq[0][i]);
+        return wProb;
     }
-    printf("\n");
-    printf("Output Sequence 0:\n");
-    for (int i = 0; i < inLen; ++i)
-    {
-        printf("%u, ", outSeq[0][i]);
-    }
-    printf("\n");
 
-    printf("Input Sequence 1:\n");
-    for (int i = 0; i < inLen; ++i)
+    vector<float> DeSynchronizer::TheoProb()
     {
-        printf("%u, ", inSeq[1][i]);
+        return theoProb;
     }
-    printf("\n");
-    printf("Output Sequence 1:\n");
-    for (int i = 0; i < inLen; ++i)
+
+    vector<float> DeSynchronizer::WBias()
     {
-        printf("%u, ", outSeq[1][i]);
+        return wBias;
     }
-    printf("\n");
-}
+
+    vector<unsigned int> DeSynchronizer::Speed()
+    {
+        return speed;
+    }
+#endif

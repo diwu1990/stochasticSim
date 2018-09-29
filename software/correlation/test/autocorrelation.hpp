@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
 #include <cmath>
 #include <string>
@@ -17,8 +17,6 @@ class AutoCorrelation
     string m_name;
 
     public:
-        AutoCorrelation();
-        ~AutoCorrelation();
         void Help();
         void Init(vector<char>, unsigned int, float, string);
         void Report();
