@@ -128,7 +128,6 @@ void SkewedSynchronizer::Calc(vector<char> param1)
         }
     }
 
-        
     #ifdef PERFSIM
         iLen++;
         vector<unsigned int> totalSum(iDim);
