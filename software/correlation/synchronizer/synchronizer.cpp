@@ -1,6 +1,4 @@
 #include "synchronizer.hpp"
-#include "crosscorrelation.hpp"
-#include "seqprobmulti.hpp"
 #include "perfsim.hpp"
 
 void Synchronizer::Help()
