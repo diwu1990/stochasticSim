@@ -1,6 +1,4 @@
 #include "skewedsynchronizer.hpp"
-#include "crosscorrelation.hpp"
-#include "seqprobmulti.hpp"
 #include "perfsim.hpp"
 
 void SkewedSynchronizer::Help()
