@@ -1,6 +1,4 @@
 #include "synchronizer.hpp"
-#include "crosscorrelation.hpp"
-#include "seqprobmulti.hpp"
 #include "perfsim.hpp"
 
 void Synchronizer::Help()
@@ -12,7 +10,6 @@ void Synchronizer::Help()
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
     printf("Parameters: Input Probability, Buffer Depth, Window Size, Threshold for Window Bias, Instance Name.\n");
-    printf("Buffer Depth is not used in this class, always default to 1.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Match logic ones with logic zeros for max negative correlation with configuration in inst.Init().\n");
