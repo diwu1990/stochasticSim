@@ -1,8 +1,9 @@
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
 #include <cmath>
 #include <string>
 #include <iostream>
+#include "perfsim.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
@@ -10,8 +11,38 @@ using namespace std;
 
 class CORDIV
 {
-    vector<vector<char>> inSeq;
-    vector<float> inProb;
+
+    // initial input
+    vector<float> iProb;
+    unsigned int depth;
+    unsigned int wSize;
+    float thdBias;
+    string m_name;
+
+    // calc input
+    vector<char> iBit;
+
+    // internal
+    unsigned int iDim;
+    #ifdef PERFSIM
+        unsigned int iLen;
+    #endif
+    unsigned int satCnt;
+    unsigned int upperbound;
+
+    // output
+    vector<char> oBit;
+
+    // perfsim output
+    #ifdef PERFSIM
+        vector<vector<char>> oBS;
+        vector<float> wProb;
+        vector<float> theoProb;
+        vector<float> wBias;
+        vector<unsigned int> speed;
+    #endif
+        
+    vector<char> inSeq;
     vector<unsigned int> randNum;
     unsigned int depth;
     unsigned int depthSync;
@@ -28,8 +59,6 @@ class CORDIV
     unsigned int ppStage;
 
     public:
-        CORDIV();
-        ~CORDIV();
         void Help();
         void Init(vector<vector<char>>, vector<unsigned int>, unsigned int, unsigned int, string);
         void Report();

@@ -6,20 +6,8 @@
 #include "crosscorrelation.hpp"
 #include "skewedsynchronizer.hpp"
 
-CORDIV::CORDIV(){}
-CORDIV::~CORDIV(){}
 void CORDIV::Help()
 {
-    // void Init();
-    // void Report();
-    // void CalcQuot();
-    // void OutPrint();
-    // vector<unsigned int> OutSeq();
-    // float OutProb();
-    // float TheoProb();
-    // float ErrRate();
-    // unsigned int PPStage();
-    // unsigned int LowErrLen();
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("Calling CORDIV Help. Following are instructions to CORDIV Instance Usage:\n");
