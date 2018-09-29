@@ -11,7 +11,6 @@ using namespace std;
 
 class CORDIV
 {
-
     // initial input
     vector<float> iProb;
     unsigned int depth;
@@ -21,9 +20,11 @@ class CORDIV
 
     // calc input
     vector<char> iBit;
+    unsigned int randNum;
 
     // internal
     unsigned int iDim;
+    unsigned int oDim;
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
@@ -41,38 +42,18 @@ class CORDIV
         vector<float> wBias;
         vector<unsigned int> speed;
     #endif
-        
-    vector<char> inSeq;
-    vector<unsigned int> randNum;
-    unsigned int depth;
-    unsigned int depthSync;
-    unsigned int inDim;
 
-    unsigned int seqLength;
-    vector<char> outSeq;
-    float inCC;
-    float theoProb;
-    vector<float> realProb;
-    vector<float> errRate;
-    string m_name;
-    unsigned int lowErrLen;
-    unsigned int ppStage;
+public:
+    void Help();
+    void Init(vector<float>, unsigned int, unsigned int, float, string);
+    void Calc(vector<char>, unsigned int);
+    vector<char> OutBit();
 
-    public:
-        void Help();
-        void Init(vector<vector<char>>, vector<unsigned int>, unsigned int, unsigned int, string);
-        void Report();
-        void Calc();
-        void OutPrint();
-        vector<char> OutSeq();
-        float InCC();
-        vector<float> InProb();
-        float TheoProb();
-        vector<float> RealProb();
-        float FinalRealProb();
-        vector<float> ErrRate();
-        float FinalErrRate();
-        unsigned int SeqLen();
-        unsigned int LowErrLen();
-        unsigned int PPStage();
+    #ifdef PERFSIM
+        vector<vector<char>> OutBS();
+        vector<float> WProb();
+        vector<float> TheoProb();
+        vector<float> WBias();
+        vector<unsigned int> Speed();
+    #endif
 };
