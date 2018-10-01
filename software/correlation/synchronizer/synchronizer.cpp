@@ -12,7 +12,7 @@ void Synchronizer::Help()
     printf("Parameters: Input Probability, Buffer Depth, Window Size, Threshold for Window Bias, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
-    printf("Match logic ones with logic zeros for max negative correlation with configuration in inst.Init().\n");
+    printf("Match logic ones with logic zeros for max positive correlation with configuration in inst.Init().\n");
     printf("Parameters: Vectorized Input Bits.\n");
 
     printf("3. inst.OutBit() method:\n");
