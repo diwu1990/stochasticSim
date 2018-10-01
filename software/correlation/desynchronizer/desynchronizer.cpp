@@ -51,22 +51,23 @@ void DeSynchronizer::Init(vector<float> param1, unsigned int param2, unsigned in
     {
         printf("Error: Input dimension is not 2.\n");
     }
+    oDim = iDim;
     #ifdef PERFSIM
         iLen = 0;
     #endif
     satCnt0 = 0;
     satCnt1 = 0;
 
-    oBit.resize(iDim);
+    oBit.resize(oDim);
 
     #ifdef PERFSIM
-        oBS.resize(iDim);
-        wProb.resize(iDim);
-        theoProb.resize(iDim);
-        wBias.resize(iDim);
-        speed.resize(iDim);
+        oBS.resize(oDim);
+        wProb.resize(oDim);
+        theoProb.resize(oDim);
+        wBias.resize(oDim);
+        speed.resize(oDim);
 
-        for (int i = 0; i < iDim; ++i)
+        for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
             theoProb[i] = iProb[i];
@@ -144,8 +145,8 @@ void DeSynchronizer::Calc(vector<char> param1)
 
     #ifdef PERFSIM
         iLen++;
-        vector<unsigned int> totalSum(iDim);
-        for (int i = 0; i < iDim; ++i)
+        vector<unsigned int> totalSum(oDim);
+        for (int i = 0; i < oDim; ++i)
         {
             totalSum[i] = 0;
             oBS[i].push_back(oBit[i]);
