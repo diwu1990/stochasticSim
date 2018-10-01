@@ -23,6 +23,7 @@ class Synchronizer
 
     // internal
     unsigned int iDim;
+    unsigned int oDim;
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
