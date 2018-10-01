@@ -58,13 +58,13 @@ void SCUInst::Init(vector<float> param1, unsigned int param2, float param3, stri
     oBit.resize(oDim);
 
     #ifdef PERFSIM
-        oBS.resize(iDim);
-        wProb.resize(iDim);
-        theoProb.resize(iDim);
-        wBias.resize(iDim);
-        speed.resize(iDim);
+        oBS.resize(oDim);
+        wProb.resize(oDim);
+        theoProb.resize(oDim);
+        wBias.resize(oDim);
+        speed.resize(oDim);
 
-        for (int i = 0; i < iDim; ++i)
+        for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
             theoProb[i] = iProb[i];
