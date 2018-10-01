@@ -13,6 +13,7 @@ class CORDIV
 {
     // initial input
     vector<float> iProb;
+    unsigned int depthSync;
     unsigned int depth;
     unsigned int wSize;
     float thdBias;
@@ -20,7 +21,7 @@ class CORDIV
 
     // calc input
     vector<char> iBit;
-    unsigned int randNum;
+    vector<unsigned int> randNum;
 
     // internal
     unsigned int iDim;
@@ -28,8 +29,12 @@ class CORDIV
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
-    unsigned int satCnt;
+    vector<unsigned int> cnt;
     unsigned int upperbound;
+    unsigned int halfBound;
+    vector<char> traceReg;
+    char divisorBit;
+    char dividendBit;
 
     // output
     vector<char> oBit;
@@ -45,8 +50,8 @@ class CORDIV
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, unsigned int, float, string);
-    void Calc(vector<char>, unsigned int);
+    void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, string);
+    void Calc(vector<char>, vector<unsigned int>);
     vector<char> OutBit();
 
     #ifdef PERFSIM
