@@ -33,7 +33,7 @@ int main()
     vector<float> tenFoldLowErrLen(foldNum);
     vector<float> tenFoldCorr(foldNum);
     float thdBias = 0.05;
-    unsigned int wSize = seqLength;
+    unsigned int wSize = seqLength/2;
     for (int index = 0; index < 1; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
