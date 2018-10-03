@@ -16,6 +16,9 @@ void CORDIV::Help()
     printf("2. inst.Calc() method:\n");
     printf("Calculate the result bit.\n");
     printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
+    printf("Input bit 0 is dividend, and input bit 1 is divisor.\n");
+    printf("The 0th value of vectorized Random Number is for the Synchronizer.\n");
+    printf("The 1th value of vectorized Random Number is for the Trace Reg.\n");
 
     printf("3. inst.OutBit() method:\n");
     printf("Return output bit from inst.Calc().\n");
