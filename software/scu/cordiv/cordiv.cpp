@@ -39,7 +39,7 @@ void CORDIV::Help()
     printf("**********************************************************\n");
 }
 
-void CORDIV::Init(vector<vector<float>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, float param5, string param6)
+void CORDIV::Init(vector<float> param1, unsigned int param2, unsigned int param3, unsigned int param4, float param5, string param6)
 {
     iProb = param1;
     depthSync = param2;
@@ -120,18 +120,18 @@ void CORDIV::Calc(vector<char> param1, vector<unsigned int> param2)
     divisorBit = cnt[1] >= randNum[0];
     if (divisorBit == 1)
     {
-        oBit = dividendBit;
+        oBit[0] = dividendBit;
         for (int index = 0; index < depth-1; ++index)
         {
             traceReg[index] = traceReg[index+1];
         }
-        traceReg[depth-1] = oBit;
+        traceReg[depth-1] = oBit[0];
     }
     else
     {
-        oBit = traceReg[randNum[1]];
+        oBit[0] = traceReg[randNum[1]];
     }
-
+    
     #ifdef PERFSIM
         iLen++;
         vector<unsigned int> totalSum(oDim);

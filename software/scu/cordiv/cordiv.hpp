@@ -30,7 +30,7 @@ class CORDIV
         unsigned int iLen;
     #endif
     vector<unsigned int> cnt;
-    unsigned int upperbound;
+    unsigned int upperBound;
     unsigned int halfBound;
     vector<char> traceReg;
     char divisorBit;
