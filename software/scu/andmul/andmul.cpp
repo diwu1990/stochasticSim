@@ -55,7 +55,11 @@ void ANDMUL::Init(vector<float> param1, unsigned int param2, float param3, strin
     #endif
 
     oBit.resize(oDim);
-
+    for (int i = 0; i < oDim; ++i)
+    {
+        oBit[i] = 0;
+    }
+    
     #ifdef PERFSIM
         oBS.resize(oDim);
         wProb.resize(oDim);
