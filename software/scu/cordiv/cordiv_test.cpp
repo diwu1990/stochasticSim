@@ -109,11 +109,12 @@ int main()
                 computeInst.Calc(iBit,iRandNum);
                 printf("%d: (%u,%u)=>(%u)\n", j, iBit[0], iBit[1], computeInst.OutBit()[0]);
             }
-            printf("inprob %f,%f\n", probVec[0],probVec[1]);
-            printf("(%f)\n",computeInst.WProb()[0]);
-            printf("(%f)\n",computeInst.TheoProb()[0]);
-            printf("(%f)\n",computeInst.WBias()[0]);
-            printf("(%d)\n",computeInst.Speed()[0]);
+            printf("input prob       (%f,%f)\n", probVec[0],probVec[1]);
+            printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
+            printf("window prob      (%f)\n",computeInst.WProb()[0]);
+            printf("window bias      (%f)\n",computeInst.WBias()[0]);
+            printf("converge speed   (%d)\n",computeInst.Speed()[0]);
+            
 
             // tenFoldErr[(unsigned int)floor(computeInst.TheoProb()*10)] += computeInst.WBias() * computeInst.WBiasWBias();
             // tenFoldBias[(unsigned int)floor(computeInst.TheoProb()*10)] += computeInst.WBias();
