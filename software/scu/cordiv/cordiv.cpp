@@ -85,7 +85,7 @@ void CORDIV::Init(vector<float> param1, unsigned int param2, unsigned int param3
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
-            theoProb[i] = iProb[i];
+            theoProb[i] = iProb[0]/iProb[1];
             speed[i] = 0;
         }
     #endif
