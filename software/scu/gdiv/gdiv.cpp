@@ -1,293 +1,179 @@
 #include "gdiv.hpp"
-#include "seqprobmulti.hpp"
-#include "crosscorrelation.hpp"
-#include "skewedsynchronizer.hpp"
+#include "perfsim.hpp"
 
-GDIV::GDIV(){}
-GDIV::~GDIV(){}
 void GDIV::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("Calling GDIV Help. Following are instructions to GDIV Instance Usage:\n");
+
     printf("1. inst.Init() method:\n");
-    printf("Configure the GDIV inst.\n");
-    printf("Initial Parameters: Two Input Vectors, Random Number Seqsence, Depth of Trace Register, Depth of Synchronizer, Instance Name.\n");
-    printf("Recommended Depth of Trace Register: 4\n");
-    printf("Depth of Synchronizer is not used for GDIV.\n");
+    printf("Configure the current inst.\n");
+    printf("Parameters: Input Probability, Depth of Synchronizer, Depth of CORDIV Kernel, Window Size, Threshold for Window Bias, Instance Name.\n");
+    printf("Input 0 is dividend, and input 1 is divisor; divisor should always be larger than dividend.\n");
+    printf("Depth of CORDIV Kernel is not used.");
 
     printf("2. inst.Calc() method:\n");
-    printf("Calculate the quotient of two input sequences.\n");
+    printf("Calculate the result bit.\n");
+    printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
+    printf("Input bit 0 is dividend, and input bit 1 is divisor.\n");
+    printf("The 0th value of vectorized Random Number is for the Synchronizer.\n");
+    printf("The 1th value of vectorized Random Number is for the CORDIV Kernel and not used.\n");
 
-    printf("3. inst.OutSeq() method:\n");
-    printf("Return the calculated result.\n");
+    printf("3. inst.OutBit() method:\n");
+    printf("Return output bit from inst.Calc().\n");
 
-    printf("4. inst.OutPrint() method:\n");
-    printf("Print the information of result.\n");
+    printf(">>>>>>>>The following methods require macro definition of PERFSIM.<<<<<<<<\n");
+    printf("4. inst.OutBS() method:\n");
+    printf("Return output bit stream from inst.Calc().\n");
 
-    printf("5. inst.InCC() method:\n");
-    printf("Return the input crosscorrelation.\n");
+    printf("5. inst.RealProb() method:\n");
+    printf("Return the real probability.\n");
 
-    printf("6. inst.InProb() method:\n");
-    printf("Return the input probability.\n");
+    printf("6. inst.TheoProb() method:\n");
+    printf("Return the theoretical probability.\n");
 
-    printf("7. inst.TheoProb() method:\n");
-    printf("Return the theoretical output probability.\n");
+    printf("7. inst.WBias() method:\n");
+    printf("Return the window bias.\n");
 
-    printf("8. inst.RealProb() method:\n");
-    printf("Return the array of progressive output probability.\n");
-
-    printf("9. inst.FinalRealProb() method:\n");
-    printf("Return the final output probability.\n");
-
-    printf("10. inst.ErrRate() method:\n");
-    printf("Return the array of progressive output error rate.\n");
-
-    printf("11. inst.FinalErrRate() method:\n");
-    printf("Return the final output error rate.\n");
-
-    printf("12. inst.SeqLen() method:\n");
-    printf("Return the sequence length.\n");
-
-    printf("13. inst.LowErrLen() method:\n");
-    printf("Return the sequence length required to converge with less than 5 percent error rate.\n");
-
-    printf("14. inst.PPStage() method:\n");
-    printf("Return the pipline stages required by hardware.\n");
-
-    printf("15. inst.Report() method:\n");
-    printf("Report the current instance.\n");
+    printf("8. inst.Speed() method:\n");
+    printf("Return the converge speed.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
 
-void GDIV::Init(vector<vector<char>> param1, vector<unsigned int> param2, unsigned int param3, unsigned int param4, string param5)
+void GDIV::Init(vector<float> param1, unsigned int param2, unsigned int param3, unsigned int param4, float param5, string param6)
 {
-    inSeq = param1;
-    SeqProbMulti probCalc;
-    probCalc.Init(inSeq,"probCalc");
-    probCalc.Calc();
-    inProb = probCalc.OutProb();
-    randNum = param2;
+    iProb = param1;
+    depthSync = param2;
     depth = param3;
-    depthSync = param4;
-    m_name = param5;
+    wSize = param4;
+    thdBias = param5;
+    m_name = param6;
 
-    if ((unsigned int)inSeq.size() == (unsigned int)inProb.size() && (unsigned int)inSeq.size() == 2)
+    iDim = (unsigned int)iProb.size();
+    if (iDim != 2)
     {
-        inDim = (unsigned int)inSeq.size();
+        printf("Error: Input dimension is not 2.\n");
     }
-    else
-    {
-        printf("Error: Input Dimension is not 2.\n");
-    }
+    oDim = 1;
+    #ifdef PERFSIM
+        iLen = 0;
+    #endif
 
-    if ((unsigned int)inSeq[0].size() == (unsigned int)inSeq[1].size() && (unsigned int)inSeq[0].size() == (unsigned int)randNum.size())
-    {
-        seqLength = (unsigned int)inSeq[0].size();
-    }
-    else
-    {
-        printf("Error: Input Length is not the same.\n");
-    }
-    if (inProb[1] == 0)
-    {
-        theoProb = 0;
-    }
-    else
-    {
-        theoProb = inProb[0] / inProb[1];
-    }
-    outSeq.resize(seqLength);
-    realProb.resize(seqLength);
-    errRate.resize(seqLength);
-    for (int i = 0; i < seqLength; ++i)
-    {
-        outSeq[i] = 0;
-        realProb[i] = 0;
-        errRate[i] = 0;
-    }
-    lowErrLen = 0;
-    // for (int i = 0; i < inDim; ++i)
-    // {
-    //     for (int j = 0; j < seqLength; ++j)
-    //     {
-    //         printf("%u,", inSeq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-    ppStage = 0;
-    for (int i = 0; i < seqLength; ++i)
-    {
-        if (randNum[i] > depth-1)
+    upperBound = (unsigned int)pow(2,depthSync)-1;
+    halfBound = (unsigned int)pow(2,depthSync-1);
+    cnt = halfBound;
+
+    oBit.resize(oDim);
+
+    #ifdef PERFSIM
+        oBS.resize(oDim);
+        wProb.resize(oDim);
+        theoProb.resize(oDim);
+        wBias.resize(oDim);
+        speed.resize(oDim);
+
+        for (int i = 0; i < oDim; ++i)
         {
-            printf("Error: Range of random number is larger than the depth of trace register.\n");
+            wProb[i] = 0;
+            theoProb[i] = iProb[0]/iProb[1];
+            speed[i] = 0;
         }
-    }
+    #endif
 }
 
-void GDIV::Report()
+void GDIV::Calc(vector<char> param1, vector<unsigned int> param2)
 {
-    printf("Current GDIV:\n");
-    std::cout << "Instance name:          " << m_name << std::endl;
-    printf("Bit Length of Tracer:   %u\n", depth);
-    printf("Number of Seqsences:    %u\n", inDim);
-    printf("Seqsence Length:        %u\n", seqLength);
-    printf("Input Probability:      %f,%f\n", inProb[0], inProb[1]);
-    printf("Theoretical Probability:%f\n", theoProb);
-}
-
-// void GDIV::CalcQuot()
-void GDIV::Calc()
-{
+    iBit = param1;
+    randNum = param2;
 
     // *****************************************************************************
     // counter based no correlation
     // *****************************************************************************
-    CrossCorrelation inputCC;
-    inputCC.Init(inSeq,1,"inputCC");
-    inputCC.Calc();
-    inCC = inputCC.OutCC()[0];
-    unsigned int upperBound = (unsigned int)pow(2,depth)-1;
-    unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    unsigned int traceReg = halfBound;
-    unsigned int oneCount = 0;
-    unsigned int accuracyLength = seqLength/2;
-
-    for (int i = 0; i < seqLength; ++i)
-    {
-        if (traceReg >= randNum[i])
+    
+        if (cnt >= randNum[0])
         {
-            outSeq[i] = 1;
+            oBit[0] = 1;
         }
         else
         {
-            outSeq[i] = 0;
+            oBit[0] = 0;
         }
-        oneCount += outSeq[i];
-        if (i < accuracyLength)
-        {
-            realProb[i] = (float)oneCount/(float)(i+1);
-        }
-        else
-        {
-            realProb[i] = (realProb[i-1]*accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/accuracyLength;
-        }
-        errRate[i] = (theoProb - realProb[i]);
-        // unsigned int andGate = outSeq[i] & inSeq[1][(i+seqLength-1)%seqLength];
-        unsigned int andGate = outSeq[i] & inSeq[1][i];
-        unsigned int inc = !andGate & inSeq[0][i];
-        unsigned int dec = andGate & !inSeq[0][i];
-        // printf("%u, %u, %u, %u, %u\n", andGate, inSeq[0][i], inSeq[1][i], inc, dec);
+        unsigned int andGate = oBit[0] & iBit[1];
+        unsigned int inc = !andGate & iBit[0];
+        unsigned int dec = andGate & !iBit[0];
+        
         if (inc == 1 && dec == 0)
         {
-            if (traceReg < upperBound)
+            if (cnt < upperBound)
             {
-                traceReg = traceReg + 1;
+                cnt = cnt + 1;
             }
         }
         else if (inc == 0 && dec == 1)
         {
-            if (traceReg > 0)
+            if (cnt > 0)
             {
-                traceReg = traceReg - 1;
+                cnt = cnt - 1;
             }
         }
-        // printf("%u\n", traceReg);
-    }
 
-    for (int i = 0; i < seqLength; ++i)
-    {
-        // printf("%f\n", errRate[seqLength-1-i]);
-        // if (errRate[seqLength-1-i] > 0.05)
-        // {
-        //     printf("larger than 0.05\n");
-        // }
-        // if (errRate[seqLength-1-i] < -0.05)
-        // {
-        //     printf("smaller than -0.05\n");
-        // }
-        if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
+    #ifdef PERFSIM
+        iLen++;
+        vector<unsigned int> totalSum(oDim);
+        for (int i = 0; i < oDim; ++i)
         {
-            lowErrLen = seqLength-i;
-            break;
+            totalSum[i] = 0;
+            oBS[i].push_back(oBit[i]);
+            if (oBS[i].size() < wSize)
+            {
+                for (int j = 0; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/iLen;
+            }
+            else
+            {
+                for (int j = oBS[i].size() - wSize; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/wSize;
+            }
+            wBias[i] = wProb[i] - theoProb[i];
+            if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
+            {
+                speed[i] = iLen;
+            }
         }
+    #endif
+}
+
+vector<char> GDIV::OutBit()
+{
+    return oBit;
+}
+
+#ifdef PERFSIM
+    vector<float> GDIV::WProb()
+    {
+        return wProb;
     }
-    // printf("%u\n", lowErrLen);
-    // printf("CalcQuot Done\n");
-}
 
-vector<char> GDIV::OutSeq()
-{
-    return outSeq;
-}
+    vector<float> GDIV::TheoProb()
+    {
+        return theoProb;
+    }
 
-unsigned int GDIV::PPStage()
-{
-    return ppStage;
-}
+    vector<float> GDIV::WBias()
+    {
+        return wBias;
+    }
 
-void GDIV::OutPrint()
-{
-    printf("Calling OutPrint for GDIV instance: ");
-    std::cout << m_name << std::endl;
-    printf("Theoretical Probability: %.3f / %.3f = %.3f with input crosscorrelation %.3f\n", inProb[0],inProb[1], theoProb, inCC);
-    printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
-    printf("Low Error Length (5 percent approximation): %u\n", lowErrLen);
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     printf("%.3f,", errRate[i]);
-    // }
-    // printf("\n");
-    // printf("Output Probability:\n");
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     printf("%.3f,", realProb[i]);
-    // }
-    // printf("\n");
-}
-
-float GDIV::InCC()
-{
-    return inCC;
-}
-
-vector<float> GDIV::InProb()
-{
-    return inProb;
-}
-
-float GDIV::TheoProb()
-{
-    return theoProb;
-}
-
-vector<float> GDIV::RealProb()
-{
-    return realProb;
-}
-
-float GDIV::FinalRealProb()
-{
-    return realProb[seqLength-1];
-}
-
-vector<float> GDIV::ErrRate()
-{
-    return errRate;
-}
-
-float GDIV::FinalErrRate()
-{
-    return errRate[seqLength-1];
-}
-
-unsigned int GDIV::SeqLen()
-{
-    return seqLength;
-}
-
-unsigned int GDIV::LowErrLen()
-{
-    return lowErrLen;
-}
+    vector<unsigned int> GDIV::Speed()
+    {
+        return speed;
+    }
+#endif
