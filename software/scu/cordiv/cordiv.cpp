@@ -11,6 +11,7 @@ void CORDIV::Help()
     printf("Configure the current inst.\n");
     printf("Parameters: Input Probability, Depth of Synchronizer using Regeneration, Depth of Cordiv Kernel, Window Size, Threshold for Window Bias, Instance Name.\n");
     printf("Input 0 is dividend, and input 1 is divisor; divisor should always be larger than dividend.\n");
+    printf("Depth of Cordiv Kernel is suggested to be 2.");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the result bit.\n");
