@@ -104,9 +104,10 @@ void GDIV::Calc(vector<char> param1, vector<unsigned int> param2)
         {
             oBit[0] = 0;
         }
-        unsigned int andGate = oBit[0] & iBit[1];
-        unsigned int inc = !andGate & iBit[0];
-        unsigned int dec = andGate & !iBit[0];
+        
+        andGate = oBit[0] & iBit[1];
+        inc = !andGate & iBit[0];
+        dec = andGate & !iBit[0];
         
         if (inc == 1 && dec == 0)
         {

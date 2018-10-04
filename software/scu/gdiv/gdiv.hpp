@@ -32,6 +32,9 @@ class GDIV
     unsigned int cnt;
     unsigned int upperBound;
     unsigned int halfBound;
+    unsigned int andGate;
+    unsigned int inc;
+    unsigned int dec;
 
     // output
     vector<char> oBit;
