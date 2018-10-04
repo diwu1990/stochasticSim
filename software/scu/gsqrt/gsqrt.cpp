@@ -97,8 +97,6 @@ void GSQRT::Calc(vector<char> param1, vector<unsigned int> param2)
     // counter based no correlation
     // *****************************************************************************
 
-
-    printf("%d\n", cnt);
     if (cnt >= randNum[0])
     {
         oBit[0] = 1;
