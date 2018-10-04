@@ -65,7 +65,11 @@ void ISCBDIV::Init(vector<float> param1, unsigned int param2, unsigned int param
     cordivKernelInst.Init(iProb, depthSync, depth, wSize, thdBias, "computeInst");
 
     oBit.resize(oDim);
-
+    for (int i = 0; i < oDim; ++i)
+    {
+        oBit[i] = 0;
+    }
+    
     #ifdef PERFSIM
         oBS.resize(oDim);
         wProb.resize(oDim);
