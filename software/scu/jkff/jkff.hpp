@@ -1,8 +1,9 @@
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
 #include <cmath>
 #include <string>
 #include <iostream>
+#include "perfsim.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
@@ -10,44 +11,45 @@ using namespace std;
 
 class JKFF
 {
-    vector<vector<char>> inSeq;
-
-    vector<float> inProb;
-    unsigned int inDim;
-
-    unsigned int seqLength;
-    vector<char> outSeq;
-    float inCC;
-    vector<float> inAC;
-    float outAC;
-    vector<float> outCC;
-    float theoProb;
-    vector<float> realProb;
-    vector<float> errRate;
+    // initial input
+    vector<float> iProb;
+    unsigned int wSize;
+    float thdBias;
     string m_name;
-    unsigned int lowErrLen;
-    unsigned int ppStage;
 
-    public:
-        JKFF();
-        ~JKFF();
-        void Help();
-        void Init(vector<vector<char>>, string);
-        void Report();
-        void Calc();
-        void OutPrint();
-        vector<char> OutSeq();
-        float InCC();
-        vector<float> InAC();
-        float OutAC();
-        vector<float> OutCC();
-        vector<float> InProb();
-        float TheoProb();
-        vector<float> RealProb();
-        float FinalRealProb();
-        vector<float> ErrRate();
-        float FinalErrRate();
-        unsigned int SeqLen();
-        unsigned int LowErrLen();
-        unsigned int PPStage();
+    // calc input
+    vector<char> iBit;
+
+    // internal
+    unsigned int iDim;
+    unsigned int oDim;
+    #ifdef PERFSIM
+        unsigned int iLen;
+    #endif
+
+    // output
+    vector<char> oBit;
+
+    // perfsim output
+    #ifdef PERFSIM
+        vector<vector<char>> oBS;
+        vector<float> wProb;
+        vector<float> theoProb;
+        vector<float> wBias;
+        vector<unsigned int> speed;
+    #endif
+
+public:
+    void Help();
+    void Init(vector<float>, unsigned int, float, string);
+    void Calc(vector<char>);
+    vector<char> OutBit();
+
+    #ifdef PERFSIM
+        vector<vector<char>> OutBS();
+        vector<float> WProb();
+        vector<float> TheoProb();
+        vector<float> WBias();
+        vector<unsigned int> Speed();
+    #endif
 };
