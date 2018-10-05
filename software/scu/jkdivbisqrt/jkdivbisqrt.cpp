@@ -70,7 +70,8 @@ void JKDIVBISQRT::Init(vector<float> param1, unsigned int param2, unsigned int p
     traceProb[0] = 1;
     traceProb[1] = sqrt(iProb[0]);
     traceInst.Init(traceProb, wSize, thdBias, "traceInst");
-
+    muxInNum.resize(1);
+    
     oBit.resize(oDim);
     for (int i = 0; i < oDim; ++i)
     {
@@ -101,7 +102,6 @@ void JKDIVBISQRT::Calc(vector<char> param1, vector<unsigned int> param2)
     // *****************************************************************************
     // counter based no correlation
     // *****************************************************************************
-
     muxInBit[0] = 1;
     muxInBit[1] = iBit[0];
     muxInNum[0] = (unsigned int)traceInst.OutBit()[0];
