@@ -1,11 +1,11 @@
-#include "SCUInst.hpp"
+#include "scuinst.hpp"
 #include "perfsim.hpp"
 
-void SCUInst::Help()
+void SCUINST::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
-    printf("Calling SCUInst Help. Following are instructions to SCUInst Instance Usage:\n");
+    printf("Calling SCUINST Help. Following are instructions to SCUINST Instance Usage:\n");
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
@@ -37,7 +37,7 @@ void SCUInst::Help()
     printf("**********************************************************\n");
 }
 
-void SCUInst::Init(vector<float> param1, unsigned int param2, float param3, string param4)
+void SCUINST::Init(vector<float> param1, unsigned int param2, float param3, string param4)
 {
     iProb = param1;
     wSize = param2;
@@ -72,7 +72,7 @@ void SCUInst::Init(vector<float> param1, unsigned int param2, float param3, stri
     #endif
 }
 
-void SCUInst::Calc(vector<char> param1)
+void SCUINST::Calc(vector<char> param1)
 {
     iBit = param1;
 
@@ -108,28 +108,28 @@ void SCUInst::Calc(vector<char> param1)
     #endif
 }
 
-vector<char> SCUInst::OutBit()
+vector<char> SCUINST::OutBit()
 {
     return oBit;
 }
 
 #ifdef PERFSIM
-    vector<float> SCUInst::WProb()
+    vector<float> SCUINST::WProb()
     {
         return wProb;
     }
 
-    vector<float> SCUInst::TheoProb()
+    vector<float> SCUINST::TheoProb()
     {
         return theoProb;
     }
 
-    vector<float> SCUInst::WBias()
+    vector<float> SCUINST::WBias()
     {
         return wBias;
     }
 
-    vector<unsigned int> SCUInst::Speed()
+    vector<unsigned int> SCUINST::Speed()
     {
         return speed;
     }
