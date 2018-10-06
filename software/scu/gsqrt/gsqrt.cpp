@@ -17,8 +17,8 @@ void GSQRT::Help()
     printf("Calculate the result bit.\n");
     printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
     printf("Input 0 is the valid input.\n");
-    printf("The 0th value of vectorized Random Number is for the Synchronizer.\n");
-    printf("The 1th value of vectorized Random Number is for the Cordiv Kernel and not used.\n");
+    printf("The 0th value of Vectorized Random Number is for the Synchronizer.\n");
+    printf("The 1th value of Vectorized Random Number is for the Cordiv Kernel and not used.\n");
 
     printf("3. inst.OutBit() method:\n");
     printf("Return output bit from inst.Calc().\n");
