@@ -52,9 +52,9 @@ void GSQRT::Init(vector<float> param1, unsigned int param2, unsigned int param3,
     m_name = param6;
 
     iDim = (unsigned int)iProb.size();
-    if (iDim != 2)
+    if (iDim != 1)
     {
-        printf("Error: Input dimension is not 2.\n");
+        printf("Error: Input dimension is not 1.\n");
     }
     oDim = 1;
     #ifdef PERFSIM

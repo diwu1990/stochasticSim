@@ -34,6 +34,8 @@ int main()
     unsigned int wSize = seqLength/2;
     
     unsigned int totalRound = 10;
+    
+    unsigned int inBS = 1;
     for (int index = 0; index < totalRound; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
@@ -45,15 +47,15 @@ int main()
         }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
-        // SystemRandMulti rngInst;
+        SystemRandMulti rngInst;
         // SOBOLMulti rngInst;
-        LFSRMulti rngInst;
+        // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
-        vector<unsigned int> bitLengthVec(2);
-        vector<float> probVec(2);
-        vector<float> val(2);
+        vector<unsigned int> bitLengthVec(inBS);
+        vector<float> probVec(inBS);
+        vector<float> val(inBS);
         unsigned int depth;
         unsigned int depthSync;
         depth = 2;
@@ -67,19 +69,20 @@ int main()
             val[1] = max(prob0,prob1);
             // val[0] = 0.3;
             // val[1] = 0.7;
-            for (int l = 0; l < 2; ++l)
+            for (int l = 0; l < inBS; ++l)
             {
                 bitLengthVec[l] = randBitLen;
                 probVec[l] = val[l];
             }
             
-            vector<vector<unsigned int>> inRandNum(2);
-            inRandNum[0].resize(seqLength);
-            inRandNum[1].resize(seqLength);
-            for (int z = 0; z < seqLength; ++z)
+            vector<vector<unsigned int>> inRandNum(inBS);
+            for (int i = 0; i < inBS; ++i)
             {
-                inRandNum[0][z] = rngInst.OutSeq()[0][z%(unsigned int)(pow(2,randBitLen))];
-                inRandNum[1][z] = rngInst.OutSeq()[0][z%(unsigned int)(pow(2,randBitLen))];
+                inRandNum[i].resize(seqLength);
+                for (int z = 0; z < seqLength; ++z)
+                {
+                    inRandNum[i][z] = rngInst.OutSeq()[i][z%(unsigned int)(pow(2,randBitLen))];
+                }
             }
 
             RandNum2BitMulti num2bitMultiInst;
