@@ -1,22 +1,20 @@
-#include "relu.hpp"
+#include "skewedsynchronizer.hpp"
 #include "perfsim.hpp"
 
-void RELU::Help()
+void SkewedSynchronizer::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
-    printf("Calling RELU Help. Following are instructions to RELU Instance Usage:\n");
+    printf("Calling SkewedSynchronizer Help. Following are instructions to SkewedSynchronizer Instance Usage:\n");
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
-    printf("Parameters: Input Probability, Depth of Saturation Counter, Window Size, Threshold for Window Bias, Instance Name.\n");
-    printf("Input [0] is used.\n");
-    printf("Depth of Saturation Counter is suggested to be 3.\n");
+    printf("Parameters: Input Probability, Buffer Depth, Window Size, Threshold for Window Bias, Instance Name.\n");
+    printf("The input probability 0 is always less than input probability 1.\n");
 
     printf("2. inst.Calc() method:\n");
-    printf("Calculate the result bit.\n");
-    printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
-    printf("Input [0] is used.\n");
+    printf("Match logic ones with logic zeros for max positive correlation with configuration in inst.Init().\n");
+    printf("Parameters: Vectorized Input Bits.\n");
 
     printf("3. inst.OutBit() method:\n");
     printf("Return output bit from inst.Calc().\n");
@@ -40,7 +38,7 @@ void RELU::Help()
     printf("**********************************************************\n");
 }
 
-void RELU::Init(vector<float> param1, unsigned int param2, unsigned int param3, float param4, string param5)
+void SkewedSynchronizer::Init(vector<float> param1, unsigned int param2, unsigned int param3, float param4, string param5)
 {
     iProb = param1;
     depth = param2;
@@ -49,18 +47,17 @@ void RELU::Init(vector<float> param1, unsigned int param2, unsigned int param3, 
     m_name = param5;
 
     iDim = (unsigned int)iProb.size();
-    if (iDim != 1)
+    if (iDim != 2)
     {
-        printf("Error: Input dimension is not 1.\n");
+        printf("Error: Input dimension is not 2.\n");
     }
+    oDim = iDim;
     #ifdef PERFSIM
         iLen = 0;
     #endif
-    upperBound = (unsigned int)pow(2,depth)-1;
-    halfBound = (unsigned int)pow(2,depth-1);
-    satCnt = halfBound;
+    satCnt = 0;
+    upperbound = (unsigned int)pow(2,depth)-1;
 
-    oDim = 1;
     oBit.resize(oDim);
 
     #ifdef PERFSIM
@@ -73,37 +70,60 @@ void RELU::Init(vector<float> param1, unsigned int param2, unsigned int param3, 
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
-            theoProb[i] = iProb[0] > 0.5 ? iProb[0] : 0.5;
+            theoProb[i] = iProb[i];
             speed[i] = 0;
         }
     #endif
 }
 
-void RELU::Calc(vector<char> param1, vector<unsigned int> param2)
+void SkewedSynchronizer::Calc(vector<char> param1)
 {
     iBit = param1;
-    randNum = param2;
 
-    if (satCnt >= halfBound)
+    /*keep no reg for sequence 1*/
+    /*it has high accuracy, but low correlation ()*/
+    /*correlation is can be less than 95%*/
+
+    // here the bit order of sequence 1 is not changed.
+    if (iBit[0] == 1 && iBit[1] == 1)
     {
         oBit[0] = iBit[0];
+        oBit[1] = iBit[1];
     }
-    else
-    {
-        oBit[0] = randNum[0];
-    }
-    if (iBit[0] == 1)
-    {
-        if (satCnt < upperBound)
-        {
-            satCnt += 1;
-        }
-    }
-    else
+    else if (iBit[0] == 0 && iBit[1] == 1)
     {
         if (satCnt > 0)
         {
-            satCnt -= 1;
+            oBit[0] = 1;
+            satCnt--;
+        }
+        else
+        {
+            oBit[0] = 0;
+        }
+        oBit[1] = 1;
+    }
+    else if (iBit[0] == 0 && iBit[1] == 0)
+    {
+        oBit[0] = 0;
+        oBit[1] = 0;
+    }
+    else if (iBit[0] == 1 && iBit[1] == 0)
+    {
+        if (satCnt == upperbound)
+        {
+            oBit[0] = 1;
+            oBit[1] = 0;
+        }
+        else
+        {
+            oBit[0] = 0;
+            oBit[1] = 0;
+            satCnt = satCnt + 1;
+            if (satCnt > upperbound)
+            {
+                satCnt = upperbound;
+            }
         }
     }
 
@@ -139,28 +159,28 @@ void RELU::Calc(vector<char> param1, vector<unsigned int> param2)
     #endif
 }
 
-vector<char> RELU::OutBit()
+vector<char> SkewedSynchronizer::OutBit()
 {
     return oBit;
 }
 
 #ifdef PERFSIM
-    vector<float> RELU::WProb()
+    vector<float> SkewedSynchronizer::WProb()
     {
         return wProb;
     }
 
-    vector<float> RELU::TheoProb()
+    vector<float> SkewedSynchronizer::TheoProb()
     {
         return theoProb;
     }
 
-    vector<float> RELU::WBias()
+    vector<float> SkewedSynchronizer::WBias()
     {
         return wBias;
     }
 
-    vector<unsigned int> RELU::Speed()
+    vector<unsigned int> SkewedSynchronizer::Speed()
     {
         return speed;
     }
