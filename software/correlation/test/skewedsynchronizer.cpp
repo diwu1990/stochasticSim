@@ -13,7 +13,7 @@ void SkewedSynchronizer::Help()
     printf("The input probability 0 is always less than input probability 1.\n");
 
     printf("2. inst.Calc() method:\n");
-    printf("Match logic ones with logic zeros for max negative correlation with configuration in inst.Init().\n");
+    printf("Match logic ones with logic zeros for max positive correlation with configuration in inst.Init().\n");
     printf("Parameters: Vectorized Input Bits.\n");
 
     printf("3. inst.OutBit() method:\n");
