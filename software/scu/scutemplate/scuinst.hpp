@@ -26,6 +26,9 @@ class SCUINST
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
+    // **********************************************************
+    //  fill in your internal signals here
+    // **********************************************************
 
     // output
     vector<char> oBit;
