@@ -1,253 +1,166 @@
 #include "relu.hpp"
-#include "seqprob.hpp"
-#include "autocorrelation.hpp"
-
-RELU::RELU(){}
-
-RELU::~RELU(){}
+#include "perfsim.hpp"
 
 void RELU::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
     printf("Calling RELU Help. Following are instructions to RELU Instance Usage:\n");
+
     printf("1. inst.Init() method:\n");
-    printf("Configure the RELU inst.\n");
-    printf("Initial Parameters: Input Vectors, Instance Name.\n");
-    printf("Suggested Depth: 3.\n");
+    printf("Configure the current inst.\n");
+    printf("Parameters: Input Probability, Depth of Saturation Counter, Window Size, Threshold for Window Bias, Instance Name.\n");
+    printf("Input [0] is used.\n");
 
     printf("2. inst.Calc() method:\n");
-    printf("Calculate the reluonent of input.\n");
+    printf("Calculate the result bit.\n");
+    printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
+    printf("Input [0] is used.\n");
 
-    printf("3. inst.OutSeq() method:\n");
-    printf("Return the calculated result.\n");
+    printf("3. inst.OutBit() method:\n");
+    printf("Return output bit from inst.Calc().\n");
 
-    printf("4. inst.OutPrint() method:\n");
-    printf("Print the information of result.\n");
+    printf(">>>>>>>>The following methods require macro definition of PERFSIM.<<<<<<<<\n");
+    printf("4. inst.OutBS() method:\n");
+    printf("Return output bit stream from inst.Calc().\n");
 
-    printf("5. inst.InAC() method:\n");
-    printf("Return the input autocorrelation.\n");
+    printf("5. inst.RealProb() method:\n");
+    printf("Return the real probability.\n");
 
-    printf("6. inst.InProb() method:\n");
-    printf("Return the input probability.\n");
+    printf("6. inst.TheoProb() method:\n");
+    printf("Return the theoretical probability.\n");
 
-    printf("7. inst.TheoProb() method:\n");
-    printf("Return the theoretical output probability.\n");
+    printf("7. inst.WBias() method:\n");
+    printf("Return the window bias.\n");
 
-    printf("8. inst.RealProb() method:\n");
-    printf("Return the array of progressive output probability.\n");
-
-    printf("9. inst.FinalRealProb() method:\n");
-    printf("Return the final output probability.\n");
-
-    printf("10. inst.ErrRate() method:\n");
-    printf("Return the array of progressive output error rate.\n");
-
-    printf("11. inst.FinalErrRate() method:\n");
-    printf("Return the final output error rate.\n");
-
-    printf("12. inst.SeqLen() method:\n");
-    printf("Return the sequence length.\n");
-
-    printf("13. inst.LowErrLen() method:\n");
-    printf("Return the sequence length.\n");
-
-    printf("14. inst.Report() method:\n");
-    printf("Report the status of current instance.\n");
-
-    printf("15. inst.PPStage() method:\n");
-    printf("Report the required pipeline stage for hardware.\n");
+    printf("8. inst.Speed() method:\n");
+    printf("Return the converge speed.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
 
-// void RELU::Init(vector<char> param1, vector<unsigned int> param2, unsigned int param3, string param4)
-// {
-//     inSeq = param1;
-//     randSeq = param2;
-//     SeqProb probCalc;
-//     probCalc.Init(inSeq,"probCalc");
-//     probCalc.Calc();
-//     inProb = probCalc.OutProb();
-//     depth = param3;
-//     m_name = param4;
-
-void RELU::Init(vector<char> param1, unsigned int param2, string param3)
+void RELU::Init(vector<float> param1, unsigned int param2, unsigned int param3, float param4, string param5)
 {
-    inSeq = param1;
-    SeqProb probCalc;
-    probCalc.Init(inSeq,"probCalc");
-    probCalc.Calc();
-    inProb = probCalc.OutProb();
+    iProb = param1;
     depth = param2;
-    m_name = param3;
+    wSize = param3;
+    thdBias = param4;
+    m_name = param5;
 
-
-    seqLength = (unsigned int)inSeq.size();
-    theoProb = max(0.5,inProb);
-    outSeq.resize(seqLength);
-    realProb.resize(seqLength);
-    errRate.resize(seqLength);
-
-    for (int i = 0; i < seqLength; ++i)
+    iDim = (unsigned int)iProb.size();
+    if (iDim != 1)
     {
-        outSeq[i] = 0;
-        realProb[i] = 0;
-        errRate[i] = 0;
+        printf("Error: Input dimension is not 1.\n");
     }
-    lowErrLen = 0;
-    ppStage = 0;
+    #ifdef PERFSIM
+        iLen = 0;
+    #endif
+    upperBound = (unsigned int)pow(2,depth)-1;
+    halfBound = (unsigned int)pow(2,depth-1);
+    satCnt = halfBound;
+
+    oDim = 1;
+    oBit.resize(oDim);
+
+    #ifdef PERFSIM
+        oBS.resize(oDim);
+        wProb.resize(oDim);
+        theoProb.resize(oDim);
+        wBias.resize(oDim);
+        speed.resize(oDim);
+
+        for (int i = 0; i < oDim; ++i)
+        {
+            wProb[i] = 0;
+            theoProb[i] = iProb[0] > 0.5 ? iProb[0] : 0.5;
+            speed[i] = 0;
+        }
+    #endif
 }
 
-void RELU::Report()
+void RELU::Calc(vector<char> param1, vector<unsigned int> param2)
 {
-    printf("Current RELU:\n");
-    std::cout << "Instance name:          " << m_name << std::endl;
-    printf("Seqsence Length:        %u\n", seqLength);
-    printf("Input Probability:      %f\n", inProb);
-    printf("Theoretical Probability:%f\n", theoProb);
-}
+    iBit = param1;
+    randNum = param2;
 
-void RELU::Calc()
-{
-    AutoCorrelation inputAC;
-    inputAC.Init(inSeq,1,inProb,"inputAC");
-    inputAC.Calc();
-    inAC = inputAC.OutAC();
-
-    unsigned int upperBound = (unsigned int)pow(2,depth)-1;
-    unsigned int halfBound = (unsigned int)pow(2,depth-1);
-    unsigned int satCnt = halfBound;
-
-    vector<char> dff(seqLength);
-    for (int i = 0; i < seqLength; ++i)
+    if (satCnt >= halfBound)
     {
-        dff[i] = i%2;
+        oBit[0] = iBit[0];
     }
-    for (int i = 0; i < seqLength; ++i)
+    else
     {
-        if (satCnt >= halfBound)
+        oBit[0] = randNum[0];
+    }
+    if (iBit[0] == 1)
+    {
+        if (satCnt < upperBound)
         {
-            outSeq[i] = inSeq[i];
+            satCnt += 1;
         }
-        else
+    }
+    else
+    {
+        if (satCnt > 0)
         {
-            outSeq[i] = dff[i];
+            satCnt -= 1;
         }
-        if (inSeq[i] == 1)
+    }
+
+    #ifdef PERFSIM
+        iLen++;
+        vector<unsigned int> totalSum(oDim);
+        for (int i = 0; i < oDim; ++i)
         {
-            if (satCnt < upperBound)
+            totalSum[i] = 0;
+            oBS[i].push_back(oBit[i]);
+            if (oBS[i].size() < wSize)
             {
-                satCnt += 1;
+                for (int j = 0; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/iLen;
+            }
+            else
+            {
+                for (int j = oBS[i].size() - wSize; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/wSize;
+            }
+            wBias[i] = wProb[i] - theoProb[i];
+            if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
+            {
+                speed[i] = iLen;
             }
         }
-        else
-        {
-            if (satCnt > 0)
-            {
-                satCnt -= 1;
-            }
-        }
-    }
+    #endif
+}
 
-    float oneCount = 0;
-    unsigned int accuracyLength = 128;
-    for (int i = 0; i < seqLength; ++i)
+vector<char> RELU::OutBit()
+{
+    return oBit;
+}
+
+#ifdef PERFSIM
+    vector<float> RELU::WProb()
     {
-        oneCount += outSeq[i];
-        // printf("%f\n", oneCount);
-        if (i < accuracyLength)
-        {
-            realProb[i] = (float)oneCount/(float)(i+1);
-        }
-        else
-        {
-            realProb[i] = (realProb[i-1]*(float)accuracyLength+outSeq[i]-outSeq[i-accuracyLength])/(float)accuracyLength;
-        }
-        errRate[i] = (theoProb - realProb[i]);
+        return wProb;
     }
-    // find the convergence point
-    for (int i = 0; i < seqLength; ++i)
+
+    vector<float> RELU::TheoProb()
     {
-        if (errRate[seqLength-1-i] > 0.05 || errRate[seqLength-1-i] < -0.05)
-        {
-            lowErrLen = seqLength-i;
-            break;
-        }
+        return theoProb;
     }
-}
 
-vector<char> RELU::OutSeq()
-{
-    return outSeq;
-}
+    vector<float> RELU::WBias()
+    {
+        return wBias;
+    }
 
-void RELU::OutPrint()
-{
-    printf("Calling OutPrint for RELU instance: ");
-    std::cout << m_name << std::endl;
-    printf("Theoretical Probability: relu(%.3f) = %.3f with input autocorrelation %.3f\n", inProb, theoProb, inAC);
-    printf("Final Probability: %.3f with Error Rate: %.3f\n", realProb[seqLength-1], errRate[seqLength-1]);
-    printf("Low Error Length (5 percent approximation): %u\n", lowErrLen);
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     printf("%.3f,", errRate[i]);
-    // }
-    // printf("\n");
-    // printf("Output Probability:\n");
-    // for (int i = 0; i < seqLength; ++i)
-    // {
-    //     printf("%.3f,", realProb[i]);
-    // }
-    // printf("\n");
-}
-
-float  RELU::InAC()
-{
-    return inAC;
-}
-
-float RELU::InProb()
-{
-    return inProb;
-}
-
-float RELU::TheoProb()
-{
-    return theoProb;
-}
-
-vector<float> RELU::RealProb()
-{
-    return realProb;
-}
-
-float RELU::FinalRealProb()
-{
-    return realProb[seqLength-1];
-}
-
-vector<float> RELU::ErrRate()
-{
-    return errRate;
-}
-
-float RELU::FinalErrRate()
-{
-    return errRate[seqLength-1];
-}
-
-unsigned int RELU::SeqLen()
-{
-    return seqLength;
-}
-
-unsigned int RELU::LowErrLen()
-{
-    return lowErrLen;
-}
-
-unsigned int RELU::PPStage()
-{
-    return ppStage;
-}
+    vector<unsigned int> RELU::Speed()
+    {
+        return speed;
+    }
+#endif

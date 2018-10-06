@@ -4,105 +4,157 @@
 #include "sobolmulti.hpp"
 #include "lfsr.hpp"
 #include "lfsrmulti.hpp"
+#include "systemrand.hpp"
+#include "systemrandmulti.hpp"
 #include <cstdlib>
 #include <ctime>
 #include "relu.hpp"
+#include "perfsim.hpp"
 
 int main()
 {
     srand(time(NULL));
-    unsigned int sobolNum = 2;
-    unsigned int sobolBitLen = 8;
+    unsigned int inBS = 1;
+    unsigned int inRand = 1;
+    unsigned int randSeqNum = inBS + inRand;
+    unsigned int randBitLen = 8;
     string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 10000;
-    unsigned int seqLength = (unsigned int)pow(2,sobolBitLen);
+
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
+    vector<float> tenFoldBias(foldNum);
     vector<unsigned int> tenFoldNum(foldNum);
     vector<float> tenFoldLowErrLen(foldNum);
-    for (int index = 0; index < 10; ++index)
+    
+    unsigned int seqLength = (unsigned int)pow(2,randBitLen);
+    float thdBias = 0.05;
+    unsigned int wSize = seqLength/2;
+    
+    unsigned int totalRound = 10;
+    unsigned int totalIter = 10000;
+
+    unsigned int depth;
+    unsigned int depthSync;
+
+    vector<unsigned int> bitLengthVec(inBS);
+    vector<float> probVec(inBS);
+    vector<float> val(inBS);
+    vector<vector<unsigned int>> inRandNum(inBS);
+    vector<vector<unsigned int>> RandSeq(inRand);
+
+    vector<char> iBit(inBS);
+    vector<unsigned int> iRandNum(inRand);
+
+    clock_t begin = clock();
+
+    for (int index = 0; index < totalRound; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
         {
             tenFoldErr[i] = 0;
+            tenFoldBias[i] = 0;
             tenFoldNum[i] = 0;
             tenFoldLowErrLen[i] = 0;
         }
-        unsigned int sobolInitIdx = 1+index;
-        unsigned int delay = 1;
-        SOBOLMulti sobolinst;
-        // LFSRMulti sobolinst;
-        sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
-        sobolinst.SeqGen();
-        // sobolinst.SeqPrint();
+        unsigned int seedInitIdx = 1+index;
+        unsigned int delay = 0;
+        SystemRandMulti rngInst;
+        // SOBOLMulti rngInst;
+        // LFSRMulti rngInst;
+        rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
+        rngInst.SeqGen();
 
-        unsigned int bitLength;
-        float probVec;
-        unsigned int depth;
-        // depth = (unsigned int)pow(2,3);
         depth = 3;
+        depthSync = 5;
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
-            bitLength = sobolBitLen;
-            probVec = (float)((float)(rand()%(int)pow(2,sobolBitLen))/(float)pow(2,sobolBitLen));
+            float prob0 = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+            float prob1 = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+            val[0] = prob0;
+            // val[0] = min(prob0,prob1);
+            val[1] = max(prob0,prob1);
 
-            vector<unsigned int> inRandNum(seqLength);
+            for (int l = 0; l < inBS; ++l)
+            {
+                bitLengthVec[l] = randBitLen;
+                probVec[l] = val[l];
+            }
+            
+            for (int i = 0; i < inBS; ++i)
+            {
+                inRandNum[i].resize(seqLength);
+                for (int z = 0; z < seqLength; ++z)
+                {
+                    inRandNum[i][z] = rngInst.OutSeq()[i][z%(unsigned int)(pow(2,randBitLen))];
+                }
+            }
+
+            RandNum2BitMulti num2bitMultiInst;
+            num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
+            num2bitMultiInst.SeqGen();
+
+            for (int i = 0; i < inRand; ++i)
+            {
+                RandSeq[i].resize(seqLength);
+            }
+
+            // *****************************************************************************
+            // mannually config
+            // *****************************************************************************
             for (int z = 0; z < seqLength; ++z)
             {
-                inRandNum[z] = sobolinst.OutSeq()[0][z%(unsigned int)(pow(2,sobolBitLen))];
+                // RandSeq[0][z] = rngInst.OutSeq()[inBS][z%(unsigned int)(pow(2,randBitLen))] >> depthSync;
+                RandSeq[0][z] = rngInst.OutSeq()[inBS][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - 1);
             }
-            vector<unsigned int> RandSeq(seqLength);
-        	for (int j = 0; j < seqLength; ++j)
-        	{
-            	RandSeq[j] = sobolinst.OutSeq()[1][j%(unsigned int)(pow(2,sobolBitLen))] >> (sobolBitLen - depth);
-        	}
-            RandNum2Bit num2bitInst;
-            num2bitInst.Init(probVec,bitLength,inRandNum,"num2bitInst");
-            num2bitInst.SeqGen();
-            // num2bitInst.Report();
-            // num2bitInst.SeqPrint();
 
-            // for (int ooo = 0; ooo < sobolinst.SeqLen(); ++ooo)
-            // {
-            //     printf("%d: %u, %u", i, sobolinst.OutSeq()[2][ooo], sobolinst.OutSeq()[2][ooo]);
-            //     /* code */
-            // }
-            RELU reluInst;
-            // reluInst.Init(num2bitInst.OutSeq(),RandSeq,depth,"reluInst");
-            reluInst.Init(num2bitInst.OutSeq(),depth,"reluInst");
-            // reluInst.Report();
-            reluInst.Calc();
-            // printf("%.3f,%.3f,%.3f,%.3f\n",reluInst.InProb(),reluInst.TheoProb(),reluInst.FinalRealProb(),reluInst.FinalErrRate());
-            // reluInst.OutPrint();
-            // if (prob0 < 0.2)
-            // {
-                // reluInst.OutPrint();
-            // }
+            RELU computeInst;
+            computeInst.Init(probVec, depth, wSize, thdBias, "computeInst");
+            for (int j = 0; j < seqLength; ++j)
+            {
+                for (int z = 0; z < inBS; ++z)
+                {
+                    iBit[z] = num2bitMultiInst.OutSeq()[z][j];
+                }
+                for (int i = 0; i < inRand; ++i)
+                {
+                    iRandNum[i] = RandSeq[i][j];
+                }
+                // printf("%d,%d\n", iRandNum[0], iRandNum[1]);
+                computeInst.Calc(iBit,iRandNum);
+                // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
+            }
+            // printf("input prob       (%f)\n", probVec[0]);
+            // printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
+            // printf("window prob      (%f)\n",computeInst.WProb()[0]);
+            // printf("window bias      (%f)\n",computeInst.WBias()[0]);
+            // printf("converge speed   (%d)\n",computeInst.Speed()[0]);
 
-            tenFoldErr[(unsigned int)floor(reluInst.TheoProb()*10)] += reluInst.FinalErrRate() * reluInst.FinalErrRate();
-            // tenFoldErr[(unsigned int)floor(reluInst.TheoProb()*10)] += ((reluInst.FinalRealProb()-sqrt(prob0))/sqrt(prob0)) * ((reluInst.FinalRealProb()-sqrt(prob0))/sqrt(prob0));
-            tenFoldNum[(unsigned int)floor(reluInst.TheoProb()*10)] += 1;
-            // printf("%u\n", reluInst.LowErrLen());
-            tenFoldLowErrLen[(unsigned int)floor(reluInst.TheoProb()*10)] += reluInst.LowErrLen();
-            // printf("%u\n", tenFoldLowErrLen[(unsigned int)floor(reluInst.TheoProb()*10)]);
+            tenFoldErr[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            tenFoldBias[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0];
+            tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += 1;
+            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.Speed()[0];
         }
-        for (int y = 0; y < foldNum; ++y)
-        {
-            // printf("11111\n");
-            tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
-            tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
-        }
-        
+    }
+    clock_t end = clock();
+    double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
+    printf("%f\n", elasped_secs);
 
-        printf("Ten Fold with Depth %u, initial sobolIdx %u, delay %u.\n", depth, sobolInitIdx, delay);
-        printf("Value range index, Freq, Final Error, LowErrLen:\n");
-        for (int i = 0; i < foldNum; ++i)
-        {
-            printf("%3d, %5u, %-.3f, %-3.3f\n", i, tenFoldNum[i], tenFoldErr[i], tenFoldLowErrLen[i]);
-        }
-        printf("\n");
+    for (int y = 0; y < foldNum; ++y)
+    {
+        tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
+        tenFoldBias[y] = tenFoldBias[y]/tenFoldNum[y];
+        tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
+        // tenFoldCorr[y] = tenFoldCorr[y]/tenFoldNum[y];
     }
     
+    // printf("Range, Freq, Correlation, Error Rate, Stat Bias, LowErrLen:\n");
+    printf("Range, Freq, Error Rate, Stat Bias, LowErrLen:\n");
+    for (int i = 0; i < foldNum; ++i)
+    {
+        // printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
+        printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
+    }
+    printf("\n");
 }
