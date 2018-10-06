@@ -14,7 +14,7 @@
 int main()
 {
     srand(time(NULL));
-    unsigned int inBS = 1;
+    unsigned int inBS = 4;
     unsigned int inRand = 2;
     unsigned int randSeqNum = inBS + inRand;
     unsigned int randBitLen = 8;

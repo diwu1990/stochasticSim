@@ -1,125 +1,94 @@
-#include "mul.hpp"
-#include "muxadd.hpp"
-#include "gdiv.hpp"
-#include "cordiv.hpp"
-#include "iscbdiv.hpp"
-#include "gsqrt.hpp"
-#include "jkdivbisqrt.hpp"
-#include "iscbdivbisqrt.hpp"
-#include "seqprob.hpp"
-#include "seqprobmulti.hpp"
-#include "unitvector.hpp"
+#include <squash.hpp>
+#include <perfsim.hpp>
 
-UNITVECTOR::UNITVECTOR(){}
-
-UNITVECTOR::~UNITVECTOR(){}
-
-void UNITVECTOR::Init(vector<vector<char>> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<vector<unsigned int>> param4, unsigned int param5, unsigned int param6, unsigned int param7, string param8)
+SQUASH::SQUASH()
 {
-    inSeq = param1;
-    SeqProbMulti probCalc;
-    probCalc.Init(inSeq,"probCalc");
-    probCalc.Calc();
-    inProb = probCalc.OutProb();
-    randAdd = param2;
-    randSqrt = param3;
-    randDiv = param4;
-    depthSqrt = param5;
-    depthDiv = param6;
-    depthDivSync = param7;
-    m_name = param8;
+    iDim = inputDim;
+    oDim = iDim;
 
-    if ((unsigned int)inSeq.size() == (unsigned int)randDiv.size())
-    {
-        seqDim = (unsigned int)inSeq.size();
-    }
-    else
-    {
-        printf("Error: Input Sequence Dimension is not the same as that for Division.\n");
-    }
+    ISCBDIV divInst[oDim];
+    // CORDIV divInst[oDim];
+    // GDIV divInst[oDim];
 
-    seqLength = (unsigned int)inSeq[0].size();
-    // printf("%d\n", seqLength);
-    for (int i = 0; i < seqDim; ++i)
-    {
-        if ((unsigned int)inSeq[i].size() != seqLength)
-        {
-            printf("Error: Input Sequence Length is not the same.\n");
-            break;
-        }
-    }
-
-    float rms = 0;
-    for (int i = 0; i < seqDim; ++i)
-    {
-        rms += inProb[i]*inProb[i];
-    }
-    // printf("%f\n", sum/16/4);
-
-    theoProb.resize(seqDim);
-    for (int i = 0; i < seqDim; ++i)
-    {
-        theoProb[i] = inProb[i]/rms;
-        // printf("unitvector(%d): %f, %f\n", i, inProb[i], theoProb[i]);
-    }
-
-    // printf("cccc\n");
-    outSeq.resize(seqDim);
-    realProb.resize(seqDim);
-    errRate.resize(seqDim);
-    finalRealProb.resize(seqDim);
-    finalErrRate.resize(seqDim);
-
-    // printf("flag1\n");
-    for (int i = 0; i < seqDim; ++i)
-    {
-        outSeq[i].resize(seqLength);
-        realProb[i].resize(seqLength);
-        errRate[i].resize(seqLength);
-        for (int j = 0; j < seqLength; ++j) 
-        {
-            outSeq[i][j] = 0;
-            realProb[i][j] = 0;
-            errRate[i][j] = 0;
-        }
-    }
-
-    // printf("flag2\n");
-    // printf("dddd\n");
-    mse.resize(seqLength);
-    // printf("flag3\n");
-    for (int i = 0; i < seqLength; ++i)
-    {
-        mse[i] = 0;
-    }
-    // printf("flag4\n");
-    lowErrLen.resize(seqDim);
-    for (int i = 0; i < seqDim; ++i)
-    {
-        // printf("start)%d\n", i);
-        lowErrLen[i] = 0;
-        // printf("end)%d\n", i);
-    }
-    // printf("flag5\n");
-    finalMSE = 0;
-    avgLowErrLen = 0;
-    theoSqrtProb = 0;
-    for (int i = 0; i < seqDim; ++i)
-    {
-        theoSqrtProb += inProb[i]*inProb[0];
-    }
-    theoSqrtProb /= seqDim;
-    theoSqrtProb = sqrt(theoSqrtProb);
+    ISCBDIVBISQRT sqrtInst;
+    // JKDIVBISQRT sqrtInst;
+    // GSQRT sqrtInst;
 }
 
-void UNITVECTOR::Calc()
+void SQUASH::Help()
 {
-    vector<float> oneCount(seqDim);
-    for (int i = 0; i < seqDim; ++i)
-    {
-        oneCount[i] = 0;
-    }
-    unsigned int  accuracyLength = seqLength/2;
+    printf("**********************************************************\n");
+    printf("**********************************************************\n");
+    printf("Calling SQUASH Help. Following are instructions to SQUASH Instance Usage:\n");
+
+    printf("1. inst.Init() method:\n");
+    printf("Configure the current inst.\n");
+    printf("Parameters: Input Probability, Window Size, Threshold for Window Bias, Instance Name.\n");
+
+    printf("2. inst.Calc() method:\n");
+    printf("Calculate the result bit.\n");
+    printf("Parameters: Vectorized Input Bits.\n");
+
+    printf("3. inst.OutBit() method:\n");
+    printf("Return output bit from inst.Calc().\n");
+
+    printf(">>>>>>>>The following methods require macro definition of PERFSIM.<<<<<<<<\n");
+    printf("4. inst.OutBS() method:\n");
+    printf("Return output bit stream from inst.Calc().\n");
+
+    printf("5. inst.RealProb() method:\n");
+    printf("Return the real probability.\n");
+
+    printf("6. inst.TheoProb() method:\n");
+    printf("Return the theoretical probability.\n");
+
+    printf("7. inst.WBias() method:\n");
+    printf("Return the window bias.\n");
+
+    printf("8. inst.Speed() method:\n");
+    printf("Return the converge speed.\n");
+    printf("**********************************************************\n");
+    printf("**********************************************************\n");
+}
+
+void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3, unsigned int param4, float param5, string param6)
+{
+    iProb = param1;
+    depthSync = param2;
+    depth = param3;
+    wSize = param4;
+    thdBias = param5;
+    m_name = param6;
+
+    #ifdef PERFSIM
+        iLen = 0;
+    #endif
+    sqreBit.resize(iDim);
+    sumBit.resize(1);
+    sqrtBit.resize(1);
+
+    oBit.resize(oDim);
+
+    #ifdef PERFSIM
+        oBS.resize(oDim);
+        wProb.resize(oDim);
+        theoProb.resize(oDim);
+        wBias.resize(oDim);
+        speed.resize(oDim);
+
+        for (int i = 0; i < oDim; ++i)
+        {
+            wProb[i] = 0;
+            theoProb[i] = iProb[i];
+            speed[i] = 0;
+        }
+    #endif
+}
+
+void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2)
+{
+    iBit = param1;
+    randNum = param2;
 
     // printf("start=>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
     // square of input
@@ -216,148 +185,61 @@ void UNITVECTOR::Calc()
     }
     // printf("division done!\n\n");
 
-    for (int i = 0; i < seqDim; ++i)
-    {
-        for (int z = 0; z < seqLength; ++z)
+    #ifdef PERFSIM
+        iLen++;
+        vector<unsigned int> totalSum(oDim);
+        for (int i = 0; i < oDim; ++i)
         {
-            oneCount[i] += outSeq[i][z];
-            if (z < accuracyLength)
+            totalSum[i] = 0;
+            oBS[i].push_back(oBit[i]);
+            if (oBS[i].size() < wSize)
             {
-                realProb[i][z] = (float)oneCount[i]/(float)(z+1);
+                for (int j = 0; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/iLen;
             }
             else
             {
-                realProb[i][z] = (realProb[i][z-1]*(float)accuracyLength+outSeq[i][z]-outSeq[i][z-accuracyLength])/(float)accuracyLength;
+                for (int j = oBS[i].size() - wSize; j < oBS[i].size(); ++j)
+                {
+                    totalSum[i] += oBS[i][j];
+                }
+                wProb[i] = (float)totalSum[i]/wSize;
             }
-            errRate[i][z] = (theoProb[i] - realProb[i][z]);
-        }
-        finalRealProb[i] = realProb[i][seqLength-1];
-        finalErrRate[i] = errRate[i][seqLength-1];
-    }
-    // printf("errRate and realProb done!\n\n");
-
-    for (int i = 0; i < seqDim; ++i)
-    {
-        for (int j = 0; j < seqLength; ++j)
-        {
-            if (errRate[i][seqLength-1-j] > 0.05 || errRate[i][seqLength-1-j] < -0.05)
+            wBias[i] = wProb[i] - theoProb[i];
+            if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                lowErrLen[i] = seqLength-j;
-                break;
+                speed[i] = iLen;
             }
         }
-    }
+    #endif
+}
 
-    for (int i = 0; i < seqLength; ++i)
+vector<char> SQUASH::OutBit()
+{
+    return oBit;
+}
+
+#ifdef PERFSIM
+    vector<float> SQUASH::WProb()
     {
-        for (int j = 0; j < seqDim; ++j)
-        {
-            mse[i] += errRate[j][i]*errRate[j][i];
-        }
-        mse[i] = sqrt(mse[i]/(float)seqDim);
-        // printf("%.3f,", mse[i]);
+        return wProb;
     }
-    // printf("\nmse done!\n\n");
-    finalMSE = mse[seqLength-1];
-    for (int i = 0; i < seqDim; ++i)
+
+    vector<float> SQUASH::TheoProb()
     {
-        avgLowErrLen += (float)lowErrLen[i];
+        return theoProb;
     }
-    avgLowErrLen = avgLowErrLen/(float)seqDim;
-}
 
-vector<vector<char>> UNITVECTOR::OutSeq()
-{
-    return outSeq;
-}
+    vector<float> SQUASH::WBias()
+    {
+        return wBias;
+    }
 
-vector<float> UNITVECTOR::InProb()
-{
-    // printf("In Prob:\n");
-    // for (int i = 0; i < seqDim; ++i)
-    // {
-    //     printf("%f\n", inProb[i]);
-    // }
-    // printf("\n");
-    return inProb;
-}
-
-vector<float> UNITVECTOR::TheoProb()
-{
-    // printf("Theo Prob:\n");
-    // for (int i = 0; i < seqDim; ++i)
-    // {
-    //     printf("%f\n", theoProb[i]);
-    // }
-    // printf("\n");
-    return theoProb;
-}
-
-vector<vector<float>> UNITVECTOR::RealProb()
-{
-    return realProb;
-}
-
-vector<vector<float>> UNITVECTOR::ErrRate()
-{
-    return errRate;
-}
-
-vector<float> UNITVECTOR::FinalRealProb()
-{
-    // printf("Final Real Prob:\n");
-    // for (int i = 0; i < seqDim; ++i)
-    // {
-    //     printf("%f\n", finalRealProb[i]);
-    // }
-    // printf("\n");
-    return finalRealProb;
-}
-
-vector<float> UNITVECTOR::FinalErrRate()
-{
-    // printf("Final Error Rate:\n");
-    // for (int i = 0; i < seqDim; ++i)
-    // {
-    //     printf("%f\n", finalErrRate[i]);
-    // }
-    // printf("\n");
-    return finalErrRate;
-}
-
-float UNITVECTOR::FinalMSE()
-{
-    // printf("Final MSE:\n");
-    // printf("%f\n", finalMSE);
-    // printf("\n");
-    return finalMSE;
-}
-
-vector<float> UNITVECTOR::MSE()
-{
-    return mse;
-}
-
-vector<unsigned int> UNITVECTOR::LowErrLen()
-{
-    // printf("Low Err Len:\n");
-    // for (int i = 0; i < seqDim; ++i)
-    // {
-    //     printf("%u\n", lowErrLen[i]);
-    // }
-    // printf("\n");
-    return lowErrLen;
-}
-
-float UNITVECTOR::AvgLowErrLen()
-{
-    // printf("Avg Low Err Len:\n");
-    // printf("%u\n", avgLowErrLen);
-    // printf("\n");
-    return avgLowErrLen;
-}
-
-float UNITVECTOR::SqrtMSE()
-{
-    return sqrtMse;
-}
+    vector<unsigned int> SQUASH::Speed()
+    {
+        return speed;
+    }
+#endif
