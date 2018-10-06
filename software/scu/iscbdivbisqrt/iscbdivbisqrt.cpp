@@ -121,6 +121,7 @@ void ISCBDIVBISQRT::Calc(vector<char> param1, vector<unsigned int> param2)
     traceInNum[0] = 0;
     traceInNum[1] = randNum[1];
     traceInst.Calc(traceInBit, traceInNum);
+
     DFF[0] = 1 - DFF[0];
 
     #ifdef PERFSIM

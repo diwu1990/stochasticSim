@@ -32,7 +32,7 @@ int main()
     unsigned int wSize = seqLength/2;
     
     unsigned int totalRound = 10;
-    
+
     unsigned int inBS = 1;
     for (int index = 0; index < totalRound; ++index)
     {
@@ -97,7 +97,7 @@ int main()
             }
 
             vector<char> iBit(1);
-            vector<unsigned int> iRandNum(1);
+            vector<unsigned int> iRandNum(2);
             ISCBDIVBISQRT computeInst;
             computeInst.Init(probVec, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
@@ -105,6 +105,7 @@ int main()
                 iBit[0] = num2bitMultiInst.OutSeq()[0][j];
                 iRandNum[0] = RandSeq[0][j];
                 iRandNum[1] = RandSeq[1][j];
+                // printf("%d,%d\n", iRandNum[0], iRandNum[1]);
                 computeInst.Calc(iBit,iRandNum);
                 // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
             }

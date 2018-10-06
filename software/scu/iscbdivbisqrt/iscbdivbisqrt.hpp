@@ -41,9 +41,6 @@ class ISCBDIVBISQRT
     vector<unsigned int> traceInNum;
 
     vector<char> DFF;
-    vector<char> INV;
-    vector<char> andGate;
-    vector<char> orGate;
 
     // output
     vector<char> oBit;
