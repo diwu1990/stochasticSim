@@ -9,7 +9,7 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class SCUInst
+class SCUINST
 {
     // initial input
     vector<float> iProb;
