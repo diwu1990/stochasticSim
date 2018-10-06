@@ -17,7 +17,7 @@ void JKDIVBISQRT::Help()
     printf("Calculate the result bit.\n");
     printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
     printf("Input 0 is the valid input.\n");
-    printf("Both the 0th and the 1th value of vectorized Random Number are not used.\n");
+    printf("Both the 0th and the 1th value of Vectorized Random Number are not used.\n");
 
     printf("3. inst.OutBit() method:\n");
     printf("Return output bit from inst.Calc().\n");
@@ -106,11 +106,12 @@ void JKDIVBISQRT::Calc(vector<char> param1, vector<unsigned int> param2)
     muxInBit[1] = iBit[0];
     muxInNum[0] = (unsigned int)traceInst.OutBit()[0];
     muxInst.Calc(muxInBit, muxInNum);
+    
+    oBit[0] = muxInst.OutBit()[0];
+    
     traceInBit[0] = 1;
     traceInBit[1] = muxInst.OutBit()[0];
     traceInst.Calc(traceInBit);
-
-    oBit[0] = muxInst.OutBit()[0];
 
     #ifdef PERFSIM
         iLen++;
