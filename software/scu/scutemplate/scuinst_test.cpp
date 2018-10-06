@@ -34,7 +34,20 @@ int main()
     unsigned int totalRound = 10;
     unsigned int totalIter = 10000;
 
+    unsigned int depth;
+    unsigned int depthSync;
+
+    vector<unsigned int> bitLengthVec(inBS);
+    vector<float> probVec(inBS);
+    vector<float> val(inBS);
+    vector<vector<unsigned int>> inRandNum(inBS);
+    vector<vector<unsigned int>> RandSeq(inRand);
+
+    vector<char> iBit(inBS);
+    vector<unsigned int> iRandNum(inRand);
+
     clock_t begin = clock();
+
     for (int index = 0; index < totalRound; ++index)
     {
         for (int i = 0; i < foldNum; ++i)
@@ -52,11 +65,6 @@ int main()
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
-        vector<unsigned int> bitLengthVec(inBS);
-        vector<float> probVec(inBS);
-        vector<float> val(inBS);
-        unsigned int depth;
-        unsigned int depthSync;
         depth = 2;
         depthSync = 5;
         for (int iter = 0; iter < totalIter; ++iter)
@@ -73,7 +81,6 @@ int main()
                 probVec[l] = val[l];
             }
             
-            vector<vector<unsigned int>> inRandNum(inBS);
             for (int i = 0; i < inBS; ++i)
             {
                 inRandNum[i].resize(seqLength);
@@ -87,7 +94,6 @@ int main()
             num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
             num2bitMultiInst.SeqGen();
 
-            vector<vector<unsigned int>> RandSeq(inRand);
             for (int i = 0; i < inRand; ++i)
             {
                 RandSeq[i].resize(seqLength);
@@ -102,8 +108,6 @@ int main()
                 RandSeq[1][z] = rngInst.OutSeq()[inBS+1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
-            vector<char> iBit(inBS);
-            vector<unsigned int> iRandNum(inRand);
             SCUINST computeInst;
             computeInst.Init(probVec, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
