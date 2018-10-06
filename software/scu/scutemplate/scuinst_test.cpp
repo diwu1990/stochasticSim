@@ -15,7 +15,8 @@ int main()
 {
     srand(time(NULL));
     unsigned int inBS = 1;
-    unsigned int randSeqNum = inBS + 2;
+    unsigned int inRand = 2;
+    unsigned int randSeqNum = inBS + inRand;
     unsigned int randBitLen = 8;
     string mode = "incremental";
     // string mode = "delayed";
@@ -86,17 +87,23 @@ int main()
             num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
             num2bitMultiInst.SeqGen();
 
-            vector<vector<unsigned int>> RandSeq(2);
-            RandSeq[0].resize(seqLength);
-            RandSeq[1].resize(seqLength);
+            vector<vector<unsigned int>> RandSeq(inRand);
+            for (int i = 0; i < inRand; ++i)
+            {
+                RandSeq[i].resize(seqLength);
+            }
+
+            // *****************************************************************************
+            // mannually config
+            // *****************************************************************************
             for (int z = 0; z < seqLength; ++z)
             {
                 RandSeq[0][z] = rngInst.OutSeq()[inBS][z%(unsigned int)(pow(2,randBitLen))] >> depthSync;
                 RandSeq[1][z] = rngInst.OutSeq()[inBS+1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
-            vector<char> iBit(1);
-            vector<unsigned int> iRandNum(2);
+            vector<char> iBit(inBS);
+            vector<unsigned int> iRandNum(inRand);
             SCUINST computeInst;
             computeInst.Init(probVec, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
@@ -105,8 +112,10 @@ int main()
                 {
                     iBit[z] = num2bitMultiInst.OutSeq()[z][j];
                 }
-                iRandNum[0] = RandSeq[0][j];
-                iRandNum[1] = RandSeq[1][j];
+                for (int i = 0; i < inRand; ++i)
+                {
+                    iRandNum[i] = RandSeq[i][j];
+                }
                 // printf("%d,%d\n", iRandNum[0], iRandNum[1]);
                 computeInst.Calc(iBit,iRandNum);
                 // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
