@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SOBOLMERGE_H
+#define SOBOLMERGE_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -28,3 +32,5 @@ class SOBOLMerge
         vector<unsigned int> OutMem();
         unsigned int MemLen();
 };
+
+#endif

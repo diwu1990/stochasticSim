@@ -1,3 +1,7 @@
+#pragma once
+#ifndef LFSR_H
+#define LFSR_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -73,3 +77,5 @@ class LFSR
         unsigned int OutPly();
     
 };
+
+#endif

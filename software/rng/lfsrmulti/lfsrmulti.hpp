@@ -1,3 +1,7 @@
+#pragma once
+#ifndef LFSRMULTI_H
+#define LFSRMULTI_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -33,3 +37,5 @@ class LFSRMulti
         vector<vector<unsigned int>> OutSeq();
         vector<unsigned int> OutPly();
 };
+
+#endif

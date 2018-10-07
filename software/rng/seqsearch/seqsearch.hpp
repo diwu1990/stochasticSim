@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SEQSEARCH_H
+#define SEQSEARCH_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -40,3 +44,5 @@ class SeqSearch
         float MSCC();
         vector<float> MSCCVec();
 };
+
+#endif

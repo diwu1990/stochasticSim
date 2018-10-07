@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SOBOL_H
+#define SOBOL_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -43,3 +47,5 @@ class SOBOL
         vector<unsigned int> DirMem();
         float * i4_sobol_generate();
 };
+
+#endif

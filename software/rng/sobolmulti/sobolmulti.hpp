@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SOBOLMULTI_H
+#define SOBOLMULTI_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -38,3 +42,5 @@ class SOBOLMulti
         vector<vector<unsigned int>> DirVec();
 
 };
+
+#endif

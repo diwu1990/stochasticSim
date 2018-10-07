@@ -1,3 +1,7 @@
+#pragma once
+#ifndef RANDNUM2BITMULTI_H
+#define RANDNUM2BITMULTI_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -27,3 +31,5 @@ public:
     void SeqGen();
     vector<vector<char>> OutSeq();
 };
+
+#endif

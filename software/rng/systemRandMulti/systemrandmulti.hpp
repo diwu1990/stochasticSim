@@ -1,3 +1,7 @@
+#pragma one
+#ifndef SYSTEMRANDMULTI_H
+#define SYSTEMRANDMULTI_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -31,3 +35,5 @@ class SystemRandMulti
         vector<vector<unsigned int>> OutSeq();
 
 };
+
+#endif

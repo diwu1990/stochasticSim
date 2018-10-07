@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SEQPROB_H
+#define SEQPROB_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -26,3 +30,5 @@ class SeqProb
         unsigned int SeqLen();
         float OutProb();
 };
+
+#endif

@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SYSTEMRAND_H
+#define SYSTEMRAND_H
+
 #include <stdio.h>
 #include <vector>
 #include <cmath>
@@ -33,3 +37,5 @@ class SystemRand
         unsigned int SeqLen();
         vector<unsigned int> OutSeq();
 };
+
+#endif
