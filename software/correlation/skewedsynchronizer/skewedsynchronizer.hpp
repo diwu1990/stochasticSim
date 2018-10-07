@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SKEWEDSYNC_H
+#define SKEWEDSYNC_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -56,3 +60,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
