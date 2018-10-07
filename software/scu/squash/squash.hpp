@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SQUASH_H
+#define SQUASH_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -76,3 +80,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
