@@ -1,3 +1,7 @@
+#pragma once
+#ifndef JKDIVBISQRT_H
+#define JKDIVBISQRT_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -65,3 +69,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
