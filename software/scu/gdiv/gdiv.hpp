@@ -1,3 +1,7 @@
+#pragma once
+#ifndef GDIV_H
+#define GDIV_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -62,3 +66,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
