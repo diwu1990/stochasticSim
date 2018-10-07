@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SYNC_H
+#define SYNC_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -57,3 +61,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
