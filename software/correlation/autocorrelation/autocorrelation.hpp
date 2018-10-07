@@ -1,3 +1,7 @@
+#pragma once
+#ifndef AUTOCORRELATION_H
+#define AUTOCORRELATION_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -24,3 +28,5 @@ class AutoCorrelation
         float OutAC();
     
 };
+
+#endif
