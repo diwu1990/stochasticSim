@@ -1,3 +1,7 @@
+#pragma once
+#ifndef RELU_H
+#define RELU_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -58,3 +62,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
