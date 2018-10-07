@@ -1,3 +1,7 @@
+#pragma once
+#ifndef JKFF_H
+#define JKFF_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -53,3 +57,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
