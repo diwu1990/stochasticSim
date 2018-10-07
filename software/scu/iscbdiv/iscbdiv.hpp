@@ -1,3 +1,7 @@
+#pragma once
+#ifndef ISCBDIV_H
+#define ISCBDIV_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -60,3 +64,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
