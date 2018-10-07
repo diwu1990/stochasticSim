@@ -1,3 +1,7 @@
+#pragma once
+#ifndef ISCBDIVBISQRT_H
+#define ISCBDIVBISQRT_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -68,3 +72,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
