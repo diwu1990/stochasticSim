@@ -1,3 +1,7 @@
+#pragma once
+#ifndef CROSSCORRELATION_H
+#define CROSSCORRELATION_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -33,3 +37,5 @@ class CrossCorrelation
         float MaxCC();
         float MinCC();
 };
+
+#endif
