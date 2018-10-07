@@ -1,18 +1,10 @@
 #include <squash.hpp>
 #include <perfsim.hpp>
 
-SQUASH::SQUASH()
+SQUASH::SQUASH(unsigned int param1)
 {
-    iDim = inputDim;
+    iDim = param1;
     oDim = iDim;
-
-    ISCBDIV divInst[oDim];
-    // CORDIV divInst[oDim];
-    // GDIV divInst[oDim];
-
-    ISCBDIVBISQRT sqrtInst;
-    // JKDIVBISQRT sqrtInst;
-    // GSQRT sqrtInst;
 }
 
 void SQUASH::Help()
@@ -23,11 +15,11 @@ void SQUASH::Help()
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
-    printf("Parameters: Input Probability, Window Size, Threshold for Window Bias, Instance Name.\n");
+    printf("Parameters: Input Probability, Depth of Synchronizer, Depth of CORDIV Kernel, Window Size, Threshold for Window Bias, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the result bit.\n");
-    printf("Parameters: Vectorized Input Bits.\n");
+    printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
 
     printf("3. inst.OutBit() method:\n");
     printf("Return output bit from inst.Calc().\n");

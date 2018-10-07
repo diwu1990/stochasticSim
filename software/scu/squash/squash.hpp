@@ -4,6 +4,12 @@
 #include <string>
 #include <iostream>
 #include "perfsim.hpp"
+#include "gdiv.hpp"
+#include "cordiv.hpp"
+#include "iscbdiv.hpp"
+#include "gsqrt.hpp"
+#include "jkdivbisqrt.hpp"
+#include "iscbdivbisqrt.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
@@ -29,6 +35,15 @@ class SQUASH
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
+
+    ISCBDIV divInst[iDim];
+    // CORDIV divInst[iDim];
+    // GDIV divInst[iDim];
+
+    ISCBDIVBISQRT sqrtInst;
+    // JKDIVBISQRT sqrtInst;
+    // GSQRT sqrtInst;
+
     vector<char> sqreBit;
     vector<char> sumBit;
     vector<char> sqrtBit;
@@ -46,7 +61,7 @@ class SQUASH
     #endif
 
 public:
-    SQUASH(unsigned int inputDim);
+    SQUASH(unsigned int);
     
     void Help();
     void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, string);
