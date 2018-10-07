@@ -1,3 +1,7 @@
+#pragma once
+#ifndef MUXADD_H
+#define MUXADD_H
+
 #include <cstdio>
 #include <vector>
 #include <cmath>
@@ -54,3 +58,5 @@ public:
         vector<unsigned int> Speed();
     #endif
 };
+
+#endif
