@@ -1,10 +1,13 @@
 #include <squash.hpp>
 #include <perfsim.hpp>
 
-SQUASH::SQUASH(unsigned int param1)
+SQUASH::SQUASH()
 {
-    iDim = param1;
-    oDim = iDim;
+}
+
+SQUASH::~SQUASH()
+{
+    free(divInstPtr);
 }
 
 void SQUASH::Help()
@@ -52,13 +55,45 @@ void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3
     thdBias = param5;
     m_name = param6;
 
+    iDim = iProb.size();
+    if (iDim < 2)
+    {
+        printf("Error: Input Dimension is small than 2.\n");
+    }
     #ifdef PERFSIM
         iLen = 0;
     #endif
     sqreBit.resize(iDim);
     sumBit.resize(1);
     sqrtBit.resize(1);
+    add1Bit.resize(1);
 
+    divInstPtr = (ISCBDIV *)malloc(iDim*sizeof(ISCBDIV));
+    // divInstPtr = (CORDIV *)malloc(iDim*sizeof(CORDIV));
+    // divInstPtr = (GDIV *)malloc(iDim*sizeof(GDIV));
+
+    sqreProb.resize(iDim);
+    sumProb.resize(1);
+    sqrtProb.resize(1);
+    add1Prob.resize(1);
+
+    probVec.resize(iDim);
+    for (int i = 0; i < iDim; ++i)
+    {
+        probVec[i].resize(2);
+    }
+    sumProb[0] = 0;
+    for (int i = 0; i < iDim; ++i)
+    {
+        probVec[];
+        sqreProb[i] = iProb[i] * iProb[i];
+        sumProb[0] += sqreProb[i];
+        divInstPtr[i].Init(probVec, depthSync, depth, wSize, thdBias, "divInst");
+    }
+    sumProb[0] /= iDim;
+    sqrtProb[0] = sqrt(sqrt);
+
+    oDim = iDim;
     oBit.resize(oDim);
 
     #ifdef PERFSIM
@@ -176,6 +211,7 @@ void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2)
         // printf("(%f,%f)%f->%f(%f)\n", divInst.InProb()[0], divInst.InProb()[1], divInst.TheoProb(), divInst.FinalRealProb(), divInst.FinalErrRate());
     }
     // printf("division done!\n\n");
+
 
     #ifdef PERFSIM
         iLen++;

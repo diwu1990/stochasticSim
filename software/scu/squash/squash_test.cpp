@@ -108,7 +108,7 @@ int main()
                 RandSeq[1][z] = rngInst.OutSeq()[inBS+1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
-            SQUASH computeInst(4);
+            SQUASH computeInst();
             computeInst.Init(probVec, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
             {

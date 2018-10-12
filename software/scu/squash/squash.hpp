@@ -40,9 +40,9 @@ class SQUASH
         unsigned int iLen;
     #endif
 
-    ISCBDIV divInst[iDim];
-    // CORDIV divInst[iDim];
-    // GDIV divInst[iDim];
+    ISCBDIV* divInstPtr;
+    // CORDIV* divInstPtr;
+    // GDIV* divInstPtr;
 
     ISCBDIVBISQRT sqrtInst;
     // JKDIVBISQRT sqrtInst;
@@ -51,6 +51,12 @@ class SQUASH
     vector<char> sqreBit;
     vector<char> sumBit;
     vector<char> sqrtBit;
+    vector<char> add1Bit;
+
+    vector<float> sqreProb;
+    vector<float> sumProb;
+    vector<float> sqrtProb;
+    vector<float> add1Prob;
 
     // output
     vector<char> oBit;
@@ -65,7 +71,8 @@ class SQUASH
     #endif
 
 public:
-    SQUASH(unsigned int);
+    SQUASH();
+    ~SQUASH();
     
     void Help();
     void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, string);
