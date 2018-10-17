@@ -93,17 +93,18 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
     for (int i = 0; i < iDim; ++i)
     {
         sqreProb[i] = iProb[i] * iProb[i];
+        printf("square out: %f\n", sqreProb[i]);
         sumProb[0] += sqreProb[i];
     }
     sumProb[0] /= iDim;
     printf("sum of square: %f\n", sumProb[0]);
     sqrtProb[0] = sqrt(sumProb[0]);
     printf("sum of square root: %f\n", sqrtProb[0]);
-    add1Prob[0] = scale;
+    add1Prob[0] = scale/sqrt(iDim);
     add1Prob[0] += sqrtProb[0];
     printf("sum of square and 1: %f\n", add1Prob[0]);
 
-    sqrtInst.Init(sqrtProb, 5, 2, wSize, thdBias, "sqrtInst");
+    sqrtInst.Init(sumProb, 5, 2, wSize, thdBias, "sqrtInst");
     
     probVec.resize(iDim);
     for (int i = 0; i < iDim; ++i)
@@ -128,7 +129,8 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
-            theoProb[i] = iProb[i]/add1Prob[0];
+            theoProb[i] = iProb[i]/add1Prob[0]/sqrt(iDim);
+            printf("theo out: %f\n", theoProb[i]);
             speed[i] = 0;
         }
     #endif

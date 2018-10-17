@@ -53,6 +53,7 @@ class SQUASH
     // GSQRT sqrtInst;
 
     vector<char> sqreBit;
+    vector<char> sqreBit;
     vector<char> sumBit;
     vector<char> sqrtBit;
     vector<char> add1Bit;

@@ -109,7 +109,7 @@ int main()
             }
 
             SQUASH computeInst;
-            computeInst.Init(probVec, 0.1, depthSync, depth, wSize, thdBias, "computeInst");
+            computeInst.Init(probVec, 1/inBS, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
             {
                 for (int z = 0; z < inBS; ++z)
