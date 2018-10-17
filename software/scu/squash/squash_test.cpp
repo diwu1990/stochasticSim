@@ -72,13 +72,13 @@ int main()
             /* code */
             float prob0 = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
             float prob1 = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
-            val[0] = min(prob0,prob1);
-            val[1] = max(prob0,prob1);
+            val[0] = prob0;
+            val[1] = prob1;
 
             for (int l = 0; l < inBS; ++l)
             {
                 bitLengthVec[l] = randBitLen;
-                probVec[l] = val[l];
+                probVec[l] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
             }
             
             for (int i = 0; i < inBS; ++i)

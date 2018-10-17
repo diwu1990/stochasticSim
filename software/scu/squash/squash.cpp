@@ -57,7 +57,6 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
     thdBias = param6;
     m_name = param7;
 
-    printf("%f\n", scale);
     iDim = iProb.size();
     if (iDim < 2)
     {
@@ -87,6 +86,7 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
     {
         sqreInProb[i].resize(1);
         sqreInProb[i][0] = iProb[i];
+        printf("square input: %f\n", sqreInProb[i][0]);
         squareInstPtr[i].Init(sqreInProb[i], wSize, thdBias, "squareInst");
     }
     sumProb[0] = 0;
@@ -96,9 +96,12 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
         sumProb[0] += sqreProb[i];
     }
     sumProb[0] /= iDim;
+    printf("sum of square: %f\n", sumProb[0]);
     sqrtProb[0] = sqrt(sumProb[0]);
+    printf("sum of square root: %f\n", sqrtProb[0]);
     add1Prob[0] = scale;
     add1Prob[0] += sqrtProb[0];
+    printf("sum of square and 1: %f\n", add1Prob[0]);
 
     sqrtInst.Init(sqrtProb, 5, 2, wSize, thdBias, "sqrtInst");
     
@@ -108,6 +111,7 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
         probVec[i].resize(2);
         probVec[i][0] = iProb[i];
         probVec[i][1] = add1Prob[0];
+        printf("division input: %f,%f\n", probVec[i][0], probVec[i][1]);
         divInstPtr[i].Init(probVec[i], depthSync, depth, wSize, thdBias, "divInst");
     }
 
@@ -128,6 +132,7 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
             speed[i] = 0;
         }
     #endif
+    printf("miaomiaomiao\n");
 }
 
 void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2)
