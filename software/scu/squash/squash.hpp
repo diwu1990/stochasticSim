@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include "perfsim.hpp"
+#include "square.hpp"
 #include "gdiv.hpp"
 #include "cordiv.hpp"
 #include "iscbdiv.hpp"
@@ -39,6 +40,8 @@ class SQUASH
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
+
+    SQUARE* squareInstPtr;
 
     ISCBDIV* divInstPtr;
     // CORDIV* divInstPtr;

@@ -7,6 +7,7 @@ SQUASH::SQUASH()
 
 SQUASH::~SQUASH()
 {
+    free(squareInstPtr);
     free(divInstPtr);
 }
 
@@ -68,6 +69,8 @@ void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3
     sqrtBit.resize(1);
     add1Bit.resize(1);
 
+    squareInstPtr = (SQUARE *)malloc(iDim*sizeof(SQUARE));
+
     divInstPtr = (ISCBDIV *)malloc(iDim*sizeof(ISCBDIV));
     // divInstPtr = (CORDIV *)malloc(iDim*sizeof(CORDIV));
     // divInstPtr = (GDIV *)malloc(iDim*sizeof(GDIV));
@@ -77,6 +80,7 @@ void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3
     sqrtProb.resize(1);
     add1Prob.resize(1);
 
+    vector<float> probVec;
     probVec.resize(iDim);
     for (int i = 0; i < iDim; ++i)
     {
@@ -85,13 +89,17 @@ void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3
     sumProb[0] = 0;
     for (int i = 0; i < iDim; ++i)
     {
-        probVec[];
         sqreProb[i] = iProb[i] * iProb[i];
         sumProb[0] += sqreProb[i];
-        divInstPtr[i].Init(probVec, depthSync, depth, wSize, thdBias, "divInst");
     }
     sumProb[0] /= iDim;
     sqrtProb[0] = sqrt(sqrt);
+    sqrtInst.Init(probVec, depthSync, depth, wSize, thdBias, "sqrtInst");
+    
+    for (int i = 0; i < iDim; ++i)
+    {
+        divInstPtr[i].Init(probVec, depthSync, depth, wSize, thdBias, "divInst");
+    }
 
     oDim = iDim;
     oBit.resize(oDim);
@@ -117,100 +125,100 @@ void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2)
     iBit = param1;
     randNum = param2;
 
-    // printf("start=>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-    // square of input
-    vector<vector<char>> outSquare(seqDim);
-    for (int i = 0; i < seqDim; ++i)
-    {
-        vector<vector<char>> inSquare(2);
-        inSquare[0].resize(seqLength);
-        inSquare[1].resize(seqLength);
-        for (int j = 0; j < seqLength; ++j)
-        {
-            inSquare[0][j] = inSeq[i][j];
-            inSquare[1][j] = inSeq[i][(j-1+seqLength)%seqLength];
-        }
-        MUL squareInst;
-        squareInst.Init(inSquare,"squareInst");
-        squareInst.Calc();
-        outSquare[i] = squareInst.OutSeq();
-        // printf("%f->%f(%f)\n", squareInst.TheoProb(), squareInst.FinalRealProb(), squareInst.FinalErrRate());
-    }
-    // printf("square done!\n\n");
+    // // printf("start=>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    // // square of input
+    // vector<vector<char>> outSquare(seqDim);
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     vector<vector<char>> inSquare(2);
+    //     inSquare[0].resize(seqLength);
+    //     inSquare[1].resize(seqLength);
+    //     for (int j = 0; j < seqLength; ++j)
+    //     {
+    //         inSquare[0][j] = inSeq[i][j];
+    //         inSquare[1][j] = inSeq[i][(j-1+seqLength)%seqLength];
+    //     }
+    //     MUL squareInst;
+    //     squareInst.Init(inSquare,"squareInst");
+    //     squareInst.Calc();
+    //     outSquare[i] = squareInst.OutSeq();
+    //     // printf("%f->%f(%f)\n", squareInst.TheoProb(), squareInst.FinalRealProb(), squareInst.FinalErrRate());
+    // }
+    // // printf("square done!\n\n");
 
-    // sum all square
-    vector<char> outMuxAdd(seqLength);
-    MUXADD muxaddInst;
-    muxaddInst.Init(outSquare, randAdd, "muxaddInst");
-    muxaddInst.Calc();
-    outMuxAdd = muxaddInst.OutSeq();
-    // printf("%f->%f(%f)\n", muxaddInst.TheoProb(), muxaddInst.FinalRealProb(), muxaddInst.FinalErrRate());
-    // printf("sum done!\n\n");
+    // // sum all square
+    // vector<char> outMuxAdd(seqLength);
+    // MUXADD muxaddInst;
+    // muxaddInst.Init(outSquare, randAdd, "muxaddInst");
+    // muxaddInst.Calc();
+    // outMuxAdd = muxaddInst.OutSeq();
+    // // printf("%f->%f(%f)\n", muxaddInst.TheoProb(), muxaddInst.FinalRealProb(), muxaddInst.FinalErrRate());
+    // // printf("sum done!\n\n");
 
-    // get the square root of sum
-    vector<char> outSqrt(seqLength);
-    // GSQRT sqrtInst;
-    // JKDIVBISQRT sqrtInst;
-    ISCBDIVBISQRT sqrtInst;
-    sqrtInst.Init(outMuxAdd, randSqrt, depthSqrt, "sqrtInst");
-    sqrtInst.Calc();
-    outSqrt = sqrtInst.OutSeq();
-    sqrtMse = sqrt((sqrtInst.FinalRealProb()-theoSqrtProb)*(sqrtInst.FinalRealProb()-theoSqrtProb));
-    // printf("%f->%f(%f)\n", sqrtInst.TheoProb(), sqrtInst.FinalRealProb(), sqrtInst.FinalErrRate());
-    // printf("square root done!\n\n");
+    // // get the square root of sum
+    // vector<char> outSqrt(seqLength);
+    // // GSQRT sqrtInst;
+    // // JKDIVBISQRT sqrtInst;
+    // ISCBDIVBISQRT sqrtInst;
+    // sqrtInst.Init(outMuxAdd, randSqrt, depthSqrt, "sqrtInst");
+    // sqrtInst.Calc();
+    // outSqrt = sqrtInst.OutSeq();
+    // sqrtMse = sqrt((sqrtInst.FinalRealProb()-theoSqrtProb)*(sqrtInst.FinalRealProb()-theoSqrtProb));
+    // // printf("%f->%f(%f)\n", sqrtInst.TheoProb(), sqrtInst.FinalRealProb(), sqrtInst.FinalErrRate());
+    // // printf("square root done!\n\n");
 
-    // get the inProb[i]/seqDim
-    vector<vector<char>> inSeqSmall(seqDim);
-    vector<vector<char>> outSeqSmall(seqDim);
-    for (int i = 0; i < seqDim; ++i)
-    {
-        inSeqSmall[i].resize(seqLength);
-        outSeqSmall[i].resize(seqLength);
-    }
-    for (int i = 0; i < seqDim; ++i)
-    {
-        for (int j = 0; j < seqDim; ++j)
-        {
-            if (i == j)
-            {
-                inSeqSmall[j] = inSeq[j];
-            }
-            else
-            {
-                for (int k = 0; k < seqLength; ++k)
-                {
-                    inSeqSmall[j][k] = 0;
-                }
-            }
-        }
+    // // get the inProb[i]/seqDim
+    // vector<vector<char>> inSeqSmall(seqDim);
+    // vector<vector<char>> outSeqSmall(seqDim);
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     inSeqSmall[i].resize(seqLength);
+    //     outSeqSmall[i].resize(seqLength);
+    // }
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     for (int j = 0; j < seqDim; ++j)
+    //     {
+    //         if (i == j)
+    //         {
+    //             inSeqSmall[j] = inSeq[j];
+    //         }
+    //         else
+    //         {
+    //             for (int k = 0; k < seqLength; ++k)
+    //             {
+    //                 inSeqSmall[j][k] = 0;
+    //             }
+    //         }
+    //     }
 
-        MUXADD inSeqSmallInst;
-        inSeqSmallInst.Init(inSeqSmall, randAdd, "inSeqSmallInst");
-        inSeqSmallInst.Calc();
-        outSeqSmall[i] = inSeqSmallInst.OutSeq();
-        // printf("%f->%f(%f)\n", inSeqSmallInst.TheoProb(), inSeqSmallInst.FinalRealProb(), inSeqSmallInst.FinalErrRate());
-    }
-    // printf("input scaling done!\n\n");
+    //     MUXADD inSeqSmallInst;
+    //     inSeqSmallInst.Init(inSeqSmall, randAdd, "inSeqSmallInst");
+    //     inSeqSmallInst.Calc();
+    //     outSeqSmall[i] = inSeqSmallInst.OutSeq();
+    //     // printf("%f->%f(%f)\n", inSeqSmallInst.TheoProb(), inSeqSmallInst.FinalRealProb(), inSeqSmallInst.FinalErrRate());
+    // }
+    // // printf("input scaling done!\n\n");
 
-    // division for each
-    vector<vector<char>> divInSeq(2);
-    for (int i = 0; i < 2; ++i)
-    {
-        divInSeq[i].resize(seqLength);
-    }
-    divInSeq[1] = outMuxAdd;
-    for (int i = 0; i < seqDim; ++i)
-    {
-        divInSeq[0] = outSeqSmall[i];
-        // GDIV divInst;
-        // CORDIV divInst;
-        ISCBDIV divInst;
-        divInst.Init(divInSeq, randDiv[i], depthDiv, depthDivSync, "divInst");
-        divInst.Calc();
-        outSeq[i] = divInst.OutSeq();
-        // printf("(%f,%f)%f->%f(%f)\n", divInst.InProb()[0], divInst.InProb()[1], divInst.TheoProb(), divInst.FinalRealProb(), divInst.FinalErrRate());
-    }
-    // printf("division done!\n\n");
+    // // division for each
+    // vector<vector<char>> divInSeq(2);
+    // for (int i = 0; i < 2; ++i)
+    // {
+    //     divInSeq[i].resize(seqLength);
+    // }
+    // divInSeq[1] = outMuxAdd;
+    // for (int i = 0; i < seqDim; ++i)
+    // {
+    //     divInSeq[0] = outSeqSmall[i];
+    //     // GDIV divInst;
+    //     // CORDIV divInst;
+    //     ISCBDIV divInst;
+    //     divInst.Init(divInSeq, randDiv[i], depthDiv, depthDivSync, "divInst");
+    //     divInst.Calc();
+    //     outSeq[i] = divInst.OutSeq();
+    //     // printf("(%f,%f)%f->%f(%f)\n", divInst.InProb()[0], divInst.InProb()[1], divInst.TheoProb(), divInst.FinalRealProb(), divInst.FinalErrRate());
+    // }
+    // // printf("division done!\n\n");
 
 
     #ifdef PERFSIM
