@@ -44,26 +44,39 @@ class SQUASH
 
     SQUARE* squareInstPtr;
 
-    ISCBDIV* divInstPtr;
-    // CORDIV* divInstPtr;
-    // GDIV* divInstPtr;
+    MUXADD addSqreInst;
 
     ISCBDIVBISQRT sqrtInst;
     // JKDIVBISQRT sqrtInst;
     // GSQRT sqrtInst;
 
-    vector<char> sqreBit;
-    vector<char> sqreBit;
-    vector<char> sumBit;
-    vector<char> sqrtBit;
-    vector<char> add1Bit;
+    MUXADD add1Inst;
 
-    vector<vector<float>> sqreInProb;
-    vector<float> sqreProb;
-    vector<float> sumProb;
-    vector<float> sqrtProb;
-    vector<float> add1Prob;
-    vector<vector<float>> probVec;
+    ISCBDIV divInst;
+    // CORDIV divInst;
+    // GDIV divInst;
+
+    ANDMUL* mulInstPtr;
+
+    vector<vector<char>> sqreIBit;
+    // vector<vector<char>> sqreOBit;
+    vector<char> sumIBit;
+    // vector<char> sumOBit;
+    vector<char> sqrtIBit;
+    // vector<char> sqrtOBit;
+    vector<char> add1IBit;
+    // vector<char> add1OBit;
+    vector<char> divIBit;
+    // vector<char> divOBit;
+    vector<vector<char>> mulIBit;
+    // vector<vector<char>> mulOBit;
+
+    vector<vector<float>> sqreIProb;
+    vector<float> sumIProb;
+    vector<float> sqrtIProb;
+    vector<float> add1IProb;
+    vector<float> divIProb;
+    vector<vector<float>> mulIProb;
 
     // output
     vector<char> oBit;

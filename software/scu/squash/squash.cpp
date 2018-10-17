@@ -65,55 +65,92 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
     #ifdef PERFSIM
         iLen = 0;
     #endif
-    sqreBit.resize(iDim);
-    sumBit.resize(1);
-    sqrtBit.resize(1);
-    add1Bit.resize(1);
+
+
+    // SQUARE* squareInstPtr;
+
+    // MUXADD addSqreInst;
+
+    // ISCBDIVBISQRT sqrtInst;
+    // // JKDIVBISQRT sqrtInst;
+    // // GSQRT sqrtInst;
+
+    // MUXADD add1Inst;
+
+    // ISCBDIV* divInstPtr;
+    // // CORDIV* divInstPtr;
+    // // GDIV* divInstPtr;
+
+    // ANDMUL* mulInstPtr;
+
+    // vector<vector<char>> sqreIBit;
+    // vector<char> sumIBit;
+    // vector<char> sqrtIBit;
+    // vector<char> add1IBit;
+    // vector<vector<char>> divIBit;
+    // vector<vector<char>> mulIBit;
+
+    // vector<vector<float>> sqreIProb;
+    // vector<float> sumIProb;
+    // vector<float> sqrtIProb;
+    // vector<float> add1IProb;
+    // vector<vector<float>> divIProb;
+    // vector<vector<float>> mulIProb;
+
+    sqreIBit.resize(iDim);
+    sumIBit.resize(iDim);
+    sqrtIBit.resize(1);
+    add1IBit.resize(2);
+    divIBit.resize(2);
+    mulIBit.resize(iDim);
+    for (int i = 0; i < iDim; ++i)
+    {
+        sqreIBit[i].resize(1);
+        mulIBit[i].resize(2);
+    }
+
+    sqreIProb.resize(iDim);
+    sumIProb.resize(iDim);
+    sqrtIProb.resize(1);
+    add1IProb.resize(2);
+    divIProb.resize(2);
+    mulIProb.resize(iDim);
+    for (int i = 0; i < iDim; ++i)
+    {
+        sqreIProb[i].resize(1);
+        mulIProb[i].resize(2);
+    }
 
     squareInstPtr = (SQUARE *)malloc(iDim*sizeof(SQUARE));
-
-    divInstPtr = (ISCBDIV *)malloc(iDim*sizeof(ISCBDIV));
-    // divInstPtr = (CORDIV *)malloc(iDim*sizeof(CORDIV));
-    // divInstPtr = (GDIV *)malloc(iDim*sizeof(GDIV));
-
-    sqreInProb.resize(iDim);
-    sqreProb.resize(iDim);
-    sumProb.resize(1);
-    sqrtProb.resize(1);
-    add1Prob.resize(1);
-
     for (int i = 0; i < iDim; ++i)
     {
-        sqreInProb[i].resize(1);
-        sqreInProb[i][0] = iProb[i];
-        printf("square input: %f\n", sqreInProb[i][0]);
-        squareInstPtr[i].Init(sqreInProb[i], wSize, thdBias, "squareInst");
+        sqreIProb[i].resize(1);
+        sqreIProb[i][0] = iProb[i];
+        printf("square input: %f\n", sqreIProb[i][0]);
+        squareInstPtr[i].Init(sqreIProb[i], wSize, thdBias, "squareInst");
     }
-    sumProb[0] = 0;
-    for (int i = 0; i < iDim; ++i)
-    {
-        sqreProb[i] = iProb[i] * iProb[i];
-        printf("square out: %f\n", sqreProb[i]);
-        sumProb[0] += sqreProb[i];
-    }
-    sumProb[0] /= iDim;
-    printf("sum of square: %f\n", sumProb[0]);
-    sqrtProb[0] = sqrt(sumProb[0]);
-    printf("sum of square root: %f\n", sqrtProb[0]);
-    add1Prob[0] = scale/sqrt(iDim);
-    add1Prob[0] += sqrtProb[0];
-    printf("sum of square and 1: %f\n", add1Prob[0]);
 
-    sqrtInst.Init(sumProb, 5, 2, wSize, thdBias, "sqrtInst");
-    
-    probVec.resize(iDim);
     for (int i = 0; i < iDim; ++i)
     {
-        probVec[i].resize(2);
-        probVec[i][0] = iProb[i];
-        probVec[i][1] = add1Prob[0];
-        printf("division input: %f,%f\n", probVec[i][0], probVec[i][1]);
-        divInstPtr[i].Init(probVec[i], depthSync, depth, wSize, thdBias, "divInst");
+        sumIProb[i] = squareInstPtr[i].TheoProb()[0] * squareInstPtr[i].TheoProb()[0];
+        printf("square out: %f\n", sumIProb[i]);
+    }
+    addSqreInst.Init(sumIProb, wSize, thdBias, "addSqreInst");
+
+    sqrtIProb[0] = addSqreInst.TheoProb()[0];
+    sqrtInst.Init(sqrtIProb, wSize, thdBias, "sqrtInst");
+
+    add1IProb[0] = scale;
+    add1IProb[1] = addSqreInst.TheoProb()[0];
+    add1Inst.Init(add1IProb, wSize, thdBias, "addSqreInst");
+
+    divIProb[0] = addSqreInst.TheoProb()[0];
+    divIProb[1] = add1Inst.TheoProb()[0];
+    divInst.Init();
+
+    for (int i = 0; i < iDim; ++i)
+    {
+        divIProb[i][0] = ;
     }
 
     oDim = iDim;
@@ -129,7 +166,7 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
-            theoProb[i] = iProb[i]/add1Prob[0]/sqrt(iDim);
+            theoProb[i] = ;
             printf("theo out: %f\n", theoProb[i]);
             speed[i] = 0;
         }
