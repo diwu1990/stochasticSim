@@ -47,15 +47,17 @@ void SQUASH::Help()
     printf("**********************************************************\n");
 }
 
-void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3, unsigned int param4, float param5, string param6)
+void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsigned int param4, unsigned int param5, float param6, string param7)
 {
     iProb = param1;
-    depthSync = param2;
-    depth = param3;
-    wSize = param4;
-    thdBias = param5;
-    m_name = param6;
+    scale = param2;
+    depthSync = param3;
+    depth = param4;
+    wSize = param5;
+    thdBias = param6;
+    m_name = param7;
 
+    printf("%f\n", scale);
     iDim = iProb.size();
     if (iDim < 2)
     {
@@ -75,16 +77,17 @@ void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3
     // divInstPtr = (CORDIV *)malloc(iDim*sizeof(CORDIV));
     // divInstPtr = (GDIV *)malloc(iDim*sizeof(GDIV));
 
+    sqreInProb.resize(iDim);
     sqreProb.resize(iDim);
     sumProb.resize(1);
     sqrtProb.resize(1);
     add1Prob.resize(1);
 
-    vector<float> probVec;
-    probVec.resize(iDim);
     for (int i = 0; i < iDim; ++i)
     {
-        probVec[i].resize(2);
+        sqreInProb[i].resize(1);
+        sqreInProb[i][0] = iProb[i];
+        squareInstPtr[i].Init(sqreInProb[i], wSize, thdBias, "squareInst");
     }
     sumProb[0] = 0;
     for (int i = 0; i < iDim; ++i)
@@ -93,12 +96,19 @@ void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3
         sumProb[0] += sqreProb[i];
     }
     sumProb[0] /= iDim;
-    sqrtProb[0] = sqrt(sqrt);
-    sqrtInst.Init(probVec, depthSync, depth, wSize, thdBias, "sqrtInst");
+    sqrtProb[0] = sqrt(sumProb[0]);
+    add1Prob[0] = scale;
+    add1Prob[0] += sqrtProb[0];
+
+    sqrtInst.Init(sqrtProb, 5, 2, wSize, thdBias, "sqrtInst");
     
+    probVec.resize(iDim);
     for (int i = 0; i < iDim; ++i)
     {
-        divInstPtr[i].Init(probVec, depthSync, depth, wSize, thdBias, "divInst");
+        probVec[i].resize(2);
+        probVec[i][0] = iProb[i];
+        probVec[i][1] = add1Prob[0];
+        divInstPtr[i].Init(probVec[i], depthSync, depth, wSize, thdBias, "divInst");
     }
 
     oDim = iDim;
@@ -114,7 +124,7 @@ void SQUASH::Init(vector<float> param1, unsigned int param2, unsigned int param3
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
-            theoProb[i] = iProb[i];
+            theoProb[i] = iProb[i]/add1Prob[0];
             speed[i] = 0;
         }
     #endif

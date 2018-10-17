@@ -1,4 +1,4 @@
-#pragma one
+#pragma once
 #ifndef SYSTEMRANDMULTI_H
 #define SYSTEMRANDMULTI_H
 

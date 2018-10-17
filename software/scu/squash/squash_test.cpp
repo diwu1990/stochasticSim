@@ -31,8 +31,8 @@ int main()
     float thdBias = 0.05;
     unsigned int wSize = seqLength/2;
     
-    unsigned int totalRound = 10;
-    unsigned int totalIter = 10000;
+    unsigned int totalRound = 1;
+    unsigned int totalIter = 1;
 
     unsigned int depth;
     unsigned int depthSync;
@@ -108,8 +108,8 @@ int main()
                 RandSeq[1][z] = rngInst.OutSeq()[inBS+1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
-            SQUASH computeInst();
-            computeInst.Init(probVec, depthSync, depth, wSize, thdBias, "computeInst");
+            SQUASH computeInst;
+            computeInst.Init(probVec, 0.1, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
             {
                 for (int z = 0; z < inBS; ++z)
@@ -130,15 +130,15 @@ int main()
             // printf("window bias      (%f)\n",computeInst.WBias()[0]);
             // printf("converge speed   (%d)\n",computeInst.Speed()[0]);
 
-            tenFoldErr[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0] * computeInst.WBias()[0];
-            tenFoldBias[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0];
-            tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += 1;
-            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.Speed()[0];
+            // tenFoldErr[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            // tenFoldBias[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0];
+            // tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += 1;
+            // tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.Speed()[0];
         }
     }
     clock_t end = clock();
     double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
-    printf("%f\n", elasped_secs);
+    printf("Elasped Seconds: %f\n", elasped_secs);
 
     for (int y = 0; y < foldNum; ++y)
     {
@@ -149,11 +149,11 @@ int main()
     }
     
     // printf("Range, Freq, Correlation, Error Rate, Stat Bias, LowErrLen:\n");
-    printf("Range, Freq, Error Rate, Stat Bias, LowErrLen:\n");
-    for (int i = 0; i < foldNum; ++i)
-    {
-        // printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
-        printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
-    }
-    printf("\n");
+    // printf("Range, Freq, Error Rate, Stat Bias, LowErrLen:\n");
+    // for (int i = 0; i < foldNum; ++i)
+    // {
+    //     // printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
+    //     printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
+    // }
+    // printf("\n");
 }

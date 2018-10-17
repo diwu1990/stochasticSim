@@ -24,6 +24,7 @@ class SQUASH
 {
     // initial input
     vector<float> iProb;
+    float scale;
     unsigned int depthSync;
     unsigned int depth;
     unsigned int wSize;
@@ -56,10 +57,12 @@ class SQUASH
     vector<char> sqrtBit;
     vector<char> add1Bit;
 
+    vector<vector<float>> sqreInProb;
     vector<float> sqreProb;
     vector<float> sumProb;
     vector<float> sqrtProb;
     vector<float> add1Prob;
+    vector<vector<float>> probVec;
 
     // output
     vector<char> oBit;
@@ -78,7 +81,7 @@ public:
     ~SQUASH();
     
     void Help();
-    void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, string);
+    void Init(vector<float>, float, unsigned int, unsigned int, unsigned int, float, string);
     void Calc(vector<char>, vector<unsigned int>);
     vector<char> OutBit();
 
