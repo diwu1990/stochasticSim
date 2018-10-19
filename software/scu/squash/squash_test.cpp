@@ -79,6 +79,7 @@ int main()
             {
                 bitLengthVec[l] = randBitLen;
                 probVec[l] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+                probVec[l] = 0.9;
             }
             
             for (int i = 0; i < inBS; ++i)
@@ -109,7 +110,7 @@ int main()
             }
 
             SQUASH computeInst;
-            computeInst.Init(probVec, 1/inBS, depthSync, depth, wSize, thdBias, "computeInst");
+            computeInst.Init(probVec, 0.5/(float)inBS, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
             {
                 for (int z = 0; z < inBS; ++z)
