@@ -79,11 +79,7 @@ int main()
             {
                 bitLengthVec[l] = randBitLen;
                 probVec[l] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
-<<<<<<< HEAD
                 // probVec[l] = 10;
-=======
-                probVec[l] = 0.9;
->>>>>>> fb40e4a48a27a85e3dd4ddb351a5e5f34e38b39e
             }
             
             for (int i = 0; i < inBS; ++i)
@@ -140,7 +136,6 @@ int main()
 
 
             SQUASH computeInst;
-<<<<<<< HEAD
             computeInst.Init(probVec, 1/(float)inBS/(float)inBS, depthSync, depth, wSize, thdBias, "computeInst");
             // for (int j = 0; j < seqLength; ++j)
             // {
@@ -156,23 +151,6 @@ int main()
             //     computeInst.Calc(iBit,iRandNum);
             //     // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
             // }
-=======
-            computeInst.Init(probVec, 0.5/(float)inBS, depthSync, depth, wSize, thdBias, "computeInst");
-            for (int j = 0; j < seqLength; ++j)
-            {
-                for (int z = 0; z < inBS; ++z)
-                {
-                    iBit[z] = num2bitMultiInst.OutSeq()[z][j];
-                }
-                for (int i = 0; i < inRand; ++i)
-                {
-                    iRandNum[i] = RandSeq[i][j];
-                }
-                // printf("%d,%d\n", iRandNum[0], iRandNum[1]);
-                computeInst.Calc(iBit,iRandNum);
-                // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
-            }
->>>>>>> fb40e4a48a27a85e3dd4ddb351a5e5f34e38b39e
             // printf("input prob       (%f)\n", probVec[0]);
             // printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
             // printf("window prob      (%f)\n",computeInst.WProb()[0]);
