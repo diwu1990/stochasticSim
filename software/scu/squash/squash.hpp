@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include "perfsim.hpp"
+#include "andmul.hpp"
 #include "square.hpp"
 #include "gdiv.hpp"
 #include "cordiv.hpp"

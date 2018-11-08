@@ -7,8 +7,13 @@ SQUASH::SQUASH()
 
 SQUASH::~SQUASH()
 {
+<<<<<<< HEAD
     delete [] squareInstPtr;
     delete [] mulOutInstPtr;
+=======
+    free(squareInstPtr);
+    free(mulInstPtr);
+>>>>>>> fb40e4a48a27a85e3dd4ddb351a5e5f34e38b39e
 }
 
 void SQUASH::Help()
@@ -99,11 +104,13 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
         sqreIProb[i][0] = iProb[i];
         // printf("square in: %f\n", sqreIProb[i][0]);
         squareInstPtr[i].Init(sqreIProb[i], wSize, thdBias, "squareInst");
+        printf("square out: %f\n", squareInstPtr[i].TheoProb()[0]);
     }
     printf("\n");
     for (int i = 0; i < iDim; ++i)
     {
         sumIProb[i] = squareInstPtr[i].TheoProb()[0];
+<<<<<<< HEAD
         // printf("square out: %f\n", sumIProb[i]);
     }
     addSqreInst.Init(sumIProb, wSize, thdBias, "addSqreInst");
@@ -136,6 +143,36 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
     // printf("division out: %f\n", divInst.TheoProb()[0]);
 
     // printf("\n");
+=======
+    }
+    addSqreInst.Init(sumIProb, wSize, thdBias, "addSqreInst");
+    printf("add square output: %f\n", addSqreInst.TheoProb()[0]);
+
+    sqrtIProb[0] = addSqreInst.TheoProb()[0];
+    sqrtInst.Init(sqrtIProb, 5, 2, wSize, thdBias, "sqrtInst");
+    printf("sqare root output: %f\n", sqrtInst.TheoProb()[0]);
+
+    add1IProb[0] = scale;
+    printf("%f\n", scale);
+    add1IProb[1] = addSqreInst.TheoProb()[0];
+    add1Inst.Init(add1IProb, wSize, thdBias, "addSqreInst");
+    printf("add 1 output: %f\n", add1Inst.TheoProb()[0]);
+
+    divIProb[0] = sqrtInst.TheoProb()[0];
+    divIProb[1] = add1Inst.TheoProb()[0];
+    divInst.Init(divIProb, depthSync, depth, wSize, thdBias, "divInst");
+    printf("div output: %f\n", divInst.TheoProb()[0]);
+
+    mulInstPtr = (ANDMUL *)malloc(iDim*sizeof(ANDMUL));
+    for (int i = 0; i < iDim; ++i)
+    {
+        mulIProb[i].resize(2);
+        mulIProb[i][0] = iProb[i];
+        mulIProb[i][1] = divInst.TheoProb()[0];
+        mulInstPtr[i].Init(mulIProb[i], wSize, thdBias, "mulInstPtr");
+        printf("mul out: %f\n", mulInstPtr[i].TheoProb()[0]);
+    }
+>>>>>>> fb40e4a48a27a85e3dd4ddb351a5e5f34e38b39e
 
     oDim = iDim;
     oBit.resize(oDim);
@@ -158,8 +195,13 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
+<<<<<<< HEAD
             theoProb[i] = mulOutInstPtr[i].TheoProb()[0];
             // printf("theo out: %f\n", theoProb[i]);
+=======
+            theoProb[i] = mulInstPtr[i].TheoProb()[0];
+            printf("theo out: %f\n", theoProb[i]);
+>>>>>>> fb40e4a48a27a85e3dd4ddb351a5e5f34e38b39e
             speed[i] = 0;
         }
     #endif
