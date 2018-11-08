@@ -15,6 +15,7 @@
 #include "gsqrt.hpp"
 #include "jkdivbisqrt.hpp"
 #include "iscbdivbisqrt.hpp"
+#include "andmul.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
@@ -56,27 +57,28 @@ class SQUASH
     // CORDIV divInst;
     // GDIV divInst;
 
-    ANDMUL* mulInstPtr;
+    ANDMUL mulScaleInst;
+
+    ANDMUL* mulOutInstPtr;
 
     vector<vector<char>> sqreIBit;
-    // vector<vector<char>> sqreOBit;
     vector<char> sumIBit;
-    // vector<char> sumOBit;
     vector<char> sqrtIBit;
-    // vector<char> sqrtOBit;
     vector<char> add1IBit;
-    // vector<char> add1OBit;
     vector<char> divIBit;
-    // vector<char> divOBit;
-    vector<vector<char>> mulIBit;
-    // vector<vector<char>> mulOBit;
+    vector<char> mulScaleIBit;
+    vector<vector<char>> mulOutIBit;
+
+    vector<unsigned int> sumRandNum;
+    vector<unsigned int> add1RandNum;
 
     vector<vector<float>> sqreIProb;
     vector<float> sumIProb;
     vector<float> sqrtIProb;
     vector<float> add1IProb;
     vector<float> divIProb;
-    vector<vector<float>> mulIProb;
+    vector<float> mulScaleIProb;
+    vector<vector<float>> mulOutIProb;
 
     // output
     vector<char> oBit;
@@ -96,7 +98,7 @@ public:
     
     void Help();
     void Init(vector<float>, float, unsigned int, unsigned int, unsigned int, float, string);
-    void Calc(vector<char>, vector<unsigned int>);
+    void Calc(vector<char>, vector<unsigned int>, vector<char>);
     vector<char> OutBit();
 
     #ifdef PERFSIM
