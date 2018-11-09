@@ -71,6 +71,8 @@ class SQUASH
     vector<vector<char>> mulOutIBit;
 
     vector<unsigned int> sumRandNum;
+    vector<unsigned int> sqrtRandNum;
+    vector<unsigned int> divRandNum;
     vector<unsigned int> add1RandNum;
 
     vector<vector<float>> sqreIProb;

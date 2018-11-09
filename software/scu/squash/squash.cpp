@@ -173,8 +173,8 @@ void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<unsig
     sqrtRandNum = param3;
     divRandNum = param4;
     add1RandNum = param5;
-    add1IBit[0] = param6;
-    mulScaleIBit[1] = param7;
+    add1IBit[0] = param6[0];
+    mulScaleIBit[1] = param7[0];
 
     // square
     for (int i = 0; i < iDim; ++i)
@@ -193,7 +193,7 @@ void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<unsig
     // printf("sum done!\n\n");
 
     // get the square root of sum
-    sqrtInst.Calc(addSqreInst.OutBit()[0], sqrtRandNum);
+    sqrtInst.Calc(addSqreInst.OutBit(), sqrtRandNum);
     // printf("square root done!\n\n");
 
     // scale sqrt

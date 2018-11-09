@@ -20,6 +20,7 @@ int main()
     unsigned int randBitLen = 8;
     string mode = "incremental";
     // string mode = "delayed";
+    // string mode = "random";
 
     unsigned int foldNum = 11;
     vector<float> tenFoldErr(foldNum);
