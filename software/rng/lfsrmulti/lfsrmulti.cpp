@@ -9,9 +9,9 @@ void LFSRMulti::Init(unsigned int param1, unsigned int param2, unsigned int para
     lfsrLen = param4;
     outputLen = (unsigned int)(pow(2,lfsrLen))-1;
     mode = param5;
-    if (mode != "delayed" && mode != "incremental")
+    if (mode != "delayed" && mode != "incremental" && mode != "random")
     {
-        printf("Error: Input mode is invalid. (delayed or incremental)\n");
+        printf("Error: Input mode is invalid. (delayed or incremental or random)\n");
     }
     m_name = param6;
     if (lfsrLen < 4 || lfsrLen > 16)
@@ -24,6 +24,8 @@ void LFSRMulti::Init(unsigned int param1, unsigned int param2, unsigned int para
     {
         outSeq[i].resize(outputLen);
     }
+    arrayLen.resize(13);
+    realIndex = 0;
 }
 
 LFSRMulti::LFSRMulti(){}
@@ -121,6 +123,33 @@ void LFSRMulti::PlyPrint()
 
 void LFSRMulti::SeqGen()
 {
+    static const unsigned int array4[] = {TAP_4};
+    static const unsigned int array5[] = {TAP_5};
+    static const unsigned int array6[] = {TAP_6};
+    static const unsigned int array7[] = {TAP_7};
+    static const unsigned int array8[] = {TAP_8};
+    static const unsigned int array9[] = {TAP_9};
+    static const unsigned int array10[] = {TAP_10};
+    static const unsigned int array11[] = {TAP_11};
+    static const unsigned int array12[] = {TAP_12};
+    static const unsigned int array13[] = {TAP_13};
+    static const unsigned int array14[] = {TAP_14};
+    static const unsigned int array15[] = {TAP_15};
+    static const unsigned int array16[] = {TAP_16};
+    arrayLen[0] = sizeof(array4) / sizeof(array4[0]);
+    arrayLen[1] = sizeof(array5) / sizeof(array5[0]);
+    arrayLen[2] = sizeof(array6) / sizeof(array6[0]);
+    arrayLen[3] = sizeof(array7) / sizeof(array7[0]);
+    arrayLen[4] = sizeof(array8) / sizeof(array8[0]);
+    arrayLen[5] = sizeof(array9) / sizeof(array9[0]);
+    arrayLen[6] = sizeof(array10) / sizeof(array10[0]);
+    arrayLen[7] = sizeof(array11) / sizeof(array11[0]);
+    arrayLen[8] = sizeof(array12) / sizeof(array12[0]);
+    arrayLen[9] = sizeof(array13) / sizeof(array13[0]);
+    arrayLen[10] = sizeof(array14) / sizeof(array14[0]);
+    arrayLen[11] = sizeof(array15) / sizeof(array15[0]);
+    arrayLen[12] = sizeof(array16) / sizeof(array16[0]);
+
     if (mode == "delayed")
     {
         for (int i = 0; i < dimNum; ++i)
@@ -138,6 +167,19 @@ void LFSRMulti::SeqGen()
         {
             LFSR lfsrInst;
             lfsrInst.Init(lfsrLen,1,polyIndex+i,0,"lfsrInst");
+            lfsrInst.SeqGen();
+            outSeq[i] = lfsrInst.OutSeq();
+            polyVal[i] = lfsrInst.OutPly();
+        }
+    }
+    else if (mode == "random")
+    {
+        srand(time(NULL));
+        for (int i = 0; i < dimNum; ++i)
+        {
+            realIndex = (unsigned int)rand()%arrayLen[lfsrLen];
+            LFSR lfsrInst;
+            lfsrInst.Init(lfsrLen,1,realIndex,(unsigned int)rand()%(unsigned int)pow(2,lfsrLen),"lfsrInst");
             lfsrInst.SeqGen();
             outSeq[i] = lfsrInst.OutSeq();
             polyVal[i] = lfsrInst.OutPly();

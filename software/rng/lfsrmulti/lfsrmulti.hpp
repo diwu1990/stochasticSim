@@ -23,6 +23,8 @@ class LFSRMulti
     string m_name;
     vector<vector<unsigned int>> outSeq;
     vector<unsigned int> polyVal;
+    vector<unsigned int> arrayLen;
+    unsigned int realIndex;
 
     public:
         LFSRMulti();
