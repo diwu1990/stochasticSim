@@ -17,10 +17,11 @@ int main()
 {
 
     srand(time(NULL));
-    unsigned int sobolNum = 2;
+    unsigned int sobolNum = 1;
     unsigned int sobolBitLen = 8;
-    string mode = "incremental";
+    // string mode = "incremental";
     // string mode = "delayed";
+    string mode = "random";
     unsigned int totalIter = 10000;
     vector<float> inCC(1);
     vector<float> outCC(1);
@@ -33,16 +34,16 @@ int main()
     	mse[index] = 0;
         unsigned int sobolInitIdx = 1+index;
         unsigned int delay = 1;
-        // SOBOLMulti sobolinst;
+        SOBOLMulti sobolinst;
         // LFSRMulti sobolinst;
-        SystemRandMulti sobolinst;
+        // SystemRandMulti sobolinst;
         sobolinst.Init(sobolNum,sobolInitIdx,delay,sobolBitLen,mode,"sobolinst1");
         sobolinst.SeqGen();
-        // sobolinst.SeqPrint();
+        sobolinst.SeqPrint();
 
-        vector<unsigned int> bitLengthVec(2);
-        vector<float> probVec(2);
-        vector<float> val(2);
+        vector<unsigned int> bitLengthVec(sobolNum);
+        vector<float> probVec(sobolNum);
+        vector<float> val(sobolNum);
         unsigned int depth;
         float thdBias = 0.05;
 
@@ -50,7 +51,7 @@ int main()
         {
             depth = 1;
             /* code */
-            for (int l = 0; l < 2; ++l)
+            for (int l = 0; l < sobolNum; ++l)
             {
                 bitLengthVec[l] = sobolBitLen;
                 probVec[l] = (float)((float)(rand()%(int)pow(2,sobolBitLen))/(float)pow(2,sobolBitLen));
@@ -62,16 +63,16 @@ int main()
             num2bitMultiInst.Init(probVec,bitLengthVec,sobolinst.OutSeq(),"num2bitMultiInst");
             num2bitMultiInst.SeqGen();
 
-            vector<char> iBit(2);
-            DeSynchronizer syncInst;
-            syncInst.Init(probVec,depth,128,thdBias,"syncInst");
-            for (int j = 0; j < (int)pow(2,sobolBitLen); ++j)
-            {
-                iBit[0] = num2bitMultiInst.OutSeq()[0][j];
-                iBit[1] = num2bitMultiInst.OutSeq()[1][j];
-                syncInst.Calc(iBit);
-                // printf("%d: (%u,%u)=>(%u, %u)\n", j, iBit[0], iBit[1], syncInst.OutBit()[0], syncInst.OutBit()[1]);
-            }
+            // vector<char> iBit(2);
+            // DeSynchronizer syncInst;
+            // syncInst.Init(probVec,depth,128,thdBias,"syncInst");
+            // for (int j = 0; j < (int)pow(2,sobolBitLen); ++j)
+            // {
+            //     iBit[0] = num2bitMultiInst.OutSeq()[0][j];
+            //     iBit[1] = num2bitMultiInst.OutSeq()[1][j];
+            //     syncInst.Calc(iBit);
+            //     // printf("%d: (%u,%u)=>(%u, %u)\n", j, iBit[0], iBit[1], syncInst.OutBit()[0], syncInst.OutBit()[1]);
+            // }
                 // printf("(%f,%f)\n",syncInst.WProb()[0],syncInst.WProb()[1]);
                 // printf("(%f,%f)\n",syncInst.TheoProb()[0],syncInst.TheoProb()[1]);
                 // printf("(%f,%f)\n",syncInst.WBias()[0],syncInst.WBias()[1]);
