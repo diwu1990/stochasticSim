@@ -19,11 +19,17 @@ void SQUASH::Help()
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
-    printf("Parameters: Input Probability, Depth of Synchronizer, Depth of CORDIV Kernel, Window Size, Threshold for Window Bias, Instance Name.\n");
+    printf("Parameters: Input Probability, Scale of 1, Depth of Synchronizer, Depth of CORDIV Kernel, Window Size, Threshold for Window Bias, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the result bit.\n");
-    printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
+    printf("Parameters: Vectorized Input Bits, Vectorized Random Number for [sum, sqrt, div, add1], Vectorized Random Bit for [add1, mulScale].\n");
+    printf("Bit Width of Vectorized Random Number for sum: log2(Input Dimension)-bit.\n");
+    printf("Bit Width of Vectorized Random Number for sqrt: 1-bit.\n");
+    printf("Bit Width of Vectorized Random Number for div: Depth of CORDIV Kernel.\n");
+    printf("Bit Width of Vectorized Random Number for add1: 1-bit.\n");
+    printf("Probability of Vectorized Random Bit for add1: 1/Scale.\n");
+    printf("Probability of Vectorized Random Bit for mulScale: pow(2,-1-log2(Input Dimension)/2).\n");
 
     printf("3. inst.OutBit() method:\n");
     printf("Return output bit from inst.Calc().\n");
@@ -99,7 +105,7 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
         sqreIProb[i][0] = iProb[i];
         // printf("square in: %f\n", sqreIProb[i][0]);
         squareInstPtr[i].Init(sqreIProb[i], wSize, thdBias, "squareInst");
-        printf("square out: %f\n", squareInstPtr[i].TheoProb()[0]);
+        // printf("square out: %f\n", squareInstPtr[i].TheoProb()[0]);
     }
     printf("\n");
     for (int i = 0; i < iDim; ++i)
@@ -138,6 +144,11 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
 
     // printf("\n");
 
+    sumRandNum.resize(1);
+    sqrtRandNum.resize(1);
+    divRandNum.resize(1);
+    add1RandNum.resize(1);
+
     oDim = iDim;
     oBit.resize(oDim);
 
@@ -166,15 +177,15 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
     #endif
 }
 
-void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<unsigned int> param4, vector<unsigned int> param5, vector<char> param6, vector<char> param7)
+void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<char> param3)
 {
     iBit = param1;
-    sumRandNum = param2;
-    sqrtRandNum = param3;
-    divRandNum = param4;
-    add1RandNum = param5;
-    add1IBit[0] = param6[0];
-    mulScaleIBit[1] = param7[0];
+    sumRandNum[0] = param2[0];
+    sqrtRandNum[0] = param2[1];
+    divRandNum[0] = param2[2];
+    add1RandNum[0] = param2[3];
+    add1IBit[0] = param3[0];
+    mulScaleIBit[1] = param3[1];
 
     // square
     for (int i = 0; i < iDim; ++i)
@@ -182,19 +193,22 @@ void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<unsig
         sqreIBit[i][0] = iBit[i];
         squareInstPtr[i].Calc(sqreIBit[i]);
     }
-    // printf("square done!\n\n");
+    printf("square done!\n\n");
 
     // sum all square
     for (int i = 0; i < iDim; ++i)
     {
         sumIBit[i] = squareInstPtr[i].OutBit()[0];
+        printf("%u\n", sumIBit[i]);
     }
     addSqreInst.Calc(sumIBit,sumRandNum);
-    // printf("sum done!\n\n");
+    printf("sum done!\n\n");
 
     // get the square root of sum
+    printf("%u\n", addSqreInst.OutBit()[0]);
+    printf("%u\n", sqrtRandNum[0]);
     sqrtInst.Calc(addSqreInst.OutBit(), sqrtRandNum);
-    // printf("square root done!\n\n");
+    printf("square root done!\n\n");
 
     // scale sqrt
     mulScaleIBit[0] = sqrtInst.OutBit()[0];
