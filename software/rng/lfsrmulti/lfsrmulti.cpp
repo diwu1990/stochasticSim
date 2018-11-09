@@ -177,7 +177,7 @@ void LFSRMulti::SeqGen()
         srand(time(NULL));
         for (int i = 0; i < dimNum; ++i)
         {
-            realIndex = (unsigned int)rand()%arrayLen[lfsrLen];
+            realIndex = (unsigned int)rand()%arrayLen[lfsrLen-4];
             LFSR lfsrInst;
             lfsrInst.Init(lfsrLen,1,realIndex,(unsigned int)rand()%(unsigned int)pow(2,lfsrLen),"lfsrInst");
             lfsrInst.SeqGen();
