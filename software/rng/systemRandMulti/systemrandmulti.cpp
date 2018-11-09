@@ -18,10 +18,7 @@ void SystemRandMulti::Init(unsigned int param1, unsigned int param2, unsigned in
     }
 
     m_name = param6;
-    if (dimNum < 1 || dimNum > 1111)
-    {
-        printf("Error: Input dimension index exceeds the legal range (1~1111) in SystemRandMulti class.\n");
-    }
+    
     if (bitLength < 4 || bitLength > 16)
     {
         printf("Error: Input bitLength exceeds the legal range (4~16) in SystemRandMulti class.\n");
