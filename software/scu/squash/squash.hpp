@@ -99,7 +99,7 @@ public:
     
     void Help();
     void Init(vector<float>, float, unsigned int, unsigned int, unsigned int, float, string);
-    void Calc(vector<char>, vector<unsigned int>, vector<char>);
+    void Calc(vector<char>, vector<unsigned int>, vector<unsigned int>, vector<unsigned int>, vector<unsigned int>, vector<char>, vector<char>);
     vector<char> OutBit();
 
     #ifdef PERFSIM

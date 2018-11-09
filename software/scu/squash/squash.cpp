@@ -166,12 +166,15 @@ void SQUASH::Init(vector<float> param1, float param2, unsigned int param3, unsig
     #endif
 }
 
-void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<char> param4)
+void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<unsigned int> param3, vector<unsigned int> param4, vector<unsigned int> param5, vector<char> param6, vector<char> param7)
 {
     iBit = param1;
-    sumRandNum = param3;
-    add1RandNum = param3;
-    mulScaleIBit[1] = param4;
+    sumRandNum = param2;
+    sqrtRandNum = param3;
+    divRandNum = param4;
+    add1RandNum = param5;
+    add1IBit[0] = param6;
+    mulScaleIBit[1] = param7;
 
     // square
     for (int i = 0; i < iDim; ++i)
@@ -184,78 +187,37 @@ void SQUASH::Calc(vector<char> param1, vector<unsigned int> param2, vector<unsig
     // sum all square
     for (int i = 0; i < iDim; ++i)
     {
-        sumIBit[i] = squareInstPtr.OBit()[0];
+        sumIBit[i] = squareInstPtr[i].OutBit()[0];
     }
-    addSqreInst.Calc(sumIBit,);
-    outMuxAdd = muxaddInst.OutSeq();
-    // printf("%f->%f(%f)\n", muxaddInst.TheoProb(), muxaddInst.FinalRealProb(), muxaddInst.FinalErrRate());
+    addSqreInst.Calc(sumIBit,sumRandNum);
     // printf("sum done!\n\n");
 
     // get the square root of sum
-    vector<char> outSqrt(seqLength);
-    // GSQRT sqrtInst;
-    // JKDIVBISQRT sqrtInst;
-    ISCBDIVBISQRT sqrtInst;
-    sqrtInst.Init(outMuxAdd, randSqrt, depthSqrt, "sqrtInst");
-    sqrtInst.Calc();
-    outSqrt = sqrtInst.OutSeq();
-    sqrtMse = sqrt((sqrtInst.FinalRealProb()-theoSqrtProb)*(sqrtInst.FinalRealProb()-theoSqrtProb));
-    // printf("%f->%f(%f)\n", sqrtInst.TheoProb(), sqrtInst.FinalRealProb(), sqrtInst.FinalErrRate());
+    sqrtInst.Calc(addSqreInst.OutBit()[0], sqrtRandNum);
     // printf("square root done!\n\n");
 
-    // get the inProb[i]/seqDim
-    vector<vector<char>> inSeqSmall(seqDim);
-    vector<vector<char>> outSeqSmall(seqDim);
-    for (int i = 0; i < seqDim; ++i)
-    {
-        inSeqSmall[i].resize(seqLength);
-        outSeqSmall[i].resize(seqLength);
-    }
-    for (int i = 0; i < seqDim; ++i)
-    {
-        for (int j = 0; j < seqDim; ++j)
-        {
-            if (i == j)
-            {
-                inSeqSmall[j] = inSeq[j];
-            }
-            else
-            {
-                for (int k = 0; k < seqLength; ++k)
-                {
-                    inSeqSmall[j][k] = 0;
-                }
-            }
-        }
+    // scale sqrt
+    mulScaleIBit[0] = sqrtInst.OutBit()[0];
+    mulScaleInst.Calc(mulScaleIBit);
 
-        MUXADD inSeqSmallInst;
-        inSeqSmallInst.Init(inSeqSmall, randAdd, "inSeqSmallInst");
-        inSeqSmallInst.Calc();
-        outSeqSmall[i] = inSeqSmallInst.OutSeq();
-        // printf("%f->%f(%f)\n", inSeqSmallInst.TheoProb(), inSeqSmallInst.FinalRealProb(), inSeqSmallInst.FinalErrRate());
-    }
-    // printf("input scaling done!\n\n");
+    // add the sum with 1
+    add1IBit[1] = addSqreInst.OutBit()[0];
+    add1Inst.Calc(add1IBit, add1RandNum);
+    // printf("add 1 done!\n\n");
 
-    // division for each
-    vector<vector<char>> divInSeq(2);
-    for (int i = 0; i < 2; ++i)
-    {
-        divInSeq[i].resize(seqLength);
-    }
-    divInSeq[1] = outMuxAdd;
-    for (int i = 0; i < seqDim; ++i)
-    {
-        divInSeq[0] = outSeqSmall[i];
-        // GDIV divInst;
-        // CORDIV divInst;
-        ISCBDIV divInst;
-        divInst.Init(divInSeq, randDiv[i], depthDiv, depthDivSync, "divInst");
-        divInst.Calc();
-        outSeq[i] = divInst.OutSeq();
-        // printf("(%f,%f)%f->%f(%f)\n", divInst.InProb()[0], divInst.InProb()[1], divInst.TheoProb(), divInst.FinalRealProb(), divInst.FinalErrRate());
-    }
+    // division
+    divIBit[0] = mulScaleInst.OutBit()[0];
+    divIBit[1] = add1Inst.OutBit()[0];
+    divInst.Calc(divIBit, divRandNum);
     // printf("division done!\n\n");
 
+    // output: mul div result with input
+    for (int i = 0; i < oDim; ++i)
+    {
+        mulOutIBit[i][0] = iBit[i];
+        mulOutIBit[i][1] = divInst.OutBit()[0];
+        mulOutInstPtr[i].Calc(mulOutIBit[i]);
+    }
 
     #ifdef PERFSIM
         iLen++;
