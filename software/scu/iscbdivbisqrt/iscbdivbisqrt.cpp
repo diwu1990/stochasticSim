@@ -105,6 +105,14 @@ void ISCBDIVBISQRT::Calc(vector<char> param1, vector<unsigned int> param2)
     iBit = param1;
     randNum = param2;
 
+    #ifdef PERFSIM
+        if (iBit.size() != 1 || randNum.size() != 2)
+        {
+            printf("Error: Input Number to ISCBDIVBISQRT is wrong.");
+            printf("    Expect: (iBit(1), randNum(2))\n");
+            printf("    Actual: (iBit(%u), randNum(%u))\n", iBit.size(), randNum.size());
+        }
+    #endif
     // *****************************************************************************
     // bit inserting with simplified iscvdiv for 1/(1+Po)
     // *****************************************************************************

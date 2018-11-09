@@ -16,9 +16,10 @@ int main()
     srand(time(NULL));
     unsigned int randSeqNum = 4;
     unsigned int randBitLen = 8;
-    string mode = "incremental";
+    // string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 10000;
+    string mode = "random";
+    unsigned int totalIter = 1000;
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
@@ -31,7 +32,7 @@ int main()
     float thdBias = 0.05;
     unsigned int wSize = seqLength/2;
     
-    unsigned int totalRound = 10;
+    unsigned int totalRound = 1000;
 
     unsigned int inBS = 1;
     for (int index = 0; index < totalRound; ++index)
@@ -45,8 +46,8 @@ int main()
         }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
-        SystemRandMulti rngInst;
-        // SOBOLMulti rngInst;
+        // SystemRandMulti rngInst;
+        SOBOLMulti rngInst;
         // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
