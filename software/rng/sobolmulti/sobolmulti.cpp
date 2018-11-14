@@ -192,7 +192,7 @@ void SOBOLMulti::SeqGen()
         for (int i = 0; i < dimNum; ++i)
         {
             SOBOL sobolInst;
-            sobolInst.Init(sobolLen,(unsigned int)rand()%1111+1,(unsigned int)rand()%(unsigned int)pow(2,sobolLen),"sobolInst");
+            sobolInst.Init(sobolLen,(unsigned int)rand()%100+1,(unsigned int)rand()%(unsigned int)pow(2,sobolLen),"sobolInst");
             sobolInst.SeqGen();
             outSeq[i] = sobolInst.OutSeq();
             dirVec[i] = sobolInst.DirVec();
