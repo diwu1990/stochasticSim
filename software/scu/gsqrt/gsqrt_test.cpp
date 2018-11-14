@@ -9,8 +9,6 @@
 #include <cstdlib>
 #include <ctime>
 #include "gsqrt.hpp"
-#include "synchronizer.hpp"
-#include "desynchronizer.hpp"
 #include "perfsim.hpp"
 
 int main()
@@ -18,9 +16,10 @@ int main()
     srand(time(NULL));
     unsigned int randSeqNum = 4;
     unsigned int randBitLen = 8;
-    string mode = "incremental";
+    // string mode = "incremental";
     // string mode = "delayed";
-    unsigned int totalIter = 10000;
+    string mode = "random";
+    unsigned int totalIter = 1000;
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
@@ -33,18 +32,20 @@ int main()
     float thdBias = 0.05;
     unsigned int wSize = seqLength/2;
     
-    unsigned int totalRound = 10;
-    
+    unsigned int totalRound = 1000;
+
     unsigned int inBS = 1;
+
+    for (int i = 0; i < foldNum; ++i)
+    {
+        tenFoldErr[i] = 0;
+        tenFoldBias[i] = 0;
+        tenFoldNum[i] = 0;
+        tenFoldLowErrLen[i] = 0;
+    }
+        
     for (int index = 0; index < totalRound; ++index)
     {
-        for (int i = 0; i < foldNum; ++i)
-        {
-            tenFoldErr[i] = 0;
-            tenFoldBias[i] = 0;
-            tenFoldNum[i] = 0;
-            tenFoldLowErrLen[i] = 0;
-        }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
         SystemRandMulti rngInst;
@@ -99,7 +100,7 @@ int main()
             }
 
             vector<char> iBit(1);
-            vector<unsigned int> iRandNum(1);
+            vector<unsigned int> iRandNum(2);
             GSQRT computeInst;
             computeInst.Init(probVec, depthSync, depth, wSize, thdBias, "computeInst");
             for (int j = 0; j < seqLength; ++j)
@@ -107,6 +108,7 @@ int main()
                 iBit[0] = num2bitMultiInst.OutSeq()[0][j];
                 iRandNum[0] = RandSeq[0][j];
                 iRandNum[1] = RandSeq[1][j];
+                // printf("%d,%d\n", iRandNum[0], iRandNum[1]);
                 computeInst.Calc(iBit,iRandNum);
                 // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
             }
@@ -123,6 +125,10 @@ int main()
             tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.Speed()[0];
         }
     }
+    clock_t end = clock();
+    double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
+    printf("%f\n", elasped_secs);
+
     for (int y = 0; y < foldNum; ++y)
     {
         tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
