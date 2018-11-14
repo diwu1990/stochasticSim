@@ -35,19 +35,21 @@ int main()
     unsigned int totalRound = 1000;
 
     unsigned int inBS = 1;
+
+    for (int i = 0; i < foldNum; ++i)
+    {
+        tenFoldErr[i] = 0;
+        tenFoldBias[i] = 0;
+        tenFoldNum[i] = 0;
+        tenFoldLowErrLen[i] = 0;
+    }
+    
     for (int index = 0; index < totalRound; ++index)
     {
-        for (int i = 0; i < foldNum; ++i)
-        {
-            tenFoldErr[i] = 0;
-            tenFoldBias[i] = 0;
-            tenFoldNum[i] = 0;
-            tenFoldLowErrLen[i] = 0;
-        }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
-        // SystemRandMulti rngInst;
-        SOBOLMulti rngInst;
+        SystemRandMulti rngInst;
+        // SOBOLMulti rngInst;
         // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
