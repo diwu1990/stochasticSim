@@ -37,7 +37,7 @@ void GSQRT::Help()
     printf("Return the window bias.\n");
 
     printf("8. inst.CTime() method:\n");
-    printf("Return the converge ctime.\n");
+    printf("Return the converge cTime.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -77,13 +77,13 @@ void GSQRT::Init(vector<float> param1, unsigned int param2, unsigned int param3,
         wProb.resize(oDim);
         theoProb.resize(oDim);
         wBias.resize(oDim);
-        ctime.resize(oDim);
+        cTime.resize(oDim);
 
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
             theoProb[i] = sqrt(iProb[0]);
-            ctime[i] = 0;
+            cTime[i] = 0;
         }
     #endif
 }
@@ -153,7 +153,7 @@ void GSQRT::Calc(vector<char> param1, vector<unsigned int> param2)
             wBias[i] = wProb[i] - theoProb[i];
             if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                ctime[i] = iLen;
+                cTime[i] = iLen;
             }
         }
     #endif
@@ -182,6 +182,6 @@ vector<char> GSQRT::OutBit()
 
     vector<unsigned int> GSQRT::CTime()
     {
-        return ctime;
+        return cTime;
     }
 #endif
