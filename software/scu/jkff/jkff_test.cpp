@@ -113,7 +113,7 @@ int main()
             printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
             printf("window prob      (%f)\n",computeInst.WProb()[0]);
             printf("window bias      (%f)\n",computeInst.WBias()[0]);
-            printf("converge ctime   (%d)\n",computeInst.CTime()[0]);
+            printf("converge cTime   (%d)\n",computeInst.CTime()[0]);
             
 
             // tenFoldErr[(unsigned int)floor(computeInst.TheoProb()*10)] += computeInst.WBias() * computeInst.WBiasWBias();

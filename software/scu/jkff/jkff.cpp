@@ -33,7 +33,7 @@ void JKFF::Help()
     printf("Return the window bias.\n");
 
     printf("8. inst.CTime() method:\n");
-    printf("Return the converge ctime.\n");
+    printf("Return the converge cTime.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -66,13 +66,13 @@ void JKFF::Init(vector<float> param1, unsigned int param2, float param3, string 
         wProb.resize(oDim);
         theoProb.resize(oDim);
         wBias.resize(oDim);
-        ctime.resize(oDim);
+        cTime.resize(oDim);
 
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
             theoProb[i] = iProb[0]/(iProb[1]+1);
-            ctime[i] = 0;
+            cTime[i] = 0;
         }
     #endif
 }
@@ -124,7 +124,7 @@ void JKFF::Calc(vector<char> param1)
             wBias[i] = wProb[i] - theoProb[i];
             if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                ctime[i] = iLen;
+                cTime[i] = iLen;
             }
         }
     #endif
@@ -153,6 +153,6 @@ vector<char> JKFF::OutBit()
 
     vector<unsigned int> JKFF::CTime()
     {
-        return ctime;
+        return cTime;
     }
 #endif
