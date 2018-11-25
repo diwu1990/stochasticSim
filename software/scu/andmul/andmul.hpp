@@ -40,7 +40,7 @@ class ANDMUL
         vector<float> wProb;
         vector<float> theoProb;
         vector<float> wBias;
-        vector<unsigned int> speed;
+        vector<unsigned int> ctime;
     #endif
 
 public:
@@ -54,7 +54,7 @@ public:
         vector<float> WProb();
         vector<float> TheoProb();
         vector<float> WBias();
-        vector<unsigned int> Speed();
+        vector<unsigned int> CTime();
     #endif
 };
 
