@@ -19,11 +19,11 @@ int main()
     // string mode = "incremental";
     // string mode = "delayed";
     string mode = "random";
-    unsigned int totalIter = 1000;
+    unsigned int totalIter = 1;
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
-    unsigned int totalRound = 1000;
+    unsigned int totalRound = 1;
 
     unsigned int foldNum = 6;
     vector<vector<float>> tenFoldMSE(foldNum);
@@ -114,7 +114,7 @@ int main()
             RandSeq[1].resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                RandSeq[0][z] = rngInst.OutSeq()[1][z%(unsigned int)(pow(2,randBitLen))] >> depthSync;
+                RandSeq[0][z] = rngInst.OutSeq()[1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
                 RandSeq[1][z] = rngInst.OutSeq()[2][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
