@@ -19,7 +19,7 @@ int main()
     // string mode = "incremental";
     // string mode = "delayed";
     string mode = "random";
-    unsigned int totalIter = 1000;
+    unsigned int totalIter = 1;
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
@@ -67,9 +67,9 @@ int main()
         }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
-        // SystemRandMulti rngInst;
+        SystemRandMulti rngInst;
         // SOBOLMulti rngInst;
-        LFSRMulti rngInst;
+        // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
@@ -130,12 +130,15 @@ int main()
                 iRandNum[1] = RandSeq[1][j];
                 computeInst.Calc(iBit,iRandNum);
             }
-            printf("\n");
-            printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
-            printf("window prob      (%f)\n",computeInst.WProb()[0]);
-            printf("window bias      (%f)\n",computeInst.WBias()[0]);
-            printf("converge ctime   (%d)\n",computeInst.CTime()[0]);
-            
+            if (computeInst.WBias()[0] * computeInst.WBias()[0] > 0.04)
+            {
+                printf("\n");
+                printf("input prob       (%f,%f)\n", probVec[0],probVec[1]);
+                printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
+                printf("window prob      (%f)\n",computeInst.WProb()[0]);
+                printf("window bias      (%f)\n",computeInst.WBias()[0]);
+                printf("converge cTime   (%d)\n",computeInst.CTime()[0]);
+            }
 
             tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
             tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += 1;
