@@ -133,12 +133,12 @@ int main()
             // printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
             // printf("window prob      (%f)\n",computeInst.WProb()[0]);
             // printf("window bias      (%f)\n",computeInst.WBias()[0]);
-            // printf("converge speed   (%d)\n",computeInst.Speed()[0]);
+            // printf("converge ctime   (%d)\n",computeInst.CTime()[0]);
             
 
             tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
             tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += 1;
-            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.Speed()[0];
+            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.CTime()[0];
         }
         for (int y = 0; y < foldNum; ++y)
         {
