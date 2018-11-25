@@ -200,7 +200,7 @@ int main()
                 tenFoldErr[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[i] * computeInst.WBias()[i];
                 tenFoldBias[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[i];
                 tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += 1;
-                tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.Speed()[i];
+                tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.CTime()[i];
             }
             
         }
