@@ -135,7 +135,16 @@ int main()
             // printf("window bias      (%f)\n",computeInst.WBias()[0]);
             // printf("converge speed   (%d)\n",computeInst.Speed()[0]);
             
-
+            // if (computeInst.WBias()[0] * computeInst.WBias()[0] > 0.8)
+            // {
+            //     for (int z = 0; z < seqLength; ++z)
+            //     {
+            //         printf("%u", RandSeq[1][z]);
+            //     }
+            //     printf("for iter: %u\n", totalRound);
+            //     printf("for iter: %u\n", iter);
+            //     printf("for square WBias: %f\n", computeInst.WBias()[0] * computeInst.WBias()[0]);
+            // }
             tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
             tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += 1;
             tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.Speed()[0];
