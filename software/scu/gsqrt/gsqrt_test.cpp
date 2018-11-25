@@ -19,11 +19,11 @@ int main()
     // string mode = "incremental";
     // string mode = "delayed";
     string mode = "random";
-    unsigned int totalIter = 1;
+    unsigned int totalIter = 1000;
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
-    unsigned int totalRound = 1;
+    unsigned int totalRound = 1000;
 
     unsigned int foldNum = 6;
     vector<vector<float>> tenFoldMSE(foldNum);
@@ -67,9 +67,9 @@ int main()
         }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
-        // SystemRandMulti rngInst;
+        SystemRandMulti rngInst;
         // SOBOLMulti rngInst;
-        LFSRMulti rngInst;
+        // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
