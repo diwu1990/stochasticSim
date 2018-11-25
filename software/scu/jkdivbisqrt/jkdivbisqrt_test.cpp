@@ -25,33 +25,39 @@ int main()
 
     unsigned int totalRound = 1000;
 
-    unsigned int foldNum = 11;
+    unsigned int foldNum = 6;
     vector<vector<float>> tenFoldMSE(foldNum);
     vector<vector<unsigned int>> tenFoldNum(foldNum);
     vector<vector<float>> tenFoldLowErrLen(foldNum);
+    vector<float> tenFoldAvgMSE(foldNum);
+    vector<float> tenFoldAvgLowErrLen(foldNum);
 
-    vector<float> avgMSE(totalRound);
-    vector<float> avgMSEMax(1);
-    vector<float> avgMSEMin(1);
-    unsigned int avgMSEMaxIndex = 0;
-    unsigned int avgMSEMinIndex = 0;
+    vector<float> MSEMax(1);
+    vector<float> MSEMin(1);
+    vector<float> MSEMaxIndex(foldNum);
+    vector<float> MSEMinIndex(foldNum);
+
+    vector<float> LowErrLenMax(1);
+    vector<float> LowErrLenMin(1);
+    vector<float> LowErrLenMaxIndex(foldNum);
+    vector<float> LowErrLenMinIndex(foldNum);
 
     for (int i = 0; i < foldNum; ++i)
     {
         tenFoldMSE[i].resize(totalRound);
         tenFoldNum[i].resize(totalRound);
         tenFoldLowErrLen[i].resize(totalRound);
+        tenFoldAvgMSE[i] = 0;
+        tenFoldAvgLowErrLen[i] = 0;
     }
 
-    float thdBias = 0.10;
+    float thdBias = 0.05;
     unsigned int wSize = seqLength/2;
     
     unsigned int inBS = 1;
     
     for (int index = 0; index < totalRound; ++index)
     {
-
-        avgMSE[index] = 0;
 
         for (int i = 0; i < foldNum; ++i)
         {
@@ -62,8 +68,8 @@ int main()
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
         // SystemRandMulti rngInst;
-        SOBOLMulti rngInst;
-        // LFSRMulti rngInst;
+        // SOBOLMulti rngInst;
+        LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
@@ -130,10 +136,9 @@ int main()
             // printf("converge speed   (%d)\n",computeInst.Speed()[0]);
             
 
-            tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*10)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
-            tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)][index] += 1;
-            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)][index] += computeInst.Speed()[0];
-            avgMSE[index] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += 1;
+            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.Speed()[0];
         }
         for (int y = 0; y < foldNum; ++y)
         {
@@ -142,45 +147,66 @@ int main()
         }
     }
 
-    avgMSEMax[0] = avgMSE[avgMSEMaxIndex];
-    avgMSEMin[0] = avgMSE[avgMSEMinIndex];
-
-    for (int i = 0; i < totalRound; ++i)
+    for (int y = 0; y < foldNum; ++y)
     {
-        if (avgMSEMax[0] < avgMSE[i])
+        MSEMax[0] = tenFoldMSE[y][0];
+        MSEMin[0] = tenFoldMSE[y][0];
+        LowErrLenMax[0] = tenFoldLowErrLen[y][0];
+        LowErrLenMin[0] = tenFoldLowErrLen[y][0];
+
+        MSEMaxIndex[y] = 0;
+        MSEMinIndex[y] = 0;
+
+        LowErrLenMaxIndex[y] = 0;
+        LowErrLenMinIndex[y] = 0;
+
+        for (int index = 0; index < totalRound; ++index)
         {
-            avgMSEMax[0] = avgMSE[i];
-            avgMSEMaxIndex = i;
+            tenFoldAvgMSE[y] += tenFoldMSE[y][index];
+            tenFoldAvgLowErrLen[y] += tenFoldLowErrLen[y][index];
+
+            if (MSEMax[0] < tenFoldMSE[y][index])
+            {
+                MSEMax[0] = tenFoldMSE[y][index];
+                MSEMaxIndex[y] = index;
+            }
+            if (MSEMin[0] > tenFoldMSE[y][index])
+            {
+                MSEMin[0] = tenFoldMSE[y][index];
+                MSEMinIndex[y] = index;
+            }
+
+            if (LowErrLenMax[0] < tenFoldLowErrLen[y][index])
+            {
+                LowErrLenMax[0] = tenFoldLowErrLen[y][index];
+                LowErrLenMaxIndex[y] = index;
+            }
+            if (LowErrLenMin[0] > tenFoldLowErrLen[y][index])
+            {
+                LowErrLenMin[0] = tenFoldLowErrLen[y][index];
+                LowErrLenMinIndex[y] = index;
+            }
+
         }
-        if (avgMSEMin[0] > avgMSE[i])
-        {
-            avgMSEMin[0] = avgMSE[i];
-            avgMSEMinIndex = i;
-        }
+        tenFoldAvgMSE[y] /= totalRound;
+        tenFoldAvgLowErrLen[y] /= totalRound;
     }
 
     clock_t end = clock();
     double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
     printf("Total execution time: %f\n\n", elasped_secs);
 
-    printf("Range, Max Error Rate, Min Error Rate:\n");
+    printf("Range, Max Error Rate, Min Error Rate, avg Error Rate:\n");
     for (int i = 0; i < foldNum; ++i)
     {
-        printf("%*.1f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 14, tenFoldMSE[i][avgMSEMaxIndex], 14, tenFoldMSE[i][avgMSEMinIndex]);
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, tenFoldMSE[i][MSEMaxIndex[i]], 14, tenFoldMSE[i][MSEMinIndex[i]], 14, tenFoldAvgMSE[i]);
     }
     printf("\n");
 
-    printf("Range,       Max Freq,       Min Freq:\n");
+    printf("Range,  Max LowErrLen,  Min LowErrLen, avg LowErrLen:\n");
     for (int i = 0; i < foldNum; ++i)
     {
-        printf("%*.1f, %*u, %*u\n", 5, ((float)i/10.0), 14, tenFoldNum[i][avgMSEMaxIndex], 14, tenFoldNum[i][avgMSEMinIndex]);
-    }
-    printf("\n");
-
-    printf("Range,  Max LowErrLen,  Min LowErrLen:\n");
-    for (int i = 0; i < foldNum; ++i)
-    {
-        printf("%*.1f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 14, tenFoldLowErrLen[i][avgMSEMaxIndex], 14, tenFoldLowErrLen[i][avgMSEMinIndex]);
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, tenFoldLowErrLen[i][LowErrLenMaxIndex[i]], 14, tenFoldLowErrLen[i][LowErrLenMinIndex[i]], 14, tenFoldAvgLowErrLen[i]);
     }
     printf("\n");
 }
