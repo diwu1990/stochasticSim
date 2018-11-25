@@ -36,8 +36,8 @@ void GDIV::Help()
     printf("7. inst.WBias() method:\n");
     printf("Return the window bias.\n");
 
-    printf("8. inst.Speed() method:\n");
-    printf("Return the converge speed.\n");
+    printf("8. inst.CTime() method:\n");
+    printf("Return the converge ctime.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -76,13 +76,13 @@ void GDIV::Init(vector<float> param1, unsigned int param2, unsigned int param3, 
         wProb.resize(oDim);
         theoProb.resize(oDim);
         wBias.resize(oDim);
-        speed.resize(oDim);
+        ctime.resize(oDim);
 
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
             theoProb[i] = iProb[0]/iProb[1];
-            speed[i] = 0;
+            ctime[i] = 0;
         }
     #endif
 }
@@ -150,7 +150,7 @@ void GDIV::Calc(vector<char> param1, vector<unsigned int> param2)
             wBias[i] = wProb[i] - theoProb[i];
             if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                speed[i] = iLen;
+                ctime[i] = iLen;
             }
         }
     #endif
@@ -177,8 +177,8 @@ vector<char> GDIV::OutBit()
         return wBias;
     }
 
-    vector<unsigned int> GDIV::Speed()
+    vector<unsigned int> GDIV::CTime()
     {
-        return speed;
+        return ctime;
     }
 #endif
