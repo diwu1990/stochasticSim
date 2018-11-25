@@ -128,12 +128,12 @@ int main()
             // printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
             // printf("window prob      (%f)\n",computeInst.WProb()[0]);
             // printf("window bias      (%f)\n",computeInst.WBias()[0]);
-            // printf("converge speed   (%d)\n",computeInst.Speed()[0]);
+            // printf("converge cTime   (%d)\n",computeInst.CTime()[0]);
 
             tenFoldErr[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0] * computeInst.WBias()[0];
             tenFoldBias[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0];
             tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += 1;
-            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.Speed()[0];
+            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.CTime()[0];
         }
     }
     clock_t end = clock();
