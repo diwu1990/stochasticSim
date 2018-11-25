@@ -23,33 +23,52 @@ int main()
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
-    unsigned int foldNum = 11;
-    vector<float> tenFoldErr(foldNum);
-    vector<float> tenFoldBias(foldNum);
-    vector<unsigned int> tenFoldNum(foldNum);
-    vector<float> tenFoldLowErrLen(foldNum);
-    
-    float thdBias = 0.05;
-    unsigned int wSize = seqLength/2;
-    
     unsigned int totalRound = 1000;
 
-    unsigned int inBS = 1;
+    unsigned int foldNum = 6;
+    vector<vector<float>> tenFoldMSE(foldNum);
+    vector<vector<unsigned int>> tenFoldNum(foldNum);
+    vector<vector<float>> tenFoldLowErrLen(foldNum);
+    vector<float> tenFoldAvgMSE(foldNum);
+    vector<float> tenFoldAvgLowErrLen(foldNum);
+
+    vector<float> MSEMax(1);
+    vector<float> MSEMin(1);
+    vector<float> MSEMaxIndex(foldNum);
+    vector<float> MSEMinIndex(foldNum);
+
+    vector<float> LowErrLenMax(1);
+    vector<float> LowErrLenMin(1);
+    vector<float> LowErrLenMaxIndex(foldNum);
+    vector<float> LowErrLenMinIndex(foldNum);
 
     for (int i = 0; i < foldNum; ++i)
     {
-        tenFoldErr[i] = 0;
-        tenFoldBias[i] = 0;
-        tenFoldNum[i] = 0;
-        tenFoldLowErrLen[i] = 0;
+        tenFoldMSE[i].resize(totalRound);
+        tenFoldNum[i].resize(totalRound);
+        tenFoldLowErrLen[i].resize(totalRound);
+        tenFoldAvgMSE[i] = 0;
+        tenFoldAvgLowErrLen[i] = 0;
     }
+
+    float thdBias = 0.05;
+    unsigned int wSize = seqLength/2;
+    
+    unsigned int inBS = 1;
     
     for (int index = 0; index < totalRound; ++index)
     {
+
+        for (int i = 0; i < foldNum; ++i)
+        {
+            tenFoldMSE[i][index] = 0;
+            tenFoldNum[i][index] = 0;
+            tenFoldLowErrLen[i][index] = 0;
+        }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
-        SystemRandMulti rngInst;
-        // SOBOLMulti rngInst;
+        // SystemRandMulti rngInst;
+        SOBOLMulti rngInst;
         // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
@@ -108,9 +127,7 @@ int main()
                 iBit[0] = num2bitMultiInst.OutSeq()[0][j];
                 iRandNum[0] = RandSeq[0][j];
                 iRandNum[1] = RandSeq[1][j];
-                // printf("%d,%d\n", iRandNum[0], iRandNum[1]);
                 computeInst.Calc(iBit,iRandNum);
-                // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
             }
             // printf("input prob       (%f)\n", probVec[0]);
             // printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
@@ -119,30 +136,77 @@ int main()
             // printf("converge speed   (%d)\n",computeInst.Speed()[0]);
             
 
-            tenFoldErr[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0] * computeInst.WBias()[0];
-            tenFoldBias[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0];
-            tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += 1;
-            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.Speed()[0];
+            tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += 1;
+            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.Speed()[0];
+        }
+        for (int y = 0; y < foldNum; ++y)
+        {
+            tenFoldMSE[y][index] = sqrt(tenFoldMSE[y][index] / tenFoldNum[y][index]);
+            tenFoldLowErrLen[y][index] = tenFoldLowErrLen[y][index] / tenFoldNum[y][index];
         }
     }
-    clock_t end = clock();
-    double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
-    printf("%f\n", elasped_secs);
 
     for (int y = 0; y < foldNum; ++y)
     {
-        tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
-        tenFoldBias[y] = tenFoldBias[y]/tenFoldNum[y];
-        tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
-        // tenFoldCorr[y] = tenFoldCorr[y]/tenFoldNum[y];
+        MSEMax[0] = tenFoldMSE[y][0];
+        MSEMin[0] = tenFoldMSE[y][0];
+        LowErrLenMax[0] = tenFoldLowErrLen[y][0];
+        LowErrLenMin[0] = tenFoldLowErrLen[y][0];
+
+        MSEMaxIndex[y] = 0;
+        MSEMinIndex[y] = 0;
+
+        LowErrLenMaxIndex[y] = 0;
+        LowErrLenMinIndex[y] = 0;
+
+        for (int index = 0; index < totalRound; ++index)
+        {
+            tenFoldAvgMSE[y] += tenFoldMSE[y][index];
+            tenFoldAvgLowErrLen[y] += tenFoldLowErrLen[y][index];
+
+            if (MSEMax[0] < tenFoldMSE[y][index])
+            {
+                MSEMax[0] = tenFoldMSE[y][index];
+                MSEMaxIndex[y] = index;
+            }
+            if (MSEMin[0] > tenFoldMSE[y][index])
+            {
+                MSEMin[0] = tenFoldMSE[y][index];
+                MSEMinIndex[y] = index;
+            }
+
+            if (LowErrLenMax[0] < tenFoldLowErrLen[y][index])
+            {
+                LowErrLenMax[0] = tenFoldLowErrLen[y][index];
+                LowErrLenMaxIndex[y] = index;
+            }
+            if (LowErrLenMin[0] > tenFoldLowErrLen[y][index])
+            {
+                LowErrLenMin[0] = tenFoldLowErrLen[y][index];
+                LowErrLenMinIndex[y] = index;
+            }
+
+        }
+        tenFoldAvgMSE[y] /= totalRound;
+        tenFoldAvgLowErrLen[y] /= totalRound;
     }
-    
-    // printf("Range, Freq, Correlation, Error Rate, Stat Bias, LowErrLen:\n");
-    printf("Range, Freq, Error Rate, Stat Bias, LowErrLen:\n");
+
+    clock_t end = clock();
+    double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
+    printf("Total execution time: %f\n\n", elasped_secs);
+
+    printf("Range, Max Error Rate, Min Error Rate, avg Error Rate:\n");
     for (int i = 0; i < foldNum; ++i)
     {
-        // printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
-        printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, tenFoldMSE[i][MSEMaxIndex[i]], 14, tenFoldMSE[i][MSEMinIndex[i]], 14, tenFoldAvgMSE[i]);
+    }
+    printf("\n");
+
+    printf("Range,  Max LowErrLen,  Min LowErrLen, avg LowErrLen:\n");
+    for (int i = 0; i < foldNum; ++i)
+    {
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, tenFoldLowErrLen[i][LowErrLenMaxIndex[i]], 14, tenFoldLowErrLen[i][LowErrLenMinIndex[i]], 14, tenFoldAvgLowErrLen[i]);
     }
     printf("\n");
 }
