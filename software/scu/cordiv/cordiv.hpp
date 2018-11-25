@@ -49,7 +49,7 @@ class CORDIV
         vector<float> wProb;
         vector<float> theoProb;
         vector<float> wBias;
-        vector<unsigned int> ctime;
+        vector<unsigned int> cTime;
     #endif
 
 public:
