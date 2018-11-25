@@ -34,7 +34,7 @@ void MUXADD::Help()
     printf("Return the window bias.\n");
 
     printf("8. inst.CTime() method:\n");
-    printf("Return the converge ctime.\n");
+    printf("Return the converge cTime.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -63,7 +63,7 @@ void MUXADD::Init(vector<float> param1, unsigned int param2, float param3, strin
         wProb.resize(oDim);
         theoProb.resize(oDim);
         wBias.resize(oDim);
-        ctime.resize(oDim);
+        cTime.resize(oDim);
 
         for (int i = 0; i < oDim; ++i)
         {
@@ -74,7 +74,7 @@ void MUXADD::Init(vector<float> param1, unsigned int param2, float param3, strin
                 theoProb[i] += iProb[j];
             }
             theoProb[i] /= iDim;
-            ctime[i] = 0;
+            cTime[i] = 0;
         }
     #endif
 }
@@ -112,7 +112,7 @@ void MUXADD::Calc(vector<char> param1, vector<unsigned int> param2)
             wBias[i] = wProb[i] - theoProb[i];
             if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                ctime[i] = iLen;
+                cTime[i] = iLen;
             }
         }
     #endif
@@ -141,6 +141,6 @@ vector<char> MUXADD::OutBit()
 
     vector<unsigned int> MUXADD::CTime()
     {
-        return ctime;
+        return cTime;
     }
 #endif
