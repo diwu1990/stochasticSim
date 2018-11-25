@@ -36,8 +36,8 @@ void ISCBDIV::Help()
     printf("7. inst.WBias() method:\n");
     printf("Return the window bias.\n");
 
-    printf("8. inst.Speed() method:\n");
-    printf("Return the converge speed.\n");
+    printf("8. inst.CTime() method:\n");
+    printf("Return the converge cTime.\n");
     printf("**********************************************************\n");
     printf("**********************************************************\n");
 }
@@ -75,13 +75,13 @@ void ISCBDIV::Init(vector<float> param1, unsigned int param2, unsigned int param
         wProb.resize(oDim);
         theoProb.resize(oDim);
         wBias.resize(oDim);
-        speed.resize(oDim);
+        cTime.resize(oDim);
 
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
             theoProb[i] = iProb[0]/iProb[1];
-            speed[i] = 0;
+            cTime[i] = 0;
         }
     #endif
 }
@@ -124,7 +124,7 @@ void ISCBDIV::Calc(vector<char> param1, vector<unsigned int> param2)
             wBias[i] = wProb[i] - theoProb[i];
             if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))
             {
-                speed[i] = iLen;
+                cTime[i] = iLen;
             }
         }
     #endif
@@ -151,8 +151,8 @@ vector<char> ISCBDIV::OutBit()
         return wBias;
     }
 
-    vector<unsigned int> ISCBDIV::Speed()
+    vector<unsigned int> ISCBDIV::CTime()
     {
-        return speed;
+        return cTime;
     }
 #endif
