@@ -67,9 +67,9 @@ int main()
         }
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
-        // SystemRandMulti rngInst;
+        SystemRandMulti rngInst;
         // SOBOLMulti rngInst;
-        LFSRMulti rngInst;
+        // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
@@ -163,8 +163,22 @@ int main()
 
         for (int index = 0; index < totalRound; ++index)
         {
-            tenFoldAvgMSE[y] += tenFoldMSE[y][index];
-            tenFoldAvgLowErrLen[y] += tenFoldLowErrLen[y][index];
+            if (isnan(tenFoldMSE[y][index]))
+            {
+                tenFoldAvgMSE[y] += tenFoldAvgMSE[y]/(float)(index+1);
+            }
+            else
+            {
+                tenFoldAvgMSE[y] += tenFoldMSE[y][index];
+            }
+            if (isnan(tenFoldLowErrLen[y][index]))
+            {
+                tenFoldAvgLowErrLen[y] += tenFoldAvgLowErrLen[y]/(float)(index+1);
+            }
+            else
+            {
+                tenFoldAvgLowErrLen[y] += tenFoldLowErrLen[y][index];
+            }
 
             if (MSEMax[0] < tenFoldMSE[y][index])
             {
