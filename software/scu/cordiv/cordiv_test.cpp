@@ -114,8 +114,8 @@ int main()
             RandSeq[1].resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                RandSeq[0][z] = rngInst.OutSeq()[1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
-                RandSeq[1][z] = rngInst.OutSeq()[2][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
+                RandSeq[0][z] = rngInst.OutSeq()[2][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
+                RandSeq[1][z] = rngInst.OutSeq()[3][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
             vector<char> iBit(2);
