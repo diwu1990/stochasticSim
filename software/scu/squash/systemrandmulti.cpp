@@ -12,16 +12,13 @@ void SystemRandMulti::Init(unsigned int param1, unsigned int param2, unsigned in
     bitLength = param4;
     outputLen = (unsigned int)(pow(2,bitLength));
     mode = param5;
-    if (mode != "delayed" && mode != "incremental")
+    if (mode != "delayed" && mode != "incremental" && mode != "random")
     {
-        printf("Error: Input mode is invalid. (delayed or incremental)\n");
+        printf("Error: Input mode is invalid. (delayed or incremental or random)\n");
     }
 
     m_name = param6;
-    if (dimNum < 1 || dimNum > 1111)
-    {
-        printf("Error: Input dimension index exceeds the legal range (1~1111) in SystemRandMulti class.\n");
-    }
+    
     if (bitLength < 4 || bitLength > 16)
     {
         printf("Error: Input bitLength exceeds the legal range (4~16) in SystemRandMulti class.\n");
@@ -54,7 +51,7 @@ void SystemRandMulti::Help()
     printf("Configure the SystemRandMulti inst.\n");
     printf("Initial Parameters: Number of Dimension, Index of Initial Dimension, Delay Index, Bit Length, Mode, Instance Name.\n");
     printf("1) Number of Dimension: Number of Output Sequences.\n");
-    printf("4) Bit Length: Length of Sobol vECTORS.\n");
+    printf("4) Bit Length: Length of SystemRand Vectors.\n");
     printf("6) Instance Name: Name of current SystemRandMulti Instance.\n");
     printf("All other parameters are useless for SystemRandMulti.\n");
 

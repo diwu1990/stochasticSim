@@ -13,9 +13,9 @@ void SOBOLMulti::Init(unsigned int param1, unsigned int param2, unsigned int par
     sobolLen = param4;
     outputLen = (unsigned int)(pow(2,sobolLen));
     mode = param5;
-    if (mode != "delayed" && mode != "incremental")
+    if (mode != "delayed" && mode != "incremental" && mode != "random")
     {
-        printf("Error: Input mode is invalid. (delayed or incremental)\n");
+        printf("Error: Input mode is invalid. (delayed or incremental or random)\n");
     }
 
     m_name = param6;
@@ -180,6 +180,19 @@ void SOBOLMulti::SeqGen()
         {
             SOBOL sobolInst;
             sobolInst.Init(sobolLen,i+dimIndex,0,"sobolInst");
+            sobolInst.SeqGen();
+            outSeq[i] = sobolInst.OutSeq();
+            dirVec[i] = sobolInst.DirVec();
+            dirMem[i] = sobolInst.DirMem();
+        }
+    }
+    else if (mode == "random")
+    {
+        srand(time(NULL));
+        for (int i = 0; i < dimNum; ++i)
+        {
+            SOBOL sobolInst;
+            sobolInst.Init(sobolLen,(unsigned int)rand()%1111+1,(unsigned int)rand()%(unsigned int)pow(2,sobolLen),"sobolInst");
             sobolInst.SeqGen();
             outSeq[i] = sobolInst.OutSeq();
             dirVec[i] = sobolInst.DirVec();
