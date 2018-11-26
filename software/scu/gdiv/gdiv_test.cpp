@@ -16,14 +16,14 @@ int main()
     srand(time(NULL));
     unsigned int randSeqNum = 4;
     unsigned int randBitLen = 8;
-    string mode = "incremental";
+    // string mode = "incremental";
     // string mode = "delayed";
-    // string mode = "random";
+    string mode = "random";
     unsigned int totalIter = 1000;
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
-    unsigned int totalRound = 100;
+    unsigned int totalRound = 1000;
 
     unsigned int foldNum = 6;
     vector<vector<float>> tenFoldMSE(foldNum);
@@ -65,7 +65,7 @@ int main()
             tenFoldNum[i][index] = 0;
             tenFoldLowErrLen[i][index] = 0;
         }
-        unsigned int seedInitIdx = 5+index;
+        unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
         // SystemRandMulti rngInst;
         SOBOLMulti rngInst;
@@ -114,8 +114,8 @@ int main()
             RandSeq[1].resize(seqLength);
             for (int z = 0; z < seqLength; ++z)
             {
-                RandSeq[0][z] = rngInst.OutSeq()[1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
-                RandSeq[1][z] = rngInst.OutSeq()[2][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
+                RandSeq[0][z] = rngInst.OutSeq()[2][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
+                RandSeq[1][z] = rngInst.OutSeq()[3][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
             vector<char> iBit(2);
