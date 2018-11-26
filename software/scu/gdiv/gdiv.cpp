@@ -95,7 +95,7 @@ void GDIV::Calc(vector<char> param1, vector<unsigned int> param2)
     // *****************************************************************************
     // counter based no correlation
     // *****************************************************************************
-    
+
         if (cnt >= randNum[0])
         {
             oBit[0] = 1;
@@ -106,8 +106,8 @@ void GDIV::Calc(vector<char> param1, vector<unsigned int> param2)
         }
         
         andGate = oBit[0] & iBit[1];
-        inc = !andGate & iBit[0];
-        dec = andGate & !iBit[0];
+        inc = iBit[0];
+        dec = andGate;
         
         if (inc == 1 && dec == 0)
         {

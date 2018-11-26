@@ -16,14 +16,14 @@ int main()
     srand(time(NULL));
     unsigned int randSeqNum = 4;
     unsigned int randBitLen = 8;
-    // string mode = "incremental";
+    string mode = "incremental";
     // string mode = "delayed";
-    string mode = "random";
-    unsigned int totalIter = 1;
+    // string mode = "random";
+    unsigned int totalIter = 1000;
     clock_t begin = clock();
     unsigned int seqLength = (unsigned int)pow(2,randBitLen);
 
-    unsigned int totalRound = 1;
+    unsigned int totalRound = 100;
 
     unsigned int foldNum = 6;
     vector<vector<float>> tenFoldMSE(foldNum);
@@ -65,10 +65,10 @@ int main()
             tenFoldNum[i][index] = 0;
             tenFoldLowErrLen[i][index] = 0;
         }
-        unsigned int seedInitIdx = 1+index;
+        unsigned int seedInitIdx = 5+index;
         unsigned int delay = 0;
-        SystemRandMulti rngInst;
-        // SOBOLMulti rngInst;
+        // SystemRandMulti rngInst;
+        SOBOLMulti rngInst;
         // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
@@ -87,8 +87,8 @@ int main()
             float prob1 = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
             val[0] = min(prob0,prob1);
             val[1] = max(prob0,prob1);
-            // val[0] = 0.3;
-            // val[1] = 0.7;
+            // val[0] = 0.6;
+            // val[1] = 0.8;
             for (int l = 0; l < inBS; ++l)
             {
                 bitLengthVec[l] = randBitLen;
@@ -129,16 +129,17 @@ int main()
                 iRandNum[0] = RandSeq[0][j];
                 iRandNum[1] = RandSeq[1][j];
                 computeInst.Calc(iBit,iRandNum);
+                // printf("%d,%f\n", j,computeInst.WBias()[0]);
             }
-            if (computeInst.WBias()[0] * computeInst.WBias()[0] > 0.04)
-            {
-                printf("\n");
-                printf("input prob       (%f,%f)\n", probVec[0],probVec[1]);
-                printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
-                printf("window prob      (%f)\n",computeInst.WProb()[0]);
-                printf("window bias      (%f)\n",computeInst.WBias()[0]);
-                printf("converge cTime   (%d)\n",computeInst.CTime()[0]);
-            }
+            // if (computeInst.WBias()[0] * computeInst.WBias()[0] > 0.04)
+            // {
+            //     printf("\n");
+            //     printf("input prob       (%f,%f)\n", probVec[0],probVec[1]);
+            //     printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
+            //     printf("window prob      (%f)\n",computeInst.WProb()[0]);
+            //     printf("window bias      (%f)\n",computeInst.WBias()[0]);
+            //     printf("converge cTime   (%d)\n",computeInst.CTime()[0]);
+            // }
 
             tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
             tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += 1;
@@ -166,8 +167,22 @@ int main()
 
         for (int index = 0; index < totalRound; ++index)
         {
-            tenFoldAvgMSE[y] += tenFoldMSE[y][index];
-            tenFoldAvgLowErrLen[y] += tenFoldLowErrLen[y][index];
+            if (isnan(tenFoldMSE[y][index]))
+            {
+                tenFoldAvgMSE[y] += tenFoldAvgMSE[y]/(float)(index+1);
+            }
+            else
+            {
+                tenFoldAvgMSE[y] += tenFoldMSE[y][index];
+            }
+            if (isnan(tenFoldLowErrLen[y][index]))
+            {
+                tenFoldAvgLowErrLen[y] += tenFoldAvgLowErrLen[y]/(float)(index+1);
+            }
+            else
+            {
+                tenFoldAvgLowErrLen[y] += tenFoldLowErrLen[y][index];
+            }
 
             if (MSEMax[0] < tenFoldMSE[y][index])
             {
