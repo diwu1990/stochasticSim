@@ -79,7 +79,7 @@ int main()
         unsigned int depth;
         unsigned int depthSync;
         depth = 2;
-        depthSync = 3;
+        depthSync = 2;
         for (int iter = 0; iter < totalIter; ++iter)
         {
             /* code */
