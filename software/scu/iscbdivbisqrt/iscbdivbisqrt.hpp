@@ -52,6 +52,10 @@ class ISCBDIVBISQRT
     // perfsim output
     #ifdef PERFSIM
         vector<vector<char>> oBS;
+        // *************************************
+        // add for debugging
+        vector<vector<char>> traceBS;
+        // *************************************
         vector<float> wProb;
         vector<float> theoProb;
         vector<float> wBias;
@@ -66,6 +70,10 @@ public:
 
     #ifdef PERFSIM
         vector<vector<char>> OutBS();
+        // *************************************
+        // add for debugging
+        vector<vector<char>> TraceBS();
+        // *************************************
         vector<float> WProb();
         vector<float> TheoProb();
         vector<float> WBias();

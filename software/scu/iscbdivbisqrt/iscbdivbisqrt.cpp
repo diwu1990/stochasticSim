@@ -85,6 +85,10 @@ void ISCBDIVBISQRT::Init(vector<float> param1, unsigned int param2, unsigned int
     }
     
     #ifdef PERFSIM
+        // *************************************
+        // add for debugging
+        traceBS.resize(2);
+        // *************************************
         oBS.resize(oDim);
         wProb.resize(oDim);
         theoProb.resize(oDim);
@@ -133,6 +137,11 @@ void ISCBDIVBISQRT::Calc(vector<char> param1, vector<unsigned int> param2)
     DFF[0] = 1 - DFF[0];
 
     #ifdef PERFSIM
+        // *************************************
+        // add for debugging
+        traceBS[0].push_back(traceInst.OutBit()[0]);
+        traceBS[1].push_back(iBit[0]);
+        // *************************************
         iLen++;
         vector<unsigned int> totalSum(oDim);
         for (int i = 0; i < oDim; ++i)
@@ -170,6 +179,14 @@ vector<char> ISCBDIVBISQRT::OutBit()
 }
 
 #ifdef PERFSIM
+    // *************************************
+    // add for debugging
+    vector<vector<char>> ISCBDIVBISQRT::TraceBS()
+    {
+        return traceBS;
+    }
+    // *************************************
+
     vector<vector<char>> ISCBDIVBISQRT::OutBS()
     {
         return oBS;
