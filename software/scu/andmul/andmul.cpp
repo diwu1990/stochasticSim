@@ -120,6 +120,11 @@ vector<char> ANDMUL::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> ANDMUL::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> ANDMUL::WProb()
     {
         return wProb;
