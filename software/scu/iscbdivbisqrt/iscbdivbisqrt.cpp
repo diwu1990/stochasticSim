@@ -170,6 +170,11 @@ vector<char> ISCBDIVBISQRT::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> ISCBDIVBISQRT::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> ISCBDIVBISQRT::WProb()
     {
         return wProb;
