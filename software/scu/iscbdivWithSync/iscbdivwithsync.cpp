@@ -136,6 +136,11 @@ vector<char> ISCBDIVWITHSYNC::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> ISCBDIVWITHSYNC::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> ISCBDIVWITHSYNC::WProb()
     {
         return wProb;
