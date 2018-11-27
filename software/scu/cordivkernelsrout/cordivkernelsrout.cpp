@@ -147,6 +147,11 @@ vector<char> CORDIVKERNELSROUT::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> CORDIVKERNELSROUT::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> CORDIVKERNELSROUT::WProb()
     {
         return wProb;
