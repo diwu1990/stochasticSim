@@ -165,6 +165,11 @@ vector<char> GSQRT::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> GSQRT::OutBS()
+    {
+        return oBS;
+    }
+
     vector<float> GSQRT::WProb()
     {
         return wProb;
