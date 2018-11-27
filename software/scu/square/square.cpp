@@ -127,6 +127,11 @@ vector<char> SQUARE::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> SQUARE::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> SQUARE::WProb()
     {
         return wProb;
