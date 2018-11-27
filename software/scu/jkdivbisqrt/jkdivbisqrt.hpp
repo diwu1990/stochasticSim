@@ -48,6 +48,10 @@ class JKDIVBISQRT
 
     // perfsim output
     #ifdef PERFSIM
+        // *************************************
+        // add for debugging
+        vector<vector<char>> traceBS;
+        // *************************************
         vector<vector<char>> oBS;
         vector<float> wProb;
         vector<float> theoProb;
@@ -62,6 +66,10 @@ public:
     vector<char> OutBit();
 
     #ifdef PERFSIM
+        // *************************************
+        // add for debugging
+        vector<vector<char>> TraceBS();
+        // *************************************
         vector<vector<char>> OutBS();
         vector<float> WProb();
         vector<float> TheoProb();

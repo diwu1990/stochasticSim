@@ -79,6 +79,10 @@ void JKDIVBISQRT::Init(vector<float> param1, unsigned int param2, unsigned int p
     }
     
     #ifdef PERFSIM
+        // *************************************
+        // add for debugging
+        traceBS.resize(2);
+        // *************************************
         oBS.resize(oDim);
         wProb.resize(oDim);
         theoProb.resize(oDim);
@@ -114,6 +118,11 @@ void JKDIVBISQRT::Calc(vector<char> param1, vector<unsigned int> param2)
     traceInst.Calc(traceInBit);
 
     #ifdef PERFSIM
+        // *************************************
+        // add for debugging
+        traceBS[0].push_back(traceInst.OutBit()[0]);
+        traceBS[1].push_back(iBit[0]);
+        // *************************************
         iLen++;
         vector<unsigned int> totalSum(oDim);
         for (int i = 0; i < oDim; ++i)
@@ -151,11 +160,19 @@ vector<char> JKDIVBISQRT::OutBit()
 }
 
 #ifdef PERFSIM
+    // *************************************
+    // add for debugging
+    vector<vector<char>> JKDIVBISQRT::TraceBS()
+    {
+        return traceBS;
+    }
+    // *************************************
+    
     vector<vector<char>> JKDIVBISQRT::OutBS()
     {
         return oBS;
     }
-
+    
     vector<float> JKDIVBISQRT::WProb()
     {
         return wProb;

@@ -11,6 +11,7 @@
 #include "jkdivbisqrt.hpp"
 #include "perfsim.hpp"
 #include "autocorrelation.hpp"
+#include "crosscorrelation.hpp"
 
 int main()
 {
@@ -27,11 +28,28 @@ int main()
     unsigned int totalRound = 1000;
 
     unsigned int foldNum = 6;
+    vector<vector<float>> tenFoldSAC(foldNum);
+    vector<vector<float>> tenFoldSCC(foldNum);
+
     vector<vector<float>> tenFoldMSE(foldNum);
     vector<vector<unsigned int>> tenFoldNum(foldNum);
     vector<vector<float>> tenFoldLowErrLen(foldNum);
+
+    vector<float> tenFoldAvgSAC(foldNum);
+    vector<float> tenFoldAvgSCC(foldNum);
+
     vector<float> tenFoldAvgMSE(foldNum);
     vector<float> tenFoldAvgLowErrLen(foldNum);
+
+    vector<float> SACMax(1);
+    vector<float> SACMin(1);
+    vector<float> SACMaxIndex(foldNum);
+    vector<float> SACMinIndex(foldNum);
+
+    vector<float> SCCMax(1);
+    vector<float> SCCMin(1);
+    vector<float> SCCMaxIndex(foldNum);
+    vector<float> SCCMinIndex(foldNum);
 
     vector<float> MSEMax(1);
     vector<float> MSEMin(1);
@@ -45,6 +63,9 @@ int main()
 
     for (int i = 0; i < foldNum; ++i)
     {
+        tenFoldSAC[i].resize(totalRound);
+        tenFoldSCC[i].resize(totalRound);
+
         tenFoldMSE[i].resize(totalRound);
         tenFoldNum[i].resize(totalRound);
         tenFoldLowErrLen[i].resize(totalRound);
@@ -62,6 +83,9 @@ int main()
 
         for (int i = 0; i < foldNum; ++i)
         {
+            tenFoldSAC[i][index] = 0;
+            tenFoldSCC[i][index] = 0;
+
             tenFoldMSE[i][index] = 0;
             tenFoldNum[i][index] = 0;
             tenFoldLowErrLen[i][index] = 0;
@@ -69,8 +93,8 @@ int main()
         unsigned int seedInitIdx = 1+index;
         unsigned int delay = 0;
         // SystemRandMulti rngInst;
-        // SOBOLMulti rngInst;
-        LFSRMulti rngInst;
+        SOBOLMulti rngInst;
+        // LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
@@ -136,6 +160,20 @@ int main()
             // printf("window bias      (%f)\n",computeInst.WBias()[0]);
             // printf("converge cTime   (%d)\n",computeInst.CTime()[0]);
             
+            AutoCorrelation SACInst;
+            SACInst.Init(computeInst.OutBS()[0], 1, computeInst.TheoProb()[0],"SACInst");
+            SACInst.Calc();
+            tenFoldSAC[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += (SACInst.OutAC()+1)*(SACInst.OutAC()+1);
+
+            // for (int j = 0; j < seqLength; ++j)
+            // {
+            //     printf("%u,%u\n", computeInst.TraceBS()[0][j], computeInst.TraceBS()[1][j]);
+            // }
+            CrossCorrelation SCCInst;
+            SCCInst.Init(computeInst.TraceBS(), 1.0, "SCCInst");
+            SCCInst.Calc();
+            // printf("%f\n", SCCInst.OutCC()[0]);
+            tenFoldSCC[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += (SCCInst.OutCC()[0]+1)*(SCCInst.OutCC()[0]+1);
 
             tenFoldMSE[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += computeInst.WBias()[0] * computeInst.WBias()[0];
             tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][index] += 1;
@@ -143,6 +181,9 @@ int main()
         }
         for (int y = 0; y < foldNum; ++y)
         {
+            tenFoldSAC[y][index] = sqrt(tenFoldSAC[y][index] / tenFoldNum[y][index]);
+            tenFoldSCC[y][index] = sqrt(tenFoldSCC[y][index] / tenFoldNum[y][index]);
+
             tenFoldMSE[y][index] = sqrt(tenFoldMSE[y][index] / tenFoldNum[y][index]);
             tenFoldLowErrLen[y][index] = tenFoldLowErrLen[y][index] / tenFoldNum[y][index];
         }
@@ -150,6 +191,18 @@ int main()
 
     for (int y = 0; y < foldNum; ++y)
     {
+        SACMax[0] = tenFoldSAC[y][0];
+        SACMin[0] = tenFoldSAC[y][0];
+
+        SCCMax[0] = tenFoldSCC[y][0];
+        SCCMin[0] = tenFoldSCC[y][0];
+
+        SACMaxIndex[y] = 0;
+        SACMinIndex[y] = 0;
+
+        SCCMaxIndex[y] = 0;
+        SCCMinIndex[y] = 0;
+
         MSEMax[0] = tenFoldMSE[y][0];
         MSEMin[0] = tenFoldMSE[y][0];
         LowErrLenMax[0] = tenFoldLowErrLen[y][0];
@@ -163,6 +216,31 @@ int main()
 
         for (int index = 0; index < totalRound; ++index)
         {
+            tenFoldAvgSAC[y] += tenFoldSAC[y][index];
+            if (SACMax[0] < tenFoldSAC[y][index])
+            {
+                SACMax[0] = tenFoldSAC[y][index];
+                SACMaxIndex[y] = index;
+            }
+            if (SACMin[0] > tenFoldSAC[y][index])
+            {
+                SACMin[0] = tenFoldSAC[y][index];
+                SACMinIndex[y] = index;
+            }
+
+            tenFoldAvgSCC[y] += tenFoldSCC[y][index];
+            if (SCCMax[0] < tenFoldSCC[y][index])
+            {
+                SCCMax[0] = tenFoldSCC[y][index];
+                SCCMaxIndex[y] = index;
+            }
+            if (SCCMin[0] > tenFoldSCC[y][index])
+            {
+                SCCMin[0] = tenFoldSCC[y][index];
+                SCCMinIndex[y] = index;
+            }
+
+
             tenFoldAvgMSE[y] += tenFoldMSE[y][index];
             tenFoldAvgLowErrLen[y] += tenFoldLowErrLen[y][index];
 
@@ -189,6 +267,9 @@ int main()
             }
 
         }
+        tenFoldAvgSAC[y] /= totalRound;
+        tenFoldAvgSCC[y] /= totalRound;
+
         tenFoldAvgMSE[y] /= totalRound;
         tenFoldAvgLowErrLen[y] /= totalRound;
     }
@@ -196,6 +277,20 @@ int main()
     clock_t end = clock();
     double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
     printf("Total execution time: %f\n\n", elasped_secs);
+
+    printf("Range,        Max SAC,        Min SAC,        avg SAC:\n");
+    for (int i = 0; i < foldNum; ++i)
+    {
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, tenFoldSAC[i][SACMaxIndex[i]], 14, tenFoldSAC[i][SACMinIndex[i]], 14, tenFoldAvgSAC[i]);
+    }
+    printf("\n");
+
+    printf("Range,        Max SCC,        Min SCC,        avg SCC:\n");
+    for (int i = 0; i < foldNum; ++i)
+    {
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, tenFoldSCC[i][SCCMaxIndex[i]], 14, tenFoldSCC[i][SCCMinIndex[i]], 14, tenFoldAvgSCC[i]);
+    }
+    printf("\n");
 
     printf("Range, Max Error Rate, Min Error Rate, avg Error Rate:\n");
     for (int i = 0; i < foldNum; ++i)
