@@ -136,6 +136,11 @@ vector<char> JKFF::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> JKFF::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> JKFF::WProb()
     {
         return wProb;
