@@ -151,6 +151,11 @@ vector<char> CORDIVKERNEL::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> CORDIVKERNEL::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> CORDIVKERNEL::WProb()
     {
         return wProb;
