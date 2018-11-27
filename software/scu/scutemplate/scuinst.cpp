@@ -114,6 +114,11 @@ vector<char> SCUINST::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> SCUINST::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> SCUINST::WProb()
     {
         return wProb;
