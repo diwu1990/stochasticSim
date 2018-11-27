@@ -162,6 +162,11 @@ vector<char> GDIV::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> GDIV::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> GDIV::WProb()
     {
         return wProb;
