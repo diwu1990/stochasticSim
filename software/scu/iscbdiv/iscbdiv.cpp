@@ -136,6 +136,11 @@ vector<char> ISCBDIV::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> ISCBDIV::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> ISCBDIV::WProb()
     {
         return wProb;
