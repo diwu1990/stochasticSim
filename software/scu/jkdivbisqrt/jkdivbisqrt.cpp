@@ -151,6 +151,11 @@ vector<char> JKDIVBISQRT::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> JKDIVBISQRT::OutBS()
+    {
+        return oBS;
+    }
+
     vector<float> JKDIVBISQRT::WProb()
     {
         return wProb;

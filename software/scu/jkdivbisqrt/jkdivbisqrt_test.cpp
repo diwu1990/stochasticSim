@@ -10,6 +10,7 @@
 #include <ctime>
 #include "jkdivbisqrt.hpp"
 #include "perfsim.hpp"
+#include "autocorrelation.hpp"
 
 int main()
 {
