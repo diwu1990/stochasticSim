@@ -145,6 +145,11 @@ vector<char> RELU::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> RELU::OutBS()
+    {
+        return oBS;
+    }
+
     vector<float> RELU::WProb()
     {
         return wProb;
