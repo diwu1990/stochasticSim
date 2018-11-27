@@ -177,6 +177,11 @@ vector<char> CORDIV::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> CORDIV::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> CORDIV::WProb()
     {
         return wProb;
