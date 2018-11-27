@@ -124,6 +124,11 @@ vector<char> MUXADD::OutBit()
 }
 
 #ifdef PERFSIM
+    vector<vector<char>> MUXADD::OutBS()
+    {
+        return oBS;
+    }
+    
     vector<float> MUXADD::WProb()
     {
         return wProb;
