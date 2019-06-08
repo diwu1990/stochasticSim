@@ -1,25 +1,47 @@
-#include <stdio.h>
+#pragma once
+#ifndef CONV2D_H
+#define CONV2D_H
+
+#include <cstdio>
 #include <vector>
 #include <cmath>
 #include <string>
 #include <iostream>
+#include "perfsim.hpp"
 using namespace std;
-
-#define min(X, Y)  ((X) < (Y) ? (X) : (Y))
-#define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
 class CONV2D
 {
-    vector<vector<vector<char>>> iWeight;
-    vector<vector<vector<char>>> iFeature;
-    vector<vector<float>> iWeightProb;
-    vector<vector<float>> iFeatureProb;
-    vector<vector<float>> oFeatureProb;
-    vector<vector<unsigned int>> randNum;
+    // same convolution
+    // follow the algorithm from easyCNN convolution2d_same
+    // https://github.com/xylcbd/EasyCNN/blob/master/src/MathFunctions.cpp
 
-    unsigned int weightDim;
-    unsigned int featureDim;
-    unsigned int seqLength;
+    // without batch
+    // input feature map size is  (ifm channel,              ifm height, ifm width)
+    // weight size            is  (ifm channel, ofm channel, wgt height, wgt width)
+    // output feature map size is (             ofm channel, ofm height, ofm width)
+
+    // input
+    vector<vector<vector<char>>> iFeature;
+    vector<vector<vector<float>>> iFeatureProb;
+
+    vector<vector<vector<vector<char>>>> iWeight;
+    vector<vector<vector<vector<float>>>> iWeightProb;
+    
+    vector<vector<vector<char>>> oFeature;
+    vector<vector<vector<float>>> oFeatureProb;
+
+    unsigned int ifm_c;
+    unsigned int ifm_h;
+    unsigned int ifm_w;
+
+    unsigned int ofm_c;
+    unsigned int ofm_h;
+    unsigned int ofm_w;
+
+    unsigned int wgt_h;
+    unsigned int wgt_w;
+
     vector<vector<vector<char>>> oFeature;
     vector<vector<float>> theoPRrob;
     vector<vector<vector<float>>> realProb;
@@ -52,3 +74,5 @@ class CONV2D
         vector<vector<unsigned int>> LowErrLen();
         float AvgLowErrLen();
 };
+
+#endif
