@@ -47,6 +47,10 @@ void MUXADD::Init(vector<float> param1, unsigned int param2, float param3, strin
     m_name = param4;
 
     iDim = (unsigned int)iProb.size();
+
+    if(ceil(log2(iDim)) != floor(log2(iDim)))
+        printf("Warning: Input dimension of CFADD instantance is not power of 2.\n");
+
     oDim = 1;
     #ifdef PERFSIM
         iLen = 0;
