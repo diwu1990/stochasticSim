@@ -6,6 +6,8 @@
 #include "lfsrmulti.hpp"
 #include "systemrand.hpp"
 #include "systemrandmulti.hpp"
+#include "synchronizer.hpp"
+#include "desynchronizer.hpp"
 #include <cstdlib>
 #include <ctime>
 #include "cfadd.hpp"
@@ -20,8 +22,8 @@ int main()
     unsigned int inBSNum = 2; // number of input bit streams
     
     // used in some units with supported architecture
+    unsigned int depthSync = 1; // depth of synchronizer
     unsigned int depth = 1; // depth of other buffer
-    unsigned int depthSync = 8; // depth of synchronizer
 
     // **************************************************************
     // different modes for random number generator
@@ -43,8 +45,8 @@ int main()
     unsigned int wSize = seqLength; // window size to monitor accuracy
 
     // total run number is totalRound * totalIter.
-    unsigned int totalRound = 1000; // each round uses different random number generator
-    unsigned int totalIter = 1000; // each iteration uses evaluate different value for a given round
+    unsigned int totalRound = 100; // each round uses different random number generator
+    unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
 
 
     unsigned int segmentNum = 5; // evaluate the accuracy of different output ranges (segments)
@@ -132,6 +134,7 @@ int main()
             {
                 for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                 {
+                    // inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))];
                     inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[inIdx][seqIdx%(unsigned int)(pow(2,randBitLen))];
                 }
             }
@@ -148,16 +151,30 @@ int main()
                 RandSeq[1][seqIdx] = rngInst.OutSeq()[inBSNum+1][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
+            // sync/desync input bs
+            Synchronizer SyncInst;
+            // DeSynchronizer SyncInst;
+            SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
+
             CFADD computeInst;
             computeInst.Init(probVec, wSize, thdBias, "computeInst");
             for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
             {
+                // set bit stream
                 for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
                 {
                     iBit[inIdx] = num2bitMultiInst.OutSeq()[inIdx][seqIdx];
                 }
+                // set depthsync and depth random number
                 iRandNum[0] = RandSeq[0][seqIdx];
                 iRandNum[1] = RandSeq[1][seqIdx];
+
+
+                // when inBSNum is 2, we can do sync/desync
+                // SyncInst.Calc(iBit);
+                // computeInst.Calc(SyncInst.OutBit());
+
+                // not doing sync/desync
                 computeInst.Calc(iBit);
             }
 
