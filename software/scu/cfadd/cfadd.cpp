@@ -1,4 +1,4 @@
-#include "muxadd.hpp"
+#include "cfadd.hpp"
 #include "perfsim.hpp"
 
 void CFADD::Help()
@@ -46,7 +46,7 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, string
 
     iDim = (unsigned int)iProb.size();
     // iDim check, have to be power of 2
-    if ceil(log2(iDim)) != floor(log2(iDim))
+    if(ceil(log2(iDim)) != floor(log2(iDim)))
         printf("Warning: Input dimension of CFADD instantance is not power of 2.\n");
 
     oDim = 1;
@@ -84,14 +84,17 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, string
     #endif
 }
 
-void CFADD::Calc(vector<char> param1, vector<unsigned int> param2)
+void CFADD::Calc(vector<char> param1)
 {
     iBit = param1;
 
+    parallel_cnt = 0;
     for (int i = 0; i < iDim; ++i)
     {
-        parallel_cnt += iBit[0];
+        parallel_cnt += iBit[i];
+        // printf("%d,", iBit[i]);
     }
+    // printf("===>%d, %d\n", parallel_cnt, accumulator);
     accumulator += (parallel_cnt%iDim);
     if (parallel_cnt >= upper)
     {
@@ -109,7 +112,7 @@ void CFADD::Calc(vector<char> param1, vector<unsigned int> param2)
             oBit[0] = 0;
         }
     }
-        
+
     #ifdef PERFSIM
         iLen++;
         vector<unsigned int> totalSum(oDim);
