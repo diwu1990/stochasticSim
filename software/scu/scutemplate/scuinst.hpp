@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SCUINST_H
-#define SCUINST_H
+#ifndef CFADD_H
+#define CFADD_H
 
 #include <cstdio>
 #include <vector>
@@ -13,12 +13,12 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class SCUINST
+class CFADD
 {
     // initial input
-    vector<float> iProb;
+    vector<float> iProb; // input prob, have to be 2^N
     unsigned int wSize;
-    float thdBias;
+    float thdBias; // threshold to consider convergence
     string m_name;
 
     // calc input
@@ -27,12 +27,12 @@ class SCUINST
     // internal
     unsigned int iDim;
     unsigned int oDim;
+    unsigned int parallel_cnt;
+    unsigned int accumulator;
+    unsigned int upper;
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
-    // **********************************************************
-    //  fill in your internal signals here
-    // **********************************************************
 
     // output
     vector<char> oBit;
@@ -49,7 +49,7 @@ class SCUINST
 public:
     void Help();
     void Init(vector<float>, unsigned int, float, string);
-    void Calc(vector<char>, vector<unsigned int>);
+    void Calc(vector<char>);
     vector<char> OutBit();
 
     #ifdef PERFSIM

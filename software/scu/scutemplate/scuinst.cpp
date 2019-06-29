@@ -1,11 +1,11 @@
-#include "scuinst.hpp"
+#include "cfadd.hpp"
 #include "perfsim.hpp"
 
-void SCUINST::Help()
+void CFADD::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
-    printf("Calling SCUINST Help. Following are instructions to SCUINST Instance Usage:\n");
+    printf("Calling CFADD Help. Following are instructions to CFADD Instance Usage:\n");
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
@@ -37,7 +37,7 @@ void SCUINST::Help()
     printf("**********************************************************\n");
 }
 
-void SCUINST::Init(vector<float> param1, unsigned int param2, float param3, string param4)
+void CFADD::Init(vector<float> param1, unsigned int param2, float param3, string param4)
 {
     iProb = param1;
     wSize = param2;
@@ -45,16 +45,23 @@ void SCUINST::Init(vector<float> param1, unsigned int param2, float param3, stri
     m_name = param4;
 
     iDim = (unsigned int)iProb.size();
-    if (iDim != 2)
-    {
-        printf("Error: Input dimension is not 2.\n");
-    }
+    // iDim check, have to be power of 2
+    if(ceil(log2(iDim)) != floor(log2(iDim)))
+        printf("Warning: Input dimension of CFADD instantance is not power of 2.\n");
+
+    oDim = 1;
     #ifdef PERFSIM
         iLen = 0;
     #endif
 
-    oDim = iDim;
     oBit.resize(oDim);
+    for (int i = 0; i < oDim; ++i)
+    {
+        oBit[i] = 0;
+    }
+    parallel_cnt = 0;
+    accumulator = 0;
+    upper = iDim;
 
     #ifdef PERFSIM
         oBS.resize(oDim);
@@ -66,15 +73,45 @@ void SCUINST::Init(vector<float> param1, unsigned int param2, float param3, stri
         for (int i = 0; i < oDim; ++i)
         {
             wProb[i] = 0;
-            theoProb[i] = iProb[i];
+            theoProb[i] = 0;
+            for (int j = 0; j < iDim; ++j)
+            {
+                theoProb[i] += iProb[j];
+            }
+            theoProb[i] /= iDim;
             cTime[i] = 0;
         }
     #endif
 }
 
-void SCUINST::Calc(vector<char> param1)
+void CFADD::Calc(vector<char> param1)
 {
     iBit = param1;
+
+    parallel_cnt = 0;
+    for (int i = 0; i < iDim; ++i)
+    {
+        parallel_cnt += iBit[i];
+        // printf("%d,", iBit[i]);
+    }
+    // printf("===>%d, %d\n", parallel_cnt, accumulator);
+    accumulator += (parallel_cnt%iDim);
+    if (parallel_cnt >= upper)
+    {
+        oBit[0] = 1;
+    }
+    else
+    {
+        if (accumulator >= upper)
+        {
+            oBit[0] = 1;
+            accumulator = (accumulator%iDim);
+        }
+        else
+        {
+            oBit[0] = 0;
+        }
+    }
 
     #ifdef PERFSIM
         iLen++;
@@ -108,33 +145,33 @@ void SCUINST::Calc(vector<char> param1)
     #endif
 }
 
-vector<char> SCUINST::OutBit()
+vector<char> CFADD::OutBit()
 {
     return oBit;
 }
 
 #ifdef PERFSIM
-    vector<vector<char>> SCUINST::OutBS()
+    vector<vector<char>> CFADD::OutBS()
     {
         return oBS;
     }
     
-    vector<float> SCUINST::WProb()
+    vector<float> CFADD::WProb()
     {
         return wProb;
     }
 
-    vector<float> SCUINST::TheoProb()
+    vector<float> CFADD::TheoProb()
     {
         return theoProb;
     }
 
-    vector<float> SCUINST::WBias()
+    vector<float> CFADD::WBias()
     {
         return wBias;
     }
 
-    vector<unsigned int> SCUINST::CTime()
+    vector<unsigned int> CFADD::CTime()
     {
         return cTime;
     }
