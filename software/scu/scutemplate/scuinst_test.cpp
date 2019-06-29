@@ -8,152 +8,244 @@
 #include "systemrandmulti.hpp"
 #include <cstdlib>
 #include <ctime>
-#include "scuinst.hpp"
+#include "cfadd.hpp"
 #include "perfsim.hpp"
 
 int main()
 {
     srand(time(NULL));
-    unsigned int inBS = 1;
-    unsigned int inRand = 2;
-    unsigned int randSeqNum = inBS + inRand;
-    unsigned int randBitLen = 8;
-    string mode = "incremental";
+    // **************************************************************
+    // different modes for random number generator
+    // **************************************************************
+    // string mode = "incremental";
     // string mode = "delayed";
+    string mode = "random";
+    unsigned int randSeqNum = 4; // number of random number sequences
 
-    unsigned int foldNum = 11;
-    vector<float> tenFoldErr(foldNum);
-    vector<float> tenFoldBias(foldNum);
-    vector<unsigned int> tenFoldNum(foldNum);
-    vector<float> tenFoldLowErrLen(foldNum);
+
+    // **************************************************************
+    // configuration for evaluation
+    // **************************************************************
+    unsigned int randBitLen = 8; // number of bits for random number
+    unsigned int seqLength = (unsigned int)pow(2,randBitLen); // bit sequence length to be evaluated
+    float thdBias = 0.05; // threhold to consider convergence
+    unsigned int wSize = seqLength; // window size to monitor accuracy
+
+    // total run number is totalRound * totalIter.
+    unsigned int totalRound = 1000; // each round uses different random number generator
+    unsigned int totalIter = 1000; // each iteration uses evaluate different value for a given round
+
+
+    // **************************************************************
+    // configuration for computing units
+    // **************************************************************
+    unsigned int inBSNum = 2; // number of input bit streams
     
-    unsigned int seqLength = (unsigned int)pow(2,randBitLen);
-    float thdBias = 0.05;
-    unsigned int wSize = seqLength/2;
+    // used in some units with supported architecture
+    unsigned int depth = 1; // depth of other buffer
+    unsigned int depthSync = 8; // depth of synchronizer
+
+
+    // **************************************************************
+    // recorder definition
+    // **************************************************************
+    unsigned int foldNum = 6; // evaluate the accuracy of different output ranges (segments)
+    vector<vector<float>> SegmentedSquaredErr(foldNum); // squared error for each segment
+    vector<vector<float>> SegmentedConvergenceTime(foldNum); // convergence time for each segment
+    vector<vector<unsigned int>> SegmentedNum(foldNum); // number of runs for each segment
+    vector<float> SegmentedAvgSquaredErr(foldNum); // average squared error (MSE) for each segment
+    vector<float> SegmentedAvgConvergenceTime(foldNum); // average convergence time for each segment
+
+    vector<float> SquaredErrMax(1);
+    vector<float> SquaredErrMin(1);
+    vector<float> SquaredErrMaxIndex(foldNum);
+    vector<float> SquaredErrMinIndex(foldNum);
+
+    vector<float> ConvergenceTimeMax(1);
+    vector<float> ConvergenceTimeMin(1);
+    vector<float> ConvergenceTimeMaxIndex(foldNum);
+    vector<float> ConvergenceTimeMinIndex(foldNum);
+
+    // initialize the recorder
+    for (int foldIdx = 0; foldIdx < foldNum; ++foldIdx)
+    {
+        SegmentedSquaredErr[foldIdx].resize(totalRound);
+        SegmentedConvergenceTime[foldIdx].resize(totalRound);
+        SegmentedNum[foldIdx].resize(totalRound);
+        SegmentedAvgSquaredErr[foldIdx] = 0;
+        SegmentedAvgConvergenceTime[foldIdx] = 0;
+    }
+
+    vector<char> iBit(inBSNum);
+    vector<vector<unsigned int>> RandSeq(2);
+    RandSeq[0].resize(seqLength);
+    RandSeq[1].resize(seqLength);
+    vector<unsigned int> iRandNum(2);
     
-    unsigned int totalRound = 10;
-    unsigned int totalIter = 10000;
-
-    unsigned int depth;
-    unsigned int depthSync;
-
-    vector<unsigned int> bitLengthVec(inBS);
-    vector<float> probVec(inBS);
-    vector<float> val(inBS);
-    vector<vector<unsigned int>> inRandNum(inBS);
-    vector<vector<unsigned int>> RandSeq(inRand);
-
-    vector<char> iBit(inBS);
-    vector<unsigned int> iRandNum(inRand);
+    vector<unsigned int> bitLengthVec(inBSNum);
+    vector<float> probVec(inBSNum);
+    vector<float> val(inBSNum);
+    vector<vector<unsigned int>> inRandNum(inBSNum);
 
     clock_t begin = clock();
-
-    for (int index = 0; index < totalRound; ++index)
+    for (int roundIdx = 0; roundIdx < totalRound; ++roundIdx)
     {
-        for (int i = 0; i < foldNum; ++i)
+        // initialize the recorder
+        for (int foldIdx = 0; foldIdx < foldNum; ++foldIdx)
         {
-            tenFoldErr[i] = 0;
-            tenFoldBias[i] = 0;
-            tenFoldNum[i] = 0;
-            tenFoldLowErrLen[i] = 0;
+            SegmentedSquaredErr[foldIdx][roundIdx] = 0;
+            SegmentedNum[foldIdx][roundIdx] = 0;
+            SegmentedConvergenceTime[foldIdx][roundIdx] = 0;
         }
-        unsigned int seedInitIdx = 1+index;
+        unsigned int seedInitIdx = 1+roundIdx;
         unsigned int delay = 0;
-        SystemRandMulti rngInst;
+        // random number generator
+        // SystemRandMulti rngInst;
         // SOBOLMulti rngInst;
-        // LFSRMulti rngInst;
+        LFSRMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
 
-        depth = 2;
-        depthSync = 5;
+
+        for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
+        {
+            inRandNum[inIdx].resize(seqLength);
+        }
+
         for (int iter = 0; iter < totalIter; ++iter)
         {
-            /* code */
-            float prob0 = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
-            float prob1 = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
-            val[0] = min(prob0,prob1);
-            val[1] = max(prob0,prob1);
-
-            for (int l = 0; l < inBS; ++l)
+            // generate binary input probabilistic data, with required precision
+            for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
             {
-                bitLengthVec[l] = randBitLen;
-                probVec[l] = val[l];
+                val[inIdx] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+                bitLengthVec[inIdx] = randBitLen;
+                probVec[inIdx] = val[inIdx];
             }
             
-            for (int i = 0; i < inBS; ++i)
+            // generate random number for input bit stream or regeneration
+            for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
             {
-                inRandNum[i].resize(seqLength);
-                for (int z = 0; z < seqLength; ++z)
+                for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                 {
-                    inRandNum[i][z] = rngInst.OutSeq()[i][z%(unsigned int)(pow(2,randBitLen))];
+                    inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[inIdx][seqIdx%(unsigned int)(pow(2,randBitLen))];
                 }
             }
 
+            // generate random bits of each input BS
             RandNum2BitMulti num2bitMultiInst;
             num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
             num2bitMultiInst.SeqGen();
 
-            for (int i = 0; i < inRand; ++i)
+            // generate random sequence for depth and depthsync
+            for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
             {
-                RandSeq[i].resize(seqLength);
+                RandSeq[0][seqIdx] = rngInst.OutSeq()[inBSNum][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
+                RandSeq[1][seqIdx] = rngInst.OutSeq()[inBSNum+1][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
-            // *****************************************************************************
-            // mannually config
-            // *****************************************************************************
-            for (int z = 0; z < seqLength; ++z)
+            CFADD computeInst;
+            computeInst.Init(probVec, wSize, thdBias, "computeInst");
+            for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
             {
-                RandSeq[0][z] = rngInst.OutSeq()[inBS][z%(unsigned int)(pow(2,randBitLen))] >> depthSync;
-                RandSeq[1][z] = rngInst.OutSeq()[inBS+1][z%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
-            }
-
-            SCUINST computeInst;
-            computeInst.Init(probVec, depthSync, depth, wSize, thdBias, "computeInst");
-            for (int j = 0; j < seqLength; ++j)
-            {
-                for (int z = 0; z < inBS; ++z)
+                for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
                 {
-                    iBit[z] = num2bitMultiInst.OutSeq()[z][j];
+                    iBit[inIdx] = num2bitMultiInst.OutSeq()[inIdx][seqIdx];
                 }
-                for (int i = 0; i < inRand; ++i)
-                {
-                    iRandNum[i] = RandSeq[i][j];
-                }
-                // printf("%d,%d\n", iRandNum[0], iRandNum[1]);
-                computeInst.Calc(iBit,iRandNum);
-                // printf("%d: (%u)=>(%u)\n", j, iBit[0], computeInst.OutBit()[0]);
+                iRandNum[0] = RandSeq[0][seqIdx];
+                iRandNum[1] = RandSeq[1][seqIdx];
+                computeInst.Calc(iBit);
             }
-            // printf("input prob       (%f)\n", probVec[0]);
-            // printf("theoretical prob (%f)\n",computeInst.TheoProb()[0]);
-            // printf("window prob      (%f)\n",computeInst.WProb()[0]);
-            // printf("window bias      (%f)\n",computeInst.WBias()[0]);
-            // printf("converge cTime   (%d)\n",computeInst.CTime()[0]);
+            printf("input prob       (%f)\n", probVec[0]);
+            printf("theoretical prob (%f)\n", computeInst.TheoProb()[0]);
+            printf("window prob      (%f)\n", computeInst.WProb()[0]);
+            printf("window bias      (%f)\n", computeInst.WBias()[0]);
+            printf("converge cTime   (%d)\n", computeInst.CTime()[0]);
+            
 
-            tenFoldErr[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0] * computeInst.WBias()[0];
-            tenFoldBias[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.WBias()[0];
-            tenFoldNum[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += 1;
-            tenFoldLowErrLen[(unsigned int)floor(computeInst.TheoProb()[0]*10)] += computeInst.CTime()[0];
+            SegmentedSquaredErr[(unsigned int)floor(computeInst.TheoProb()[0]*5)][roundIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            SegmentedNum[(unsigned int)floor(computeInst.TheoProb()[0]*5)][roundIdx] += 1;
+            SegmentedConvergenceTime[(unsigned int)floor(computeInst.TheoProb()[0]*5)][roundIdx] += computeInst.CTime()[0];
+        }
+        for (int foldIdx = 0; foldIdx < foldNum; ++foldIdx)
+        {
+            SegmentedSquaredErr[foldIdx][roundIdx] = sqrt(SegmentedSquaredErr[foldIdx][roundIdx] / SegmentedNum[foldIdx][roundIdx]);
+            SegmentedConvergenceTime[foldIdx][roundIdx] = SegmentedConvergenceTime[foldIdx][roundIdx] / SegmentedNum[foldIdx][roundIdx];
         }
     }
     clock_t end = clock();
-    double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
-    printf("%f\n", elasped_secs);
 
-    for (int y = 0; y < foldNum; ++y)
+    for (int foldIdx = 0; foldIdx < foldNum; ++foldIdx)
     {
-        tenFoldErr[y] = sqrt(tenFoldErr[y]/tenFoldNum[y]);
-        tenFoldBias[y] = tenFoldBias[y]/tenFoldNum[y];
-        tenFoldLowErrLen[y] = (tenFoldLowErrLen[y]/tenFoldNum[y]);
-        // tenFoldCorr[y] = tenFoldCorr[y]/tenFoldNum[y];
+        SquaredErrMax[0] = SegmentedSquaredErr[foldIdx][0];
+        SquaredErrMin[0] = SegmentedSquaredErr[foldIdx][0];
+        ConvergenceTimeMax[0] = SegmentedConvergenceTime[foldIdx][0];
+        ConvergenceTimeMin[0] = SegmentedConvergenceTime[foldIdx][0];
+
+        SquaredErrMaxIndex[foldIdx] = 0;
+        SquaredErrMinIndex[foldIdx] = 0;
+
+        ConvergenceTimeMaxIndex[foldIdx] = 0;
+        ConvergenceTimeMinIndex[foldIdx] = 0;
+
+        for (int roundIdx = 0; roundIdx < totalRound; ++roundIdx)
+        {
+            if (isnan(SegmentedSquaredErr[foldIdx][roundIdx]))
+            {
+                SegmentedAvgSquaredErr[foldIdx] += SegmentedAvgSquaredErr[foldIdx]/(float)(roundIdx+1);
+            }
+            else
+            {
+                SegmentedAvgSquaredErr[foldIdx] += SegmentedSquaredErr[foldIdx][roundIdx];
+            }
+            if (isnan(SegmentedConvergenceTime[foldIdx][roundIdx]))
+            {
+                SegmentedAvgConvergenceTime[foldIdx] += SegmentedAvgConvergenceTime[foldIdx]/(float)(roundIdx+1);
+            }
+            else
+            {
+                SegmentedAvgConvergenceTime[foldIdx] += SegmentedConvergenceTime[foldIdx][roundIdx];
+            }
+
+            if (SquaredErrMax[0] < SegmentedSquaredErr[foldIdx][roundIdx])
+            {
+                SquaredErrMax[0] = SegmentedSquaredErr[foldIdx][roundIdx];
+                SquaredErrMaxIndex[foldIdx] = roundIdx;
+            }
+            if (SquaredErrMin[0] > SegmentedSquaredErr[foldIdx][roundIdx])
+            {
+                SquaredErrMin[0] = SegmentedSquaredErr[foldIdx][roundIdx];
+                SquaredErrMinIndex[foldIdx] = roundIdx;
+            }
+
+            if (ConvergenceTimeMax[0] < SegmentedConvergenceTime[foldIdx][roundIdx])
+            {
+                ConvergenceTimeMax[0] = SegmentedConvergenceTime[foldIdx][roundIdx];
+                ConvergenceTimeMaxIndex[foldIdx] = roundIdx;
+            }
+            if (ConvergenceTimeMin[0] > SegmentedConvergenceTime[foldIdx][roundIdx])
+            {
+                ConvergenceTimeMin[0] = SegmentedConvergenceTime[foldIdx][roundIdx];
+                ConvergenceTimeMinIndex[foldIdx] = roundIdx;
+            }
+        }
+        SegmentedAvgSquaredErr[foldIdx] /= totalRound;
+        SegmentedAvgConvergenceTime[foldIdx] /= totalRound;
     }
-    
-    // printf("Range, Freq, Correlation, Error Rate, Stat Bias, LowErrLen:\n");
-    printf("Range, Freq, Error Rate, Stat Bias, LowErrLen:\n");
+
+    double elasped_secs = double(end - begin) / CLOCKS_PER_SEC;
+    printf("Total execution time: %f\n\n", elasped_secs);
+
+    printf("Range, Max Error Rate, Min Error Rate, avg Error Rate:\n");
     for (int i = 0; i < foldNum; ++i)
     {
-        // printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 11, tenFoldCorr[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
-        printf("%*.1f, %*u, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/10.0), 4, tenFoldNum[i], 10, tenFoldErr[i], 9, tenFoldBias[i], 9, tenFoldLowErrLen[i]);
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, SegmentedSquaredErr[i][SquaredErrMaxIndex[i]], 14, SegmentedSquaredErr[i][SquaredErrMinIndex[i]], 14, SegmentedAvgSquaredErr[i]);
+    }
+    printf("\n");
+
+    printf("Range,  Max ConvergenceTime,  Min ConvergenceTime, avg ConvergenceTime:\n");
+    for (int i = 0; i < foldNum; ++i)
+    {
+        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/5.0), 14, SegmentedConvergenceTime[i][ConvergenceTimeMaxIndex[i]], 14, SegmentedConvergenceTime[i][ConvergenceTimeMinIndex[i]], 14, SegmentedAvgConvergenceTime[i]);
     }
     printf("\n");
 }
