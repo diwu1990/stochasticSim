@@ -2,6 +2,8 @@
 #include "randNum2BitMulti.hpp"
 #include "sobol.hpp"
 #include "sobolmulti.hpp"
+#include "racel.hpp"
+#include "racelmulti.hpp"
 #include "lfsr.hpp"
 #include "lfsrmulti.hpp"
 #include "systemrand.hpp"
@@ -19,7 +21,7 @@ int main()
     // **************************************************************
     // configuration for computing units
     // **************************************************************
-    unsigned int inBSNum = 2; // number of input bit streams
+    unsigned int inBSNum = 4; // number of input bit streams
     
     // used in some units with supported architecture
     unsigned int depthSync = 1; // depth of synchronizer
@@ -36,6 +38,9 @@ int main()
     unsigned int randSeqNum;
     randSeqNum = inBSNum + 2;
 
+    // data format, non 0 is unipolar
+    unsigned int unipolar = 1;
+
     // **************************************************************
     // configuration for evaluation
     // **************************************************************
@@ -45,9 +50,8 @@ int main()
     unsigned int wSize = seqLength; // window size to monitor accuracy
 
     // total run number is totalRound * totalIter.
-    unsigned int totalRound = 100; // each round uses different random number generator
-    unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
-
+    unsigned int totalRound = 1; // each round uses different random number generator
+    unsigned int totalIter = 1; // each iteration uses evaluate different value for a given round
 
     unsigned int segmentNum = 5; // evaluate the accuracy of different output ranges (segments)
 
@@ -56,16 +60,17 @@ int main()
     // recorder definition
     // **************************************************************
     segmentNum += 1; // evaluate the accuracy of different output ranges (segments)
-    vector<vector<float>> SegmentedSquaredErr(segmentNum); // squared error for each segment
+    unsigned int segNum; // check which output segment to store data
+    vector<vector<float>> SegmentedRSE(segmentNum); // squared error for each segment
     vector<vector<float>> SegmentedConvergenceTime(segmentNum); // convergence time for each segment
     vector<vector<unsigned int>> SegmentedNum(segmentNum); // number of runs for each segment
-    vector<float> SegmentedAvgSquaredErr(segmentNum); // average squared error (MSE) for each segment
+    vector<float> SegmentedAvgRSE(segmentNum); // average squared error (MSE) for each segment
     vector<float> SegmentedAvgConvergenceTime(segmentNum); // average convergence time for each segment
 
-    vector<float> SquaredErrMax(1);
-    vector<float> SquaredErrMin(1);
-    vector<float> SquaredErrMaxIndex(segmentNum);
-    vector<float> SquaredErrMinIndex(segmentNum);
+    vector<float> RSEMax(1);
+    vector<float> RSEMin(1);
+    vector<float> RSEMaxIndex(segmentNum);
+    vector<float> RSEMinIndex(segmentNum);
 
     vector<float> ConvergenceTimeMax(1);
     vector<float> ConvergenceTimeMin(1);
@@ -75,10 +80,10 @@ int main()
     // initialize the recorder
     for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
     {
-        SegmentedSquaredErr[segmentIdx].resize(totalRound);
+        SegmentedRSE[segmentIdx].resize(totalRound);
         SegmentedConvergenceTime[segmentIdx].resize(totalRound);
         SegmentedNum[segmentIdx].resize(totalRound);
-        SegmentedAvgSquaredErr[segmentIdx] = 0;
+        SegmentedAvgRSE[segmentIdx] = 0;
         SegmentedAvgConvergenceTime[segmentIdx] = 0;
     }
 
@@ -100,7 +105,7 @@ int main()
         // initialize the recorder
         for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
         {
-            SegmentedSquaredErr[segmentIdx][roundIdx] = 0;
+            SegmentedRSE[segmentIdx][roundIdx] = 0;
             SegmentedNum[segmentIdx][roundIdx] = 0;
             SegmentedConvergenceTime[segmentIdx][roundIdx] = 0;
         }
@@ -108,11 +113,11 @@ int main()
         unsigned int delay = 0;
         // random number generator
         // SystemRandMulti rngInst;
-        // SOBOLMulti rngInst;
-        LFSRMulti rngInst;
+        SOBOLMulti rngInst;
+        // LFSRMulti rngInst;
+        // RACELMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
-
 
         for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
         {
@@ -124,7 +129,14 @@ int main()
             // generate binary input probabilistic data, with required precision
             for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
             {
-                val[inIdx] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+                if (unipolar == 0)
+                {
+                    val[inIdx] = (float)(2*((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen))-1);
+                }
+                else
+                {
+                    val[inIdx] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+                }
                 bitLengthVec[inIdx] = randBitLen;
                 probVec[inIdx] = val[inIdx];
             }
@@ -141,7 +153,7 @@ int main()
 
             // generate random bits of each input BS
             RandNum2BitMulti num2bitMultiInst;
-            num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,"num2bitMultiInst");
+            num2bitMultiInst.Init(probVec,bitLengthVec,inRandNum,unipolar,"num2bitMultiInst");
             num2bitMultiInst.SeqGen();
 
             // generate random sequence for depth and depthsync
@@ -154,10 +166,13 @@ int main()
             // sync/desync input bs
             Synchronizer SyncInst;
             // DeSynchronizer SyncInst;
-            SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
+            if (inBSNum == 2)
+            {
+                SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
+            }
 
             CFADD computeInst;
-            computeInst.Init(probVec, wSize, thdBias, "computeInst");
+            computeInst.Init(probVec, wSize, thdBias, unipolar, "computeInst");
             for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
             {
                 // set bit stream
@@ -176,6 +191,7 @@ int main()
 
                 // not doing sync/desync
                 computeInst.Calc(iBit);
+                // printf("window bias      (%f)\n", computeInst.WBias()[0]);
             }
 
 
@@ -188,14 +204,21 @@ int main()
             // printf("window bias      (%f)\n", computeInst.WBias()[0]);
             // printf("converge cTime   (%d)\n", computeInst.CTime()[0]);
             
-
-            SegmentedSquaredErr[(unsigned int)floor(computeInst.TheoProb()[0]*(segmentNum-1))][roundIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
-            SegmentedNum[(unsigned int)floor(computeInst.TheoProb()[0]*(segmentNum-1))][roundIdx] += 1;
-            SegmentedConvergenceTime[(unsigned int)floor(computeInst.TheoProb()[0]*(segmentNum-1))][roundIdx] += computeInst.CTime()[0];
+            if (unipolar == 0)
+            {
+                segNum = (unsigned int)floor((computeInst.TheoProb()[0]+1)/2*(segmentNum-1));
+            }
+            else
+            {
+                segNum = (unsigned int)floor(computeInst.TheoProb()[0]*(segmentNum-1));
+            }
+            SegmentedRSE[segNum][roundIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            SegmentedNum[segNum][roundIdx] += 1;
+            SegmentedConvergenceTime[segNum][roundIdx] += computeInst.CTime()[0];
         }
         for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
         {
-            SegmentedSquaredErr[segmentIdx][roundIdx] = sqrt(SegmentedSquaredErr[segmentIdx][roundIdx] / SegmentedNum[segmentIdx][roundIdx]);
+            SegmentedRSE[segmentIdx][roundIdx] = sqrt(SegmentedRSE[segmentIdx][roundIdx] / SegmentedNum[segmentIdx][roundIdx]);
             SegmentedConvergenceTime[segmentIdx][roundIdx] = SegmentedConvergenceTime[segmentIdx][roundIdx] / SegmentedNum[segmentIdx][roundIdx];
         }
     }
@@ -203,26 +226,26 @@ int main()
 
     for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
     {
-        SquaredErrMax[0] = SegmentedSquaredErr[segmentIdx][0];
-        SquaredErrMin[0] = SegmentedSquaredErr[segmentIdx][0];
+        RSEMax[0] = SegmentedRSE[segmentIdx][0];
+        RSEMin[0] = SegmentedRSE[segmentIdx][0];
         ConvergenceTimeMax[0] = SegmentedConvergenceTime[segmentIdx][0];
         ConvergenceTimeMin[0] = SegmentedConvergenceTime[segmentIdx][0];
 
-        SquaredErrMaxIndex[segmentIdx] = 0;
-        SquaredErrMinIndex[segmentIdx] = 0;
+        RSEMaxIndex[segmentIdx] = 0;
+        RSEMinIndex[segmentIdx] = 0;
 
         ConvergenceTimeMaxIndex[segmentIdx] = 0;
         ConvergenceTimeMinIndex[segmentIdx] = 0;
 
         for (int roundIdx = 0; roundIdx < totalRound; ++roundIdx)
         {
-            if (isnan(SegmentedSquaredErr[segmentIdx][roundIdx]))
+            if (isnan(SegmentedRSE[segmentIdx][roundIdx]))
             {
-                SegmentedAvgSquaredErr[segmentIdx] += SegmentedAvgSquaredErr[segmentIdx]/(float)(roundIdx+1);
+                SegmentedAvgRSE[segmentIdx] += SegmentedAvgRSE[segmentIdx]/(float)(roundIdx+1);
             }
             else
             {
-                SegmentedAvgSquaredErr[segmentIdx] += SegmentedSquaredErr[segmentIdx][roundIdx];
+                SegmentedAvgRSE[segmentIdx] += SegmentedRSE[segmentIdx][roundIdx];
             }
             if (isnan(SegmentedConvergenceTime[segmentIdx][roundIdx]))
             {
@@ -233,15 +256,15 @@ int main()
                 SegmentedAvgConvergenceTime[segmentIdx] += SegmentedConvergenceTime[segmentIdx][roundIdx];
             }
 
-            if (SquaredErrMax[0] < SegmentedSquaredErr[segmentIdx][roundIdx])
+            if (RSEMax[0] < SegmentedRSE[segmentIdx][roundIdx])
             {
-                SquaredErrMax[0] = SegmentedSquaredErr[segmentIdx][roundIdx];
-                SquaredErrMaxIndex[segmentIdx] = roundIdx;
+                RSEMax[0] = SegmentedRSE[segmentIdx][roundIdx];
+                RSEMaxIndex[segmentIdx] = roundIdx;
             }
-            if (SquaredErrMin[0] > SegmentedSquaredErr[segmentIdx][roundIdx])
+            if (RSEMin[0] > SegmentedRSE[segmentIdx][roundIdx])
             {
-                SquaredErrMin[0] = SegmentedSquaredErr[segmentIdx][roundIdx];
-                SquaredErrMinIndex[segmentIdx] = roundIdx;
+                RSEMin[0] = SegmentedRSE[segmentIdx][roundIdx];
+                RSEMinIndex[segmentIdx] = roundIdx;
             }
 
             if (ConvergenceTimeMax[0] < SegmentedConvergenceTime[segmentIdx][roundIdx])
@@ -255,7 +278,7 @@ int main()
                 ConvergenceTimeMinIndex[segmentIdx] = roundIdx;
             }
         }
-        SegmentedAvgSquaredErr[segmentIdx] /= totalRound;
+        SegmentedAvgRSE[segmentIdx] /= totalRound;
         SegmentedAvgConvergenceTime[segmentIdx] /= totalRound;
     }
 
@@ -263,7 +286,8 @@ int main()
     printf("Total execution time: %f\n\n", elasped_secs);
 
     printf("Computing Unit Configuration\n");
-    printf("Number of Input Bit Streams: %4d\n\n", inBSNum);
+    printf("Number of Input Bit Streams: %4d\n", inBSNum);
+    printf("Unipolar Enbale:             %4d\n\n", unipolar!=0);
 
     printf("Evaluation Configuration:\n");
     printf("Random Number Length:        %4d\n", randBitLen);
@@ -277,14 +301,28 @@ int main()
     printf("Range, Max Squared Error Rate, Min Squared Error Rate, avg Squared Error Rate:\n");
     for (int i = 0; i < segmentNum; ++i)
     {
-        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/(segmentNum-1)), 22, SegmentedSquaredErr[i][SquaredErrMaxIndex[i]], 22, SegmentedSquaredErr[i][SquaredErrMinIndex[i]], 22, SegmentedAvgSquaredErr[i]);
+        if (unipolar == 0)
+        {
+            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, 2*((float)i/(segmentNum-1))-1, 22, SegmentedRSE[i][RSEMaxIndex[i]], 22, SegmentedRSE[i][RSEMinIndex[i]], 22, SegmentedAvgRSE[i]);
+        }
+        else
+        {
+            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/(segmentNum-1)), 22, SegmentedRSE[i][RSEMaxIndex[i]], 22, SegmentedRSE[i][RSEMinIndex[i]], 22, SegmentedAvgRSE[i]);
+        }
     }
     printf("\n");
 
     printf("Range,   Max Convergence Time,   Min Convergence Time,   avg Convergence Time:\n");
     for (int i = 0; i < segmentNum; ++i)
     {
-        printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/(segmentNum-1)), 22, SegmentedConvergenceTime[i][ConvergenceTimeMaxIndex[i]], 22, SegmentedConvergenceTime[i][ConvergenceTimeMinIndex[i]], 22, SegmentedAvgConvergenceTime[i]);
+        if (unipolar == 0)
+        {
+            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, 2*((float)i/(segmentNum-1))-1, 22, SegmentedConvergenceTime[i][ConvergenceTimeMaxIndex[i]], 22, SegmentedConvergenceTime[i][ConvergenceTimeMinIndex[i]], 22, SegmentedAvgConvergenceTime[i]);
+        }
+        else
+        {
+            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/(segmentNum-1)), 22, SegmentedConvergenceTime[i][ConvergenceTimeMaxIndex[i]], 22, SegmentedConvergenceTime[i][ConvergenceTimeMinIndex[i]], 22, SegmentedAvgConvergenceTime[i]);
+        }
     }
     printf("\n");
 }
