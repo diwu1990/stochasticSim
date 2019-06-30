@@ -39,17 +39,20 @@ void MUXADD::Help()
     printf("**********************************************************\n");
 }
 
-void MUXADD::Init(vector<float> param1, unsigned int param2, float param3, string param4)
+void MUXADD::Init(vector<float> param1, unsigned int param2, float param3, unsigned int param4, string param5)
 {
     iProb = param1;
     wSize = param2;
     thdBias = param3;
-    m_name = param4;
+    unipolar = param4;
+    m_name = param5;
 
     iDim = (unsigned int)iProb.size();
 
     if(ceil(log2(iDim)) != floor(log2(iDim)))
+    {
         printf("Warning: Input dimension of CFADD instantance is not power of 2.\n");
+    }
 
     oDim = 1;
     #ifdef PERFSIM
@@ -103,7 +106,14 @@ void MUXADD::Calc(vector<char> param1, vector<unsigned int> param2)
                 {
                     totalSum[i] += oBS[i][j];
                 }
-                wProb[i] = (float)totalSum[i]/iLen;
+                if (unipolar == 0)
+                {
+                    wProb[i] = (float)totalSum[i]/iLen*2.0 - 1.0;
+                }
+                else
+                {
+                    wProb[i] = (float)totalSum[i]/iLen;
+                }
             }
             else
             {
@@ -111,7 +121,14 @@ void MUXADD::Calc(vector<char> param1, vector<unsigned int> param2)
                 {
                     totalSum[i] += oBS[i][j];
                 }
-                wProb[i] = (float)totalSum[i]/wSize;
+                if (unipolar == 0)
+                {
+                    wProb[i] = (float)totalSum[i]/iLen*2.0 - 1.0;
+                }
+                else
+                {
+                    wProb[i] = (float)totalSum[i]/iLen;
+                }
             }
             wBias[i] = wProb[i] - theoProb[i];
             if ((wBias[i] > thdBias) || (wBias[i] < (0-thdBias)))

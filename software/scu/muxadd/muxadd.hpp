@@ -19,6 +19,7 @@ class MUXADD
     vector<float> iProb;
     unsigned int wSize;
     float thdBias;
+    unsigned int unipolar;
     string m_name;
 
     // calc input
@@ -46,7 +47,7 @@ class MUXADD
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, float, string);
+    void Init(vector<float>, unsigned int, float, unsigned int, string);
     void Calc(vector<char>, vector<unsigned int>);
     vector<char> OutBit();
 
