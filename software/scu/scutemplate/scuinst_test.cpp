@@ -12,7 +12,7 @@
 #include "desynchronizer.hpp"
 #include <cstdlib>
 #include <ctime>
-#include "cfadd.hpp"
+#include "muxadd.hpp"
 #include "perfsim.hpp"
 
 int main()
@@ -21,41 +21,27 @@ int main()
     // **************************************************************
     // configuration for computing units
     // **************************************************************
-    unsigned int inBSNum = 4; // number of input bit streams
-    
-    // used in some units with supported architecture
-    unsigned int depthSync = 1; // depth of synchronizer
-    unsigned int depth = 1; // depth of other buffer
+    unsigned int inBSNum = 2; // number of input bit streams
+    unsigned int depthSync = 1; // depth of synchronizer, used in some units with supported architecture
+    unsigned int depth = 1; // depth of other buffer, used in some units with supported architecture
+    unsigned int unipolar = 1; // data format, non 0 is unipolar
+    // **************************************************************
+    // configuration for evaluation
+    // **************************************************************
+    unsigned int randBitLen = 6; // number of bits for random number
+    // total run number is totalRound * totalIter.
+    unsigned int totalRound = 10; // each round uses different random number generator
+    unsigned int totalIter = 10; // each iteration uses evaluate different value for a given round
+    float thdBias = 0.05; // threhold to consider convergence
 
     // **************************************************************
     // different modes for random number generator
     // **************************************************************
-    // string mode = "incremental";
-    // string mode = "delayed";
-    string mode = "random";
-
-    // number of random number sequences
-    unsigned int randSeqNum;
-    randSeqNum = inBSNum + 2;
-
-    // data format, non 0 is unipolar
-    unsigned int unipolar = 1;
-
-    // **************************************************************
-    // configuration for evaluation
-    // **************************************************************
-    unsigned int randBitLen = 8; // number of bits for random number
+    string mode = "random"; // "incremental", "delayed", "random"
     unsigned int seqLength = (unsigned int)pow(2,randBitLen); // bit sequence length to be evaluated
-    float thdBias = 0.05; // threhold to consider convergence
     unsigned int wSize = seqLength; // window size to monitor accuracy
-
-    // total run number is totalRound * totalIter.
-    unsigned int totalRound = 1; // each round uses different random number generator
-    unsigned int totalIter = 1; // each iteration uses evaluate different value for a given round
-
     unsigned int segmentNum = 5; // evaluate the accuracy of different output ranges (segments)
-
-
+    unsigned int randSeqNum = 2; // number of random number sequences for depthSync/depth
     // **************************************************************
     // recorder definition
     // **************************************************************
@@ -113,11 +99,18 @@ int main()
         unsigned int delay = 0;
         // random number generator
         // SystemRandMulti rngInst;
-        SOBOLMulti rngInst;
-        // LFSRMulti rngInst;
+        // SOBOLMulti rngInst;
+        LFSRMulti rngInst;
         // RACELMulti rngInst;
-        rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
+        rngInst.Init(inBSNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
+
+        // random number generator
+        // SystemRandMulti rngSeqInst;
+        SOBOLMulti rngSeqInst;
+        // LFSRMulti rngSeqInst;
+        rngSeqInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngSeqInst");
+        rngSeqInst.SeqGen();
 
         for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
         {
@@ -159,8 +152,9 @@ int main()
             // generate random sequence for depth and depthsync
             for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
             {
-                RandSeq[0][seqIdx] = rngInst.OutSeq()[inBSNum][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
-                RandSeq[1][seqIdx] = rngInst.OutSeq()[inBSNum+1][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
+                // RandSeq[0][seqIdx] = rngInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
+                RandSeq[0][seqIdx] = rngSeqInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
+                RandSeq[1][seqIdx] = rngSeqInst.OutSeq()[1][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
             }
 
             // sync/desync input bs
@@ -171,7 +165,7 @@ int main()
                 SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
             }
 
-            CFADD computeInst;
+            MUXADD computeInst;
             computeInst.Init(probVec, wSize, thdBias, unipolar, "computeInst");
             for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
             {
@@ -190,7 +184,8 @@ int main()
                 // computeInst.Calc(SyncInst.OutBit());
 
                 // not doing sync/desync
-                computeInst.Calc(iBit);
+                // computeInst.Calc(iBit);
+                computeInst.Calc(iBit, iRandNum);
                 // printf("window bias      (%f)\n", computeInst.WBias()[0]);
             }
 
@@ -287,6 +282,8 @@ int main()
 
     printf("Computing Unit Configuration\n");
     printf("Number of Input Bit Streams: %4d\n", inBSNum);
+    printf("Depth of Sync:               %4d\n", depthSync);
+    printf("Depth of Buffer:             %4d\n", depth);
     printf("Unipolar Enbale:             %4d\n\n", unipolar!=0);
 
     printf("Evaluation Configuration:\n");

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CFADD_H
-#define CFADD_H
+#ifndef MUXADD_H
+#define MUXADD_H
 
 #include <cstdio>
 #include <vector>
@@ -13,24 +13,22 @@ using namespace std;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class CFADD
+class MUXADD
 {
     // initial input
-    vector<float> iProb; // input prob, have to be 2^N
+    vector<float> iProb;
     unsigned int wSize;
-    float thdBias; // threshold to consider convergence
+    float thdBias;
     unsigned int unipolar;
     string m_name;
 
     // calc input
     vector<char> iBit;
+    vector<unsigned int> randNum;
 
     // internal
     unsigned int iDim;
     unsigned int oDim;
-    unsigned int parallel_cnt;
-    unsigned int accumulator;
-    unsigned int upper;
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
@@ -50,7 +48,7 @@ class CFADD
 public:
     void Help();
     void Init(vector<float>, unsigned int, float, unsigned int, string);
-    void Calc(vector<char>);
+    void Calc(vector<char>, vector<unsigned int>);
     vector<char> OutBit();
 
     #ifdef PERFSIM

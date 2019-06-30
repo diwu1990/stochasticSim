@@ -1,19 +1,21 @@
-#include "cfadd.hpp"
+#include "muxadd.hpp"
 #include "perfsim.hpp"
 
-void CFADD::Help()
+void MUXADD::Help()
 {
     printf("**********************************************************\n");
     printf("**********************************************************\n");
-    printf("Calling CFADD Help. Following are instructions to CFADD Instance Usage:\n");
+    printf("Calling MUXADD Help. Following are instructions to MUXADD Instance Usage:\n");
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
-    printf("Parameters: Input Probability, Window Size, Threshold for Window Bias, Unipolar Enable, Instance Name.\n");
+    printf("Parameters: Input Probability, Window Size, Threshold for Window Bias, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the result bit.\n");
-    printf("Parameters: Vectorized Input Bits.\n");
+    printf("Parameters: Vectorized Input Bits, Vectorized Random Number.\n");
+    printf("The 0th value of Vectorized Random Number is used.\n");
+    printf("The 1th value of Vectorized Random Number is not used.\n");
 
     printf("3. inst.OutBit() method:\n");
     printf("Return output bit from inst.Calc().\n");
@@ -37,7 +39,7 @@ void CFADD::Help()
     printf("**********************************************************\n");
 }
 
-void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsigned int param4, string param5)
+void MUXADD::Init(vector<float> param1, unsigned int param2, float param3, unsigned int param4, string param5)
 {
     iProb = param1;
     wSize = param2;
@@ -46,7 +48,7 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsign
     m_name = param5;
 
     iDim = (unsigned int)iProb.size();
-    // iDim check, have to be power of 2
+
     if(ceil(log2(iDim)) != floor(log2(iDim)))
     {
         printf("Warning: Input dimension of CFADD instantance is not power of 2.\n");
@@ -62,9 +64,6 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsign
     {
         oBit[i] = 0;
     }
-    parallel_cnt = 0;
-    accumulator = 0;
-    upper = iDim;
 
     #ifdef PERFSIM
         oBS.resize(oDim);
@@ -87,35 +86,13 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsign
     #endif
 }
 
-void CFADD::Calc(vector<char> param1)
+void MUXADD::Calc(vector<char> param1, vector<unsigned int> param2)
 {
     iBit = param1;
+    randNum = param2;
 
-    parallel_cnt = 0;
-    for (int i = 0; i < iDim; ++i)
-    {
-        parallel_cnt += iBit[i];
-        // printf("%d,", iBit[i]);
-    }
-    // printf("===>%d, %d\n", parallel_cnt, accumulator);
-    accumulator += (parallel_cnt%iDim);
-    if (parallel_cnt >= upper)
-    {
-        oBit[0] = 1;
-    }
-    else
-    {
-        if (accumulator >= upper)
-        {
-            oBit[0] = 1;
-            accumulator = (accumulator%iDim);
-        }
-        else
-        {
-            oBit[0] = 0;
-        }
-    }
-
+    oBit[0] = iBit[randNum[0]];
+        
     #ifdef PERFSIM
         iLen++;
         vector<unsigned int> totalSum(oDim);
@@ -162,33 +139,33 @@ void CFADD::Calc(vector<char> param1)
     #endif
 }
 
-vector<char> CFADD::OutBit()
+vector<char> MUXADD::OutBit()
 {
     return oBit;
 }
 
 #ifdef PERFSIM
-    vector<vector<char>> CFADD::OutBS()
+    vector<vector<char>> MUXADD::OutBS()
     {
         return oBS;
     }
     
-    vector<float> CFADD::WProb()
+    vector<float> MUXADD::WProb()
     {
         return wProb;
     }
 
-    vector<float> CFADD::TheoProb()
+    vector<float> MUXADD::TheoProb()
     {
         return theoProb;
     }
 
-    vector<float> CFADD::WBias()
+    vector<float> MUXADD::WBias()
     {
         return wBias;
     }
 
-    vector<unsigned int> CFADD::CTime()
+    vector<unsigned int> MUXADD::CTime()
     {
         return cTime;
     }
