@@ -8,7 +8,8 @@ void RandNum2BitMulti::Help()
     printf("Calling RandNum2BitMulti Help. Following are instructions to RandNum2BitMulti Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the RandNum2BitMulti inst.\n");
-    printf("The initial parameters are: Expectation, Input Random Number Bit Length, Random Number Sequence, Instance Name.\n");
+    printf("The initial parameters are: Expectation, Input Random Number Bit Length, Random Number Sequence, Unipolar Enable, Instance Name.\n");
+    printf("If Unipolar Enable is 0, use bipolar format; otherwise use unipolar format.\n");
 
     printf("2. inst.SeqGen() method:\n");
     printf("Generate one random sequence based on parameters from inst.Init().\n");
@@ -69,12 +70,13 @@ void RandNum2BitMulti::Report()
     printf("\n");
 }
 
-void RandNum2BitMulti::Init(vector<float> param1, vector<unsigned int> param2, vector<vector<unsigned int>> param3, string param4)
+void RandNum2BitMulti::Init(vector<float> param1, vector<unsigned int> param2, vector<vector<unsigned int>> param3, unsigned int param4, string param5)
 {
     expectation = param1;
     bitLength = param2;
     NumVec = param3;
-    m_name = param4;
+    unipolar = param4;
+    m_name = param5;
     if ((unsigned int)expectation.size() == (unsigned int)bitLength.size() && (unsigned int)expectation.size() == (unsigned int)NumVec.size())
     {
         seqDim = (unsigned int)expectation.size();
@@ -104,7 +106,7 @@ void RandNum2BitMulti::SeqGen()
     for (int i = 0; i < seqDim; ++i)
     {
         RandNum2Bit num2bit;
-        num2bit.Init(expectation[i],bitLength[i],NumVec[i],"num2bit");
+        num2bit.Init(expectation[i],bitLength[i],NumVec[i],unipolar,"num2bit");
         // num2bit.Report();
         num2bit.SeqGen();
         // num2bit.SeqPrint();

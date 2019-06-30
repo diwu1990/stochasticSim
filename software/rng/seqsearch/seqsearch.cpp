@@ -6,12 +6,14 @@ void SeqSearch::Init(
     vector<vector<unsigned int>> param1, 
     unsigned int param2, 
     float param3,
-    string param4)
+    unsigned int param4, 
+    string param5)
 {
     inSeq = param1;
     bitLength = param2;
     threshold = param3;
-    m_name = param4;
+    unipolar = param3;
+    m_name = param5;
     inDim = (unsigned int)inSeq.size();
     inLen = (unsigned int)inSeq[0].size();
     for (int i = 1; i < inDim; ++i)
@@ -145,7 +147,7 @@ void SeqSearch::Calc()
                         probVec[l] = (float)((float)(rand()%(int)pow(2,bitLength))/(float)pow(2,bitLength));
                     }
 
-                    num2bitMultiInst.Init(probVec,bitLengthVec,inSeq2,"num2bitMultiInst");
+                    num2bitMultiInst.Init(probVec,bitLengthVec,inSeq2,unipolar,"num2bitMultiInst");
                     num2bitMultiInst.SeqGen();
                     // num2bitMultiInst.SeqPrint();
                     outSeq2 = num2bitMultiInst.OutSeq();

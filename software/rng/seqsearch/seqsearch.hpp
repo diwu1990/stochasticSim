@@ -24,6 +24,7 @@ class SeqSearch
     unsigned int inDim;
     unsigned int inLen;
     vector<vector<unsigned int>> outComb;
+    unsigned int unipolar;
     string m_name;
     unsigned int combNum;
     unsigned int totalComb;
@@ -34,7 +35,7 @@ class SeqSearch
         SeqSearch();
         ~SeqSearch();
         void Help();
-        void Init(vector<vector<unsigned int>>, unsigned int, float, string);
+        void Init(vector<vector<unsigned int>>, unsigned int, float, unsigned int, string);
         void Report();
         void Calc();
         void CombPrint();

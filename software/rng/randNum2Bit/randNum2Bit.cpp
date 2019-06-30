@@ -7,7 +7,8 @@ void RandNum2Bit::Help()
     printf("Calling RandNum2Bit Help. Following are instructions to RandNum2Bit Instance Usage:\n");
     printf("1. inst.Init() method:\n");
     printf("Configure the RandNum2Bit inst.\n");
-    printf("The initial parameters are: Expectation, Input Random Number Bit Length, Random Number Sequence, Instance Name.\n");
+    printf("The initial parameters are: Expectation, Input Random Number Bit Length, Random Number Sequence, Unipolar Enable, Instance Name.\n");
+    printf("If Unipolar Enable is 0, use bipolar format; otherwise use unipolar format.\n");
 
     printf("2. inst.SeqGen() method:\n");
     printf("Generate one random sequence based on parameters from inst.Init().\n");
@@ -53,12 +54,13 @@ void RandNum2Bit::Report()
     printf("Bit Length:    %-u\n", bitLength);
 }
 
-void RandNum2Bit::Init(float param1, unsigned int param2, vector<unsigned int> param3, string param4)
+void RandNum2Bit::Init(float param1, unsigned int param2, vector<unsigned int> param3, unsigned int param4, string param5)
 {
     expectation = param1;
     bitLength = param2;
     NumVec = param3;
-    m_name = param4;
+    unipolar = param4;
+    m_name = param5;
     bitVec.resize((unsigned int)NumVec.size());
     for (int i = 0; i < (unsigned int)NumVec.size(); ++i)
     {
@@ -74,10 +76,22 @@ vector<char> RandNum2Bit::OutSeq()
 void RandNum2Bit::SeqGen()
 {
     unsigned int maxVal = (unsigned int)pow(2,bitLength);
-    unsigned int expectationInt = expectation * maxVal;
+    unsigned int expectationInt;
+    if (unipolar == 0)
+    {
+        expectationInt = (unsigned int)((expectation+1)/2 * maxVal);
+    }
+    else
+    {
+        if (expectation < 0)
+        {
+            printf("Error: Input probability can't be negative when unipolar data is applied.\n");
+        }
+        expectationInt = (unsigned int)(expectation * maxVal);
+    }
     for (int i = 0; i < NumVec.size(); ++i)
     {
-        if (NumVec[i] <= expectationInt)
+        if (NumVec[i] < expectationInt)
         {
             bitVec[i] = 1;
         }
