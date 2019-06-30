@@ -39,7 +39,7 @@ int main()
     randSeqNum = inBSNum + 2;
 
     // data format, non 0 is unipolar
-    unsigned int unipolar = 0;
+    unsigned int unipolar = 1;
 
     // **************************************************************
     // configuration for evaluation
@@ -50,8 +50,8 @@ int main()
     unsigned int wSize = seqLength; // window size to monitor accuracy
 
     // total run number is totalRound * totalIter.
-    unsigned int totalRound = 100; // each round uses different random number generator
-    unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
+    unsigned int totalRound = 1; // each round uses different random number generator
+    unsigned int totalIter = 1; // each iteration uses evaluate different value for a given round
 
     unsigned int segmentNum = 5; // evaluate the accuracy of different output ranges (segments)
 
@@ -61,16 +61,16 @@ int main()
     // **************************************************************
     segmentNum += 1; // evaluate the accuracy of different output ranges (segments)
     unsigned int segNum; // check which output segment to store data
-    vector<vector<float>> SegmentedSquaredErr(segmentNum); // squared error for each segment
+    vector<vector<float>> SegmentedRSE(segmentNum); // squared error for each segment
     vector<vector<float>> SegmentedConvergenceTime(segmentNum); // convergence time for each segment
     vector<vector<unsigned int>> SegmentedNum(segmentNum); // number of runs for each segment
-    vector<float> SegmentedAvgSquaredErr(segmentNum); // average squared error (MSE) for each segment
+    vector<float> SegmentedAvgRSE(segmentNum); // average squared error (MSE) for each segment
     vector<float> SegmentedAvgConvergenceTime(segmentNum); // average convergence time for each segment
 
-    vector<float> SquaredErrMax(1);
-    vector<float> SquaredErrMin(1);
-    vector<float> SquaredErrMaxIndex(segmentNum);
-    vector<float> SquaredErrMinIndex(segmentNum);
+    vector<float> RSEMax(1);
+    vector<float> RSEMin(1);
+    vector<float> RSEMaxIndex(segmentNum);
+    vector<float> RSEMinIndex(segmentNum);
 
     vector<float> ConvergenceTimeMax(1);
     vector<float> ConvergenceTimeMin(1);
@@ -80,10 +80,10 @@ int main()
     // initialize the recorder
     for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
     {
-        SegmentedSquaredErr[segmentIdx].resize(totalRound);
+        SegmentedRSE[segmentIdx].resize(totalRound);
         SegmentedConvergenceTime[segmentIdx].resize(totalRound);
         SegmentedNum[segmentIdx].resize(totalRound);
-        SegmentedAvgSquaredErr[segmentIdx] = 0;
+        SegmentedAvgRSE[segmentIdx] = 0;
         SegmentedAvgConvergenceTime[segmentIdx] = 0;
     }
 
@@ -105,7 +105,7 @@ int main()
         // initialize the recorder
         for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
         {
-            SegmentedSquaredErr[segmentIdx][roundIdx] = 0;
+            SegmentedRSE[segmentIdx][roundIdx] = 0;
             SegmentedNum[segmentIdx][roundIdx] = 0;
             SegmentedConvergenceTime[segmentIdx][roundIdx] = 0;
         }
@@ -113,8 +113,8 @@ int main()
         unsigned int delay = 0;
         // random number generator
         // SystemRandMulti rngInst;
-        // SOBOLMulti rngInst;
-        LFSRMulti rngInst;
+        SOBOLMulti rngInst;
+        // LFSRMulti rngInst;
         // RACELMulti rngInst;
         rngInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
         rngInst.SeqGen();
@@ -188,6 +188,7 @@ int main()
 
                 // not doing sync/desync
                 computeInst.Calc(iBit);
+                // printf("window bias      (%f)\n", computeInst.WBias()[0]);
             }
 
 
@@ -208,13 +209,13 @@ int main()
             {
                 segNum = (unsigned int)floor(computeInst.TheoProb()[0]*(segmentNum-1));
             }
-            SegmentedSquaredErr[segNum][roundIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
+            SegmentedRSE[segNum][roundIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
             SegmentedNum[segNum][roundIdx] += 1;
             SegmentedConvergenceTime[segNum][roundIdx] += computeInst.CTime()[0];
         }
         for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
         {
-            SegmentedSquaredErr[segmentIdx][roundIdx] = sqrt(SegmentedSquaredErr[segmentIdx][roundIdx] / SegmentedNum[segmentIdx][roundIdx]);
+            SegmentedRSE[segmentIdx][roundIdx] = sqrt(SegmentedRSE[segmentIdx][roundIdx] / SegmentedNum[segmentIdx][roundIdx]);
             SegmentedConvergenceTime[segmentIdx][roundIdx] = SegmentedConvergenceTime[segmentIdx][roundIdx] / SegmentedNum[segmentIdx][roundIdx];
         }
     }
@@ -222,26 +223,26 @@ int main()
 
     for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
     {
-        SquaredErrMax[0] = SegmentedSquaredErr[segmentIdx][0];
-        SquaredErrMin[0] = SegmentedSquaredErr[segmentIdx][0];
+        RSEMax[0] = SegmentedRSE[segmentIdx][0];
+        RSEMin[0] = SegmentedRSE[segmentIdx][0];
         ConvergenceTimeMax[0] = SegmentedConvergenceTime[segmentIdx][0];
         ConvergenceTimeMin[0] = SegmentedConvergenceTime[segmentIdx][0];
 
-        SquaredErrMaxIndex[segmentIdx] = 0;
-        SquaredErrMinIndex[segmentIdx] = 0;
+        RSEMaxIndex[segmentIdx] = 0;
+        RSEMinIndex[segmentIdx] = 0;
 
         ConvergenceTimeMaxIndex[segmentIdx] = 0;
         ConvergenceTimeMinIndex[segmentIdx] = 0;
 
         for (int roundIdx = 0; roundIdx < totalRound; ++roundIdx)
         {
-            if (isnan(SegmentedSquaredErr[segmentIdx][roundIdx]))
+            if (isnan(SegmentedRSE[segmentIdx][roundIdx]))
             {
-                SegmentedAvgSquaredErr[segmentIdx] += SegmentedAvgSquaredErr[segmentIdx]/(float)(roundIdx+1);
+                SegmentedAvgRSE[segmentIdx] += SegmentedAvgRSE[segmentIdx]/(float)(roundIdx+1);
             }
             else
             {
-                SegmentedAvgSquaredErr[segmentIdx] += SegmentedSquaredErr[segmentIdx][roundIdx];
+                SegmentedAvgRSE[segmentIdx] += SegmentedRSE[segmentIdx][roundIdx];
             }
             if (isnan(SegmentedConvergenceTime[segmentIdx][roundIdx]))
             {
@@ -252,15 +253,15 @@ int main()
                 SegmentedAvgConvergenceTime[segmentIdx] += SegmentedConvergenceTime[segmentIdx][roundIdx];
             }
 
-            if (SquaredErrMax[0] < SegmentedSquaredErr[segmentIdx][roundIdx])
+            if (RSEMax[0] < SegmentedRSE[segmentIdx][roundIdx])
             {
-                SquaredErrMax[0] = SegmentedSquaredErr[segmentIdx][roundIdx];
-                SquaredErrMaxIndex[segmentIdx] = roundIdx;
+                RSEMax[0] = SegmentedRSE[segmentIdx][roundIdx];
+                RSEMaxIndex[segmentIdx] = roundIdx;
             }
-            if (SquaredErrMin[0] > SegmentedSquaredErr[segmentIdx][roundIdx])
+            if (RSEMin[0] > SegmentedRSE[segmentIdx][roundIdx])
             {
-                SquaredErrMin[0] = SegmentedSquaredErr[segmentIdx][roundIdx];
-                SquaredErrMinIndex[segmentIdx] = roundIdx;
+                RSEMin[0] = SegmentedRSE[segmentIdx][roundIdx];
+                RSEMinIndex[segmentIdx] = roundIdx;
             }
 
             if (ConvergenceTimeMax[0] < SegmentedConvergenceTime[segmentIdx][roundIdx])
@@ -274,7 +275,7 @@ int main()
                 ConvergenceTimeMinIndex[segmentIdx] = roundIdx;
             }
         }
-        SegmentedAvgSquaredErr[segmentIdx] /= totalRound;
+        SegmentedAvgRSE[segmentIdx] /= totalRound;
         SegmentedAvgConvergenceTime[segmentIdx] /= totalRound;
     }
 
@@ -299,11 +300,11 @@ int main()
     {
         if (unipolar == 0)
         {
-            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, 2*((float)i/(segmentNum-1))-1, 22, SegmentedSquaredErr[i][SquaredErrMaxIndex[i]], 22, SegmentedSquaredErr[i][SquaredErrMinIndex[i]], 22, SegmentedAvgSquaredErr[i]);
+            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, 2*((float)i/(segmentNum-1))-1, 22, SegmentedRSE[i][RSEMaxIndex[i]], 22, SegmentedRSE[i][RSEMinIndex[i]], 22, SegmentedAvgRSE[i]);
         }
         else
         {
-            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/(segmentNum-1)), 22, SegmentedSquaredErr[i][SquaredErrMaxIndex[i]], 22, SegmentedSquaredErr[i][SquaredErrMinIndex[i]], 22, SegmentedAvgSquaredErr[i]);
+            printf("%*.1f, %*.4f, %*.4f, %*.4f\n", 5, ((float)i/(segmentNum-1)), 22, SegmentedRSE[i][RSEMaxIndex[i]], 22, SegmentedRSE[i][RSEMinIndex[i]], 22, SegmentedAvgRSE[i]);
         }
     }
     printf("\n");
