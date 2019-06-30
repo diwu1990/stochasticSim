@@ -83,6 +83,6 @@ void RACEL::SeqGen()
 
     for (int i = 0; i < outputLen; ++i)
     {
-        outSeq[i] = outputLen - 1 - i;
+        outSeq[i] = i;
     }
 }
