@@ -21,7 +21,7 @@ int main()
     // **************************************************************
     // configuration for computing units
     // **************************************************************
-    unsigned int inBSNum = 2; // number of input bit streams
+    unsigned int inBSNum = 4; // number of input bit streams
     
     // used in some units with supported architecture
     unsigned int depthSync = 1; // depth of synchronizer
@@ -166,7 +166,10 @@ int main()
             // sync/desync input bs
             Synchronizer SyncInst;
             // DeSynchronizer SyncInst;
-            SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
+            if (inBSNum == 2)
+            {
+                SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
+            }
 
             CFADD computeInst;
             computeInst.Init(probVec, wSize, thdBias, unipolar, "computeInst");
