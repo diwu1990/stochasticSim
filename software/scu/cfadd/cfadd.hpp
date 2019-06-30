@@ -19,6 +19,7 @@ class CFADD
     vector<float> iProb; // input prob, have to be 2^N
     unsigned int wSize;
     float thdBias; // threshold to consider convergence
+    unsigned int unipolar;
     string m_name;
 
     // calc input
@@ -48,7 +49,7 @@ class CFADD
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, float, string);
+    void Init(vector<float>, unsigned int, float, unsigned int, string);
     void Calc(vector<char>);
     vector<char> OutBit();
 
