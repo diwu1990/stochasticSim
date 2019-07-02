@@ -19,7 +19,7 @@ int main()
 {
     srand(time(NULL));
     vector<unsigned int> inBSNumVec{2};
-    vector<unsigned int> randBitLenVec{8};
+    vector<unsigned int> randBitLenVec{6, 8, 10};
     for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
     {
         for (int randBitLenVecIdx = 0; randBitLenVecIdx < randBitLenVec.size(); ++randBitLenVecIdx)
@@ -38,7 +38,7 @@ int main()
             unsigned int randBitLen = randBitLenVec[randBitLenVecIdx]; // number of bits for random number
             // total run number is totalRound * totalIter.
             unsigned int totalRound = 100; // each round uses different random number generator
-            unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
+            unsigned int totalIter = 1000; // each iteration uses evaluate different value for a given round
             float thdBias = 0.05; // threhold to consider convergence
 
             // **************************************************************
@@ -106,8 +106,8 @@ int main()
                 unsigned int delay = 0;
                 // random number generator
                 // SystemRandMulti rngInst;
-                SOBOLMulti rngInst;
-                // LFSRMulti rngInst;
+                // SOBOLMulti rngInst;
+                LFSRMulti rngInst;
                 // RACELMulti rngInst;
                 rngInst.Init(inBSNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
                 rngInst.SeqGen();
