@@ -20,6 +20,7 @@ class CFMUL
     // initial input
     vector<float> iProb;
     unsigned int depthSync;
+    unsigned int shift;
     unsigned int wSize;
     float thdBias;
     unsigned int unipolar;
@@ -58,7 +59,7 @@ class CFMUL
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, unsigned int, float, unsigned int, string);
+    void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, unsigned int, string);
     void Calc(vector<char>);
     vector<char> OutBit();
 

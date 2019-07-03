@@ -37,14 +37,15 @@ void CFMUL::Help()
     printf("**********************************************************\n");
 }
 
-void CFMUL::Init(vector<float> param1, unsigned int param2, unsigned int param3, float param4, unsigned int param5, string param6)
+void CFMUL::Init(vector<float> param1, unsigned int param2, unsigned int param3, unsigned int param4, float param5, unsigned int param6, string param7)
 {
     iProb = param1;
     depthSync = param2;
-    wSize = param3;
-    thdBias = param4;
-    unipolar = param5;
-    m_name = param6;
+    shift = param3;
+    wSize = param4;
+    thdBias = param5;
+    unipolar = param6;
+    m_name = param7;
 
     iDim = (unsigned int)iProb.size();
     if (iDim != 2)
@@ -64,12 +65,12 @@ void CFMUL::Init(vector<float> param1, unsigned int param2, unsigned int param3,
     
     upperBound = (unsigned int)pow(2,depthSync)-1;
     halfBound = (unsigned int)pow(2,depthSync-1);
-    bound1 = halfBound - (unsigned int)pow(2,depthSync-3);
-    bound2 = halfBound + (unsigned int)pow(2,depthSync-3);
+    bound1 = halfBound - (unsigned int)pow(2,depthSync-shift);
+    bound2 = halfBound + (unsigned int)pow(2,depthSync-shift);
     cnt = halfBound;
 
-    // rngInst.Init(1,5,0,depthSync,"incremental","rngInst");
-    rngInst.Init(1,5,0,depthSync,"random","rngInst");
+    rngInst.Init(1,9,0,depthSync,"incremental","rngInst");
+    // rngInst.Init(1,5,0,depthSync,"random","rngInst");
     rngInst.SeqGen();
     rngIdx = 0;
 
@@ -106,14 +107,14 @@ void CFMUL::Calc(vector<char> param1)
         {
             cnt -= 2;
         }
-        else if (iBit[1] == 1 & lastBit == 0)
-        {
-            cnt += 1;
-        }
-        else if(iBit[1] == 0 & lastBit == 1)
-        {
-            cnt -= 1;
-        }
+        // else if (iBit[1] == 1 & lastBit == 0)
+        // {
+        //     cnt += 1;
+        // }
+        // else if(iBit[1] == 0 & lastBit == 1)
+        // {
+        //     cnt -= 1;
+        // }
     }
     else
     {

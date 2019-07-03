@@ -19,7 +19,7 @@ int main()
 {
     srand(time(NULL));
     vector<unsigned int> inBSNumVec{2};
-    vector<unsigned int> randBitLenVec{6};
+    vector<unsigned int> randBitLenVec{6, 8, 10};
     for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
     {
         for (int randBitLenVecIdx = 0; randBitLenVecIdx < randBitLenVec.size(); ++randBitLenVecIdx)
@@ -30,6 +30,7 @@ int main()
             unsigned int inBSNum = inBSNumVec[inBSNumVecIdx]; // number of input bit streams
             unsigned int depthSync = (unsigned int)log2(inBSNum); // depth of synchronizer, used in some units with supported architecture
             depthSync = randBitLenVec[randBitLenVecIdx];
+            unsigned int shift = 4; // shift offset for internal cnt
             unsigned int depth = 1; // depth of other buffer, used in some units with supported architecture
             unsigned int unipolar = 1; // data format, non 0 is unipolar
             // **************************************************************
@@ -37,8 +38,8 @@ int main()
             // **************************************************************
             unsigned int randBitLen = randBitLenVec[randBitLenVecIdx]; // number of bits for random number
             // total run number is totalRound * totalIter.
-            unsigned int totalRound = 1; // each round uses different random number generator
-            unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
+            unsigned int totalRound = 1000; // each round uses different random number generator
+            unsigned int totalIter = 1000; // each iteration uses evaluate different value for a given round
             float thdBias = 0.05; // threhold to consider convergence
 
             // **************************************************************
@@ -107,8 +108,8 @@ int main()
                 unsigned int seedInitIdx = 1+roundIdx;
                 unsigned int delay = 0;
                 // random number generator
-                SystemRandMulti rngInst;
-                // SOBOLMulti rngInst;
+                // SystemRandMulti rngInst;
+                SOBOLMulti rngInst;
                 // LFSRMulti rngInst;
                 // RACELMulti rngInst;
                 rngInst.Init(inBSNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
@@ -167,15 +168,15 @@ int main()
                     }
 
                     // sync/desync input bs
-                    Synchronizer SyncInst;
-                    // DeSynchronizer SyncInst;
+                    // Synchronizer SyncInst;
+                    DeSynchronizer SyncInst;
                     if (inBSNum == 2)
                     {
                         SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
                     }
 
                     CFMUL computeInst;
-                    computeInst.Init(probVec, depthSync, wSize, thdBias, unipolar, "computeInst");
+                    computeInst.Init(probVec, depthSync, shift, wSize, thdBias, unipolar, "computeInst");
                     for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                     {
                         // set bit stream
