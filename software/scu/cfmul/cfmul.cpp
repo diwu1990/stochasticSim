@@ -9,7 +9,7 @@ void CFMUL::Help()
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
-    printf("Parameters: Input Probability, Window Size, Threshold for Window Bias, Instance Name.\n");
+    printf("Parameters: Input Probability, Window Size, Threshold for Window Bias, Unipolar Enable, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the result bit.\n");
@@ -37,13 +37,13 @@ void CFMUL::Help()
     printf("**********************************************************\n");
 }
 
-void CFMUL::Init(vector<float> param1, unsigned int param2, unsigned int param3, unsigned int param4, float param5, string param6)
+void CFMUL::Init(vector<float> param1, unsigned int param2, unsigned int param3, float param4, unsigned int param5, string param6)
 {
     iProb = param1;
     depthSync = param2;
-    unipolar = param3;
-    wSize = param4;
-    thdBias = param5;
+    wSize = param3;
+    thdBias = param4;
+    unipolar = param5;
     m_name = param6;
 
     iDim = (unsigned int)iProb.size();
@@ -64,11 +64,17 @@ void CFMUL::Init(vector<float> param1, unsigned int param2, unsigned int param3,
     
     upperBound = (unsigned int)pow(2,depthSync)-1;
     halfBound = (unsigned int)pow(2,depthSync-1);
+    bound1 = halfBound - (unsigned int)pow(2,depthSync-3);
+    bound2 = halfBound + (unsigned int)pow(2,depthSync-3);
     cnt = halfBound;
 
-    rngInst.Init(1,1,0,depthSync,"random","rngInst");
+    // rngInst.Init(1,5,0,depthSync,"incremental","rngInst");
+    rngInst.Init(1,5,0,depthSync,"random","rngInst");
     rngInst.SeqGen();
     rngIdx = 0;
+
+    regenBit = 0;
+    lastBit = 1;
 
     #ifdef PERFSIM
         oBS.resize(oDim);
@@ -90,23 +96,40 @@ void CFMUL::Calc(vector<char> param1)
 {
     iBit = param1;
 
-    if (iBit[1] == 1)
+    if (cnt > bound1 && cnt < bound2)
     {
-        if (cnt < upperBound)
+        if (iBit[1] == 1 & lastBit == 1)
         {
-            cnt = cnt + 1;
+            cnt += 2;
+        }
+        else if(iBit[1] == 0 & lastBit == 0)
+        {
+            cnt -= 2;
+        }
+        else if (iBit[1] == 1 & lastBit == 0)
+        {
+            cnt += 1;
+        }
+        else if(iBit[1] == 0 & lastBit == 1)
+        {
+            cnt -= 1;
         }
     }
     else
     {
-        if (cnt > 0)
+        if (iBit[1] == 1 && cnt < upperBound)
         {
-            cnt = cnt - 1;
+            cnt += 1;
+        }
+        else if(iBit[1] == 0 && cnt > 0)
+        {
+            cnt -= 1;
         }
     }
 
+    lastBit = iBit[1];
+
     rngIdx += iBit[0];
-    
 
     if (cnt >= rngInst.OutSeq()[0][rngIdx])
     {
@@ -125,7 +148,6 @@ void CFMUL::Calc(vector<char> param1)
     {
         oBit[0] = iBit[0] & regenBit;
     }
-    // printf("inBit0(%d), inBit0(%d), cnt(%d), rngIdx(%d), random(%d): oBit(%d)\n", iBit[0], iBit[1], cnt, rngIdx, rngInst.OutSeq()[0][rngIdx], oBit[0]);
 
     #ifdef PERFSIM
         iLen++;
@@ -171,6 +193,7 @@ void CFMUL::Calc(vector<char> param1)
             }
         }
     #endif
+    // printf("inBit0(%d), inBit1(%d), cnt(%d), rngIdx(%d), random(%d): oBit(%d), wProb(%f)\n", iBit[0], iBit[1], cnt, rngIdx, rngInst.OutSeq()[0][rngIdx], oBit[0], wProb[0]);
 }
 
 vector<char> CFMUL::OutBit()

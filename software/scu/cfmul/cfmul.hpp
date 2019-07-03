@@ -20,9 +20,9 @@ class CFMUL
     // initial input
     vector<float> iProb;
     unsigned int depthSync;
-    unsigned int unipolar;
     unsigned int wSize;
     float thdBias;
+    unsigned int unipolar;
     string m_name;
 
     // calc input
@@ -32,9 +32,12 @@ class CFMUL
     unsigned int iDim;
     unsigned int upperBound;
     unsigned int halfBound;
+    unsigned int bound1;
+    unsigned int bound2;
     unsigned int cnt;
     unsigned int rngIdx;
     char regenBit;
+    char lastBit;
     unsigned int oDim;
     #ifdef PERFSIM
         unsigned int iLen;
@@ -55,7 +58,7 @@ class CFMUL
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, string);
+    void Init(vector<float>, unsigned int, unsigned int, float, unsigned int, string);
     void Calc(vector<char>);
     vector<char> OutBit();
 
