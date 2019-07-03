@@ -43,7 +43,7 @@ void ANDMUL::Init(vector<float> param1, unsigned int param2, float param3, unsig
     wSize = param2;
     thdBias = param3;
     unipolar = param4;
-    m_name = param4;
+    m_name = param5;
 
     iDim = (unsigned int)iProb.size();
     if (iDim != 2)
