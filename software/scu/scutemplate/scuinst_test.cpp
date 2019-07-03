@@ -58,6 +58,7 @@ int main()
             vector<vector<unsigned int>> SegmentedNum(segmentNum); // number of runs for each segment
             vector<float> SegmentedAvgRSE(segmentNum); // average squared error (MSE) for each segment
             vector<float> SegmentedAvgConvergenceTime(segmentNum); // average convergence time for each segment
+            vector<unsigned int> SegmentedTotalNum(segmentNum); // average squared error (MSE) for each segment
 
             vector<float> RSEMax(1);
             vector<float> RSEMin(1);
@@ -77,6 +78,7 @@ int main()
                 SegmentedNum[segmentIdx].resize(totalRound);
                 SegmentedAvgRSE[segmentIdx] = 0;
                 SegmentedAvgConvergenceTime[segmentIdx] = 0;
+                SegmentedTotalNum[segmentIdx] = 0;
             }
 
             vector<char> iBit(inBSNum);
@@ -256,6 +258,7 @@ int main()
                     {
                         SegmentedAvgConvergenceTime[segmentIdx] += SegmentedConvergenceTime[segmentIdx][roundIdx];
                     }
+                    SegmentedTotalNum[segmentIdx] += SegmentedNum[segmentIdx][roundIdx];
 
                     if (RSEMax[0] < SegmentedRSE[segmentIdx][roundIdx])
                     {
@@ -302,30 +305,30 @@ int main()
             printf("Iteration Per Round:         %4d\n", totalIter);
             printf("Number of Segment:           %4d\n\n", segmentNum-1);
 
-            printf("Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:\n");
-            for (int i = 0; i < segmentNum; ++i)
+            printf("Range,  Total Num, Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:\n");
+            for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
             {
                 if (unipolar == 0)
                 {
-                    printf("%*.1f, %*.5f, %*.5f, %*.5f\n", 5, 2*((float)i/(segmentNum-1))-1, 23, SegmentedRSE[i][RSEMaxIndex[i]], 23, SegmentedRSE[i][RSEMinIndex[i]], 23, SegmentedAvgRSE[i]);
+                    printf("%*.1f, %10d, %*.5f, %*.5f, %*.5f\n", 5, 2*((float)segmentIdx/(segmentNum-1))-1, SegmentedTotalNum[segmentIdx], 23, SegmentedRSE[segmentIdx][RSEMaxIndex[segmentIdx]], 23, SegmentedRSE[segmentIdx][RSEMinIndex[segmentIdx]], 23, SegmentedAvgRSE[segmentIdx]);
                 }
                 else
                 {
-                    printf("%*.1f, %*.5f, %*.5f, %*.5f\n", 5, ((float)i/(segmentNum-1)), 23, SegmentedRSE[i][RSEMaxIndex[i]], 23, SegmentedRSE[i][RSEMinIndex[i]], 23, SegmentedAvgRSE[i]);
+                    printf("%*.1f, %10d, %*.5f, %*.5f, %*.5f\n", 5, ((float)segmentIdx/(segmentNum-1)), SegmentedTotalNum[segmentIdx], 23, SegmentedRSE[segmentIdx][RSEMaxIndex[segmentIdx]], 23, SegmentedRSE[segmentIdx][RSEMinIndex[segmentIdx]], 23, SegmentedAvgRSE[segmentIdx]);
                 }
             }
             printf("\n");
 
-            printf("Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:\n");
-            for (int i = 0; i < segmentNum; ++i)
+            printf("Range,  Total Num,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:\n");
+            for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
             {
                 if (unipolar == 0)
                 {
-                    printf("%*.1f, %*.5f, %*.5f, %*.5f\n", 5, 2*((float)i/(segmentNum-1))-1, 23, SegmentedConvergenceTime[i][ConvergenceTimeMaxIndex[i]], 23, SegmentedConvergenceTime[i][ConvergenceTimeMinIndex[i]], 23, SegmentedAvgConvergenceTime[i]);
+                    printf("%*.1f, %10d, %*.5f, %*.5f, %*.5f\n", 5, 2*((float)segmentIdx/(segmentNum-1))-1, SegmentedTotalNum[segmentIdx], 23, SegmentedConvergenceTime[segmentIdx][ConvergenceTimeMaxIndex[segmentIdx]], 23, SegmentedConvergenceTime[segmentIdx][ConvergenceTimeMinIndex[segmentIdx]], 23, SegmentedAvgConvergenceTime[segmentIdx]);
                 }
                 else
                 {
-                    printf("%*.1f, %*.5f, %*.5f, %*.5f\n", 5, ((float)i/(segmentNum-1)), 23, SegmentedConvergenceTime[i][ConvergenceTimeMaxIndex[i]], 23, SegmentedConvergenceTime[i][ConvergenceTimeMinIndex[i]], 23, SegmentedAvgConvergenceTime[i]);
+                    printf("%*.1f, %10d, %*.5f, %*.5f, %*.5f\n", 5, ((float)segmentIdx/(segmentNum-1)), SegmentedTotalNum[segmentIdx], 23, SegmentedConvergenceTime[segmentIdx][ConvergenceTimeMaxIndex[segmentIdx]], 23, SegmentedConvergenceTime[segmentIdx][ConvergenceTimeMinIndex[segmentIdx]], 23, SegmentedAvgConvergenceTime[segmentIdx]);
                 }
             }
             printf("============================================================================================\n");
