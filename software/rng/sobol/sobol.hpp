@@ -14,7 +14,7 @@ using namespace std;
 // I4 means Int 4 Byte, 32 bit in total
 int i4_bit_hi1 ( int n ); // returns the position of the high 1 bit base 2 in an integer.
 int i4_bit_lo0 ( int n ); // returns the position of the low 0 bit base 2 in an integer.
-int*  i4_sobol ( int dim_num, int *seed, float quasi[ ] ); // generates a new quasirandom Sobol vector with each call.
+void  i4_sobol ( int dim_num, int *seed, float quasi[ ] , int* directionalVec); // generates a new quasirandom Sobol vector with each call.
 
 class SOBOL
 {
@@ -45,7 +45,7 @@ class SOBOL
         vector<unsigned int> OutSeq();
         vector<unsigned int> DirVec();
         vector<unsigned int> DirMem();
-        float * i4_sobol_generate();
+        void i4_sobol_generate(float*);
 };
 
 #endif

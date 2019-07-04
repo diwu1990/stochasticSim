@@ -1,5 +1,8 @@
 #include "sobol.hpp"
 
+# define DIM_MAX2 1111
+# define LOG_MAX 30
+
 void SOBOL::Init(unsigned int param1, unsigned int param2, unsigned int param3, string param4)
 {
     sobolLen = param1;
@@ -131,7 +134,7 @@ void SOBOL::SeqGen()
     // float *i4_sobol_generate ( int m, int n, int skip )
     float* floatVec;
     floatVec = new float[dimNum * outputLen];
-    floatVec = SOBOL::i4_sobol_generate();
+    SOBOL::i4_sobol_generate(floatVec);
     for (int i = 0; i < outputLen; ++i)
     {
         outSeq[i] = (unsigned int) (floatVec[dimNum*i+dimNum-1] * outputLen);
@@ -145,9 +148,10 @@ void SOBOL::SeqGen()
     {
         outSeq[i] = delayed[i];
     }
+    delete(floatVec);
 }
 
-float * SOBOL::i4_sobol_generate ()
+void SOBOL::i4_sobol_generate (float* r)
 // float * SOBOL::i4_sobol_generate ( int m, int n, int skip )
 
 //****************************************************************************80
@@ -180,20 +184,17 @@ float * SOBOL::i4_sobol_generate ()
 //
 {
   int j;
-  float *r;
   int seed;
 
   int *dirVecPtr;
   
-  dirVecPtr = new int[sobolLen];
-
-  r = new float[dimNum*outputLen];
+  dirVecPtr = new int[LOG_MAX];
 
   seed = 0;
 
   for ( j = 0; j < outputLen; j++ )
   {
-    dirVecPtr = i4_sobol ( dimNum, &seed, r+dimNum*j );
+     i4_sobol ( dimNum, &seed, r+dimNum*j, dirVecPtr);
   }
 
   for (int i = 0; i < sobolLen; ++i)
@@ -201,8 +202,7 @@ float * SOBOL::i4_sobol_generate ()
       dirVec[i] = (unsigned int)dirVecPtr[i];
       dirMem[i] = (unsigned int)pow(2,sobolLen-1-i)*dirVec[i];
   }
-
-  return r;
+  delete(dirVecPtr);
 }
 //****************************************************************************80
 
@@ -352,7 +352,7 @@ int i4_bit_lo0 ( int n )
 }
 //****************************************************************************80
 
-int* i4_sobol ( int dim_num, int *seed, float quasi[ ] )
+void i4_sobol ( int dim_num, int *seed, float quasi[ ] , int* directionalVec)
 
 //****************************************************************************80
 //
@@ -437,8 +437,7 @@ int* i4_sobol ( int dim_num, int *seed, float quasi[ ] )
 //    Output, float QUASI[DIM_NUM], the next quasirandom vector.
 //
 {
-# define DIM_MAX2 1111
-# define LOG_MAX 30
+
 
   static int atmost;
   static int dim_num_save = 0;
@@ -453,7 +452,7 @@ int* i4_sobol ( int dim_num, int *seed, float quasi[ ] )
   int m;
   static int maxcol;
   int newv;
-  static int directionalVec[LOG_MAX];
+  // static int directionalVec[LOG_MAX];
   static int poly[DIM_MAX2] =
   {
         1,    3,    7,   11,   13,   19,   25,   37,   59,   47,
@@ -14041,11 +14040,11 @@ int* i4_sobol ( int dim_num, int *seed, float quasi[ ] )
   seed_save = *seed;
   *seed = *seed + 1;
 
-  return directionalVec;
+  // return directionalVec;
   // return (unsigned int)(l-1);
-# undef DIM_MAX2
-# undef LOG_MAX
+
 }
 //****************************************************************************80
-
+# undef DIM_MAX2
+# undef LOG_MAX
 
