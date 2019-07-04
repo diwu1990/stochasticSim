@@ -20,7 +20,6 @@ int main()
     srand(time(NULL));
     vector<unsigned int> inBSNumVec{2};
     vector<unsigned int> randBitLenVec{6, 8, 10};
-
     for (unsigned int unipolar = 0; unipolar < 2; ++unipolar)
     {
         for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
@@ -177,8 +176,8 @@ int main()
                             SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
                         }
 
-                        CFMUL * computeInst = new CFMUL;
-                        computeInst->Init(probVec, depthSync, shift, wSize, thdBias, unipolar, "computeInst");
+                        CFMUL computeInst;
+                        computeInst.Init(probVec, depthSync, shift, wSize, thdBias, unipolar, "computeInst");
                         for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                         {
                             // set bit stream
@@ -193,12 +192,12 @@ int main()
 
                             // when inBSNum is 2, we can do sync/desync
                             // SyncInst.Calc(iBit);
-                            // computeInst->Calc(SyncInst.OutBit());
+                            // computeInst.Calc(SyncInst.OutBit());
 
                             // not doing sync/desync
-                            computeInst->Calc(iBit);
-                            // computeInst->Calc(iBit, iRandNum);
-                            // printf("window bias      (%f)\n", computeInst->WBias()[0]);
+                            computeInst.Calc(iBit);
+                            // computeInst.Calc(iBit, iRandNum);
+                            // printf("window bias      (%f)\n", computeInst.WBias()[0]);
                         }
 
 
@@ -206,23 +205,22 @@ int main()
                         // {
                         //     printf("input prob %d     (%f)\n", inIdx, probVec[inIdx]);
                         // }
-                        // printf("theoretical prob (%f)\n", computeInst->TheoProb()[0]);
-                        // printf("window prob      (%f)\n", computeInst->WProb()[0]);
-                        // printf("window bias      (%f)\n", computeInst->WBias()[0]);
-                        // printf("converge cTime   (%d)\n", computeInst->CTime()[0]);
+                        // printf("theoretical prob (%f)\n", computeInst.TheoProb()[0]);
+                        // printf("window prob      (%f)\n", computeInst.WProb()[0]);
+                        // printf("window bias      (%f)\n", computeInst.WBias()[0]);
+                        // printf("converge cTime   (%d)\n", computeInst.CTime()[0]);
                         
                         if (unipolar == 0)
                         {
-                            segNum = (unsigned int)floor((computeInst->TheoProb()[0]+1)/2*(segmentNum-1));
+                            segNum = (unsigned int)floor((computeInst.TheoProb()[0]+1)/2*(segmentNum-1));
                         }
                         else
                         {
-                            segNum = (unsigned int)floor(computeInst->TheoProb()[0]*(segmentNum-1));
+                            segNum = (unsigned int)floor(computeInst.TheoProb()[0]*(segmentNum-1));
                         }
-                        SegmentedRSE[segNum][roundIdx] += computeInst->WBias()[0] * computeInst->WBias()[0];
+                        SegmentedRSE[segNum][roundIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
                         SegmentedNum[segNum][roundIdx] += 1;
-                        SegmentedConvergenceTime[segNum][roundIdx] += computeInst->CTime()[0];
-                        delete computeInst;
+                        SegmentedConvergenceTime[segNum][roundIdx] += computeInst.CTime()[0];
                     }
                     for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
                     {

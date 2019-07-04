@@ -43,7 +43,8 @@ class CFMUL
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
-    SOBOLMulti rngInst;
+    // SOBOLMulti rngInst;
+    LFSRMulti rngInst;
 
     // output
     vector<char> oBit;
