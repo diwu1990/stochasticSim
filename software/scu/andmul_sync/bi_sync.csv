@@ -1,0 +1,105 @@
+============================================================================================
+Total execution time: 10.234162
+
+Computing Unit Configuration
+Number of Input Bit Streams:    2
+Depth of Sync:                  6
+Depth of Buffer:                1
+Unipolar Enbale:                0
+
+Evaluation Configuration:
+Random Number Length:           6
+Bit Stream Length:             64
+Threshold for Convergence:   0.05
+Window Size for Convergence:   64
+Total Round:                  100
+Iteration Per Round:         1000
+Number of Segment:              5
+
+Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
+ -1.0,                 0.04966,                 0.03018,                 0.03866
+ -0.6,                 0.16860,                 0.12973,                 0.15264
+ -0.2,                 0.51850,                 0.40152,                 0.44422
+  0.2,                 0.35490,                 0.25717,                 0.30286
+  0.6,                 0.16832,                 0.09834,                 0.14801
+  1.0,                    -nan,                    -nan,                 0.00000
+
+Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
+ -1.0,                56.37500,                49.69048,                53.38630
+ -0.6,                63.64948,                62.69340,                63.20883
+ -0.2,                63.97466,                63.54000,                63.87717
+  0.2,                63.99422,                63.03175,                63.83789
+  0.6,                64.00000,                62.39024,                63.26797
+  1.0,                    -nan,                    -nan,                 0.00000
+============================================================================================
+
+============================================================================================
+Total execution time: 54.356599
+
+Computing Unit Configuration
+Number of Input Bit Streams:    2
+Depth of Sync:                  8
+Depth of Buffer:                1
+Unipolar Enbale:                0
+
+Evaluation Configuration:
+Random Number Length:           8
+Bit Stream Length:            256
+Threshold for Convergence:   0.05
+Window Size for Convergence:  256
+Total Round:                  100
+Iteration Per Round:         1000
+Number of Segment:              5
+
+Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
+ -1.0,                 0.03249,                 0.02137,                 0.02496
+ -0.6,                 0.15081,                 0.11791,                 0.13723
+ -0.2,                 0.46046,                 0.35606,                 0.42370
+  0.2,                 0.32065,                 0.23731,                 0.28891
+  0.6,                 0.15124,                 0.09024,                 0.12441
+  1.0,                    -nan,                    -nan,                 0.00000
+
+Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
+ -1.0,               183.18750,               114.11905,               155.32341
+ -0.6,               249.99460,               234.37888,               243.87091
+ -0.2,               254.88109,               252.54945,               253.95131
+  0.2,               254.79024,               247.51042,               251.85429
+  0.6,               251.95349,               203.15625,               234.41571
+  1.0,                    -nan,                    -nan,                 0.00000
+============================================================================================
+
+============================================================================================
+Total execution time: 377.619494
+
+Computing Unit Configuration
+Number of Input Bit Streams:    2
+Depth of Sync:                 10
+Depth of Buffer:                1
+Unipolar Enbale:                0
+
+Evaluation Configuration:
+Random Number Length:          10
+Bit Stream Length:           1024
+Threshold for Convergence:   0.05
+Window Size for Convergence: 1024
+Total Round:                  100
+Iteration Per Round:         1000
+Number of Segment:              5
+
+Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
+ -1.0,                 0.02539,                 0.01481,                 0.02113
+ -0.6,                 0.14764,                 0.11283,                 0.13260
+ -0.2,                 0.46356,                 0.36052,                 0.41602
+  0.2,                 0.32550,                 0.22575,                 0.28068
+  0.6,                 0.15193,                 0.08838,                 0.11852
+  1.0,                    -nan,                    -nan,                 0.00000
+
+Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
+ -1.0,               588.77502,               200.75471,               385.61884
+ -0.6,               981.01660,               859.94208,               926.27045
+ -0.2,              1014.21875,               992.19238,              1005.02539
+  0.2,              1014.04999,               956.87500,               987.39166
+  0.6,               984.20410,               738.39471,               870.87671
+  1.0,                    -nan,                    -nan,                 0.00000
+============================================================================================
+
