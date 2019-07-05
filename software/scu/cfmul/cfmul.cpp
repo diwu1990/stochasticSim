@@ -128,6 +128,7 @@ void CFMUL::Calc(vector<char> param1)
         }
     }
 
+
     lastBit = iBit[1];
 
     rngIdx += iBit[0];
@@ -147,7 +148,7 @@ void CFMUL::Calc(vector<char> param1)
     }
     else
     {
-        oBit[0] = iBit[0] & regenBit;
+        oBit[0] = (iBit[0] & regenBit);
     }
 
     #ifdef PERFSIM

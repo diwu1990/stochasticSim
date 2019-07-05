@@ -19,14 +19,15 @@ int main()
 {
     srand(time(NULL));
     vector<unsigned int> inBSNumVec{2};
-    vector<unsigned int> randBitLenVec{6, 8, 10};
-    for (unsigned int unipolar = 0; unipolar < 2; ++unipolar)
+    vector<unsigned int> randBitLenVec{8};
+    for (unsigned int unipolar = 0; unipolar < 1; ++unipolar)
     {
         for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
         {
             for (int randBitLenVecIdx = 0; randBitLenVecIdx < randBitLenVec.size(); ++randBitLenVecIdx)
             {
-                for (unsigned int shift = 1; unipolar < randBitLenVec[randBitLenVecIdx]; ++unipolar)
+                // for (unsigned int shift = 1; shift < randBitLenVec[randBitLenVecIdx]; ++shift)
+                // for (unsigned int shift = 4; shift < 5; ++shift)
                 {
                     // **************************************************************
                     // configuration for computing units
@@ -42,7 +43,7 @@ int main()
                     unsigned int randBitLen = randBitLenVec[randBitLenVecIdx]; // number of bits for random number
                     // total run number is totalRound * totalIter.
                     unsigned int totalRound = 100; // each round uses different random number generator
-                    unsigned int totalIter = 1000; // each iteration uses evaluate different value for a given round
+                    unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
                     float thdBias = 0.05; // threhold to consider convergence
     
                     // **************************************************************
