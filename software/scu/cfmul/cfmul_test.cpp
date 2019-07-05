@@ -26,7 +26,7 @@ int main()
         {
             for (int randBitLenVecIdx = 0; randBitLenVecIdx < randBitLenVec.size(); ++randBitLenVecIdx)
             {
-                for (unsigned int shift = 1; unipolar < randBitLenVec[randBitLenVecIdx]; ++unipolar)
+                for (unsigned int shift = 1; shift < randBitLenVec[randBitLenVecIdx]; ++shift)
                 {
                     // **************************************************************
                     // configuration for computing units
