@@ -133,7 +133,7 @@ void CFMUL::Calc(vector<char> param1)
 
     rngIdx += iBit[0];
 
-    if (cnt >= rngInst.OutSeq()[0][rngIdx])
+    if (cnt > rngInst.OutSeq()[0][rngIdx])
     {
         regenBit = 1;
     }
