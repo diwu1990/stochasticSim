@@ -10,6 +10,8 @@
 #include "perfsim.hpp"
 #include "sobol.hpp"
 #include "sobolmulti.hpp"
+#include "lfsr.hpp"
+#include "lfsrmulti.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
@@ -19,8 +21,10 @@ class CFMUL
 {
     // initial input
     vector<float> iProb;
-    unsigned int depthSync;
-    unsigned int shift;
+    unsigned int cfree;
+    unsigned int rngDepth;
+    unsigned int inStream;
+    unsigned int inSWindow;
     unsigned int wSize;
     float thdBias;
     unsigned int unipolar;
@@ -35,10 +39,15 @@ class CFMUL
     unsigned int halfBound;
     unsigned int bound1;
     unsigned int bound2;
+
     unsigned int cnt;
+    unsigned int cnt_inv;
     unsigned int rngIdx;
+    unsigned int rngIdx_inv;
     char regenBit;
+    char regenBit_inv;
     char lastBit;
+    char lastBit_inv;
     unsigned int oDim;
     #ifdef PERFSIM
         unsigned int iLen;
@@ -60,7 +69,7 @@ class CFMUL
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, unsigned int, string);
+    void Init(vector<float>, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float, unsigned int, string);
     void Calc(vector<char>);
     vector<char> OutBit();
 
