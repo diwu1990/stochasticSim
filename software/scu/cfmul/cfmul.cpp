@@ -89,8 +89,18 @@ void CFMUL::Init(vector<float> param1, unsigned int param2, unsigned int param3,
     {
         // correlation free is enabled, then the internal rng is required.
         rngInst.Init(1,9,0,rngDepth,"incremental","rngInst");
-        rngInst.SeqPrint();
-        printf("%d\n", rngDepth);
+        rngInst.SeqGen();
+
+        if (inStream == 0)
+        {
+            vector<float> probVec(1);
+            probVec[0] = iProb[1];
+            vector<unsigned int> bitLengthVec(1);
+            bitLengthVec[0] = rngDepth;
+            num2bitMultiInst.Init(probVec, bitLengthVec, rngInst.OutSeq(), unipolar, "num2bitMultiInst");
+            num2bitMultiInst.SeqGen();
+        }
+        
         rngIdx = 0;
         rngIdx_inv = 0;
 
@@ -131,13 +141,31 @@ void CFMUL::Calc(vector<char> param1)
         if (inStream == 0)
         {
             // in stream mode is disabled, input[1] is static. All bits of input[1] are generated via static input value with internal RNG.
+            if (unipolar == 0)
+            {
+                // bipolar mode, XNOR gate
+                // a normal AND gate and an inv AND gate into an OR gate
+                oBit[0] = (iBit[0] & num2bitMultiInst.OutSeq()[0][rngIdx]) | ((1-iBit[0]) & (1-num2bitMultiInst.OutSeq()[0][rngIdx_inv]));
+
+                rngIdx += iBit[0];
+                rngIdx %= (upperBound+1);
+                rngIdx_inv += (1 - iBit[0]);
+                rngIdx_inv %= (upperBound+1);
+            }
+            else
+            {
+                // unipolar mode, AND gate
+                oBit[0] = iBit[0] & num2bitMultiInst.OutSeq()[0][rngIdx];
+
+                rngIdx += iBit[0];
+                rngIdx %= (upperBound+1);
+            }
         }
         else
         {
             // in stream mode is enabled, input[1] is dynamically regenrated.
             if (unipolar == 0)
             {
-                /* code */
                 // bipolar mode, XNOR gate
                 // normal AND gate
                 if (cnt > bound1 && cnt < bound2)
@@ -162,6 +190,9 @@ void CFMUL::Calc(vector<char> param1)
                         cnt -= 1;
                     }
                 }
+                lastBit = iBit[1];
+                rngIdx += iBit[0];
+                rngIdx %= (upperBound+1);
 
                 // inv AND gate
                 if (cnt_inv > bound1 && cnt_inv < bound2)
@@ -186,12 +217,9 @@ void CFMUL::Calc(vector<char> param1)
                         cnt_inv -= 1;
                     }
                 }
-
-                lastBit = iBit[1];
                 lastBit_inv = (1 - iBit[1]);
-
-                rngIdx += iBit[0];
                 rngIdx_inv += (1 - iBit[0]);
+                rngIdx_inv %= (upperBound+1);
 
                 if (cnt > rngInst.OutSeq()[0][rngIdx])
                 {
@@ -311,7 +339,8 @@ void CFMUL::Calc(vector<char> param1)
             }
         }
     #endif
-    printf("inBit0(%d), inBit1(%d), cnt(%d), rngIdx(%d), random(%d): oBit(%d), wProb(%f)\n", iBit[0], iBit[1], cnt, rngIdx, rngInst.OutSeq()[0][rngIdx], oBit[0], wProb[0]);
+    // printf("inBit0(%d), inBit1(%d), cnt(%d), rngIdx(%d), random(%d): oBit(%d), wProb(%f)\n", iBit[0], iBit[1], cnt, rngIdx, rngInst.OutSeq()[0][rngIdx], oBit[0], wProb[0]);
+    // printf("inBit0(%d), inBit1(%d), cnt_inv(%d), rngIdx_inv(%d), random(%d): oBit(%d), wProb(%f)\n", iBit[0], iBit[1], cnt_inv, rngIdx_inv, rngInst.OutSeq()[0][rngIdx_inv], oBit[0], wProb[0]);
 }
 
 vector<char> CFMUL::OutBit()

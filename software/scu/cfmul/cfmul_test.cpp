@@ -22,9 +22,9 @@ int main()
     vector<unsigned int> randBitLenVec{8};
     for (unsigned int cfree = 1; cfree < 2; ++cfree)
     {
-        for (unsigned int instream = 1; instream < 2; ++instream)
+        for (unsigned int instream = 0; instream < 1; ++instream)
         {
-            for (unsigned int unipolar = 1; unipolar < 2; ++unipolar)
+            for (unsigned int unipolar = 0; unipolar < 2; ++unipolar)
             {
                 for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
                 {
@@ -43,8 +43,8 @@ int main()
                         // **************************************************************
                         unsigned int randBitLen = randBitLenVec[randBitLenVecIdx]; // number of bits for random number
                         // total run number is totalRound * totalIter.
-                        unsigned int totalRound = 1; // each round uses different random number generator
-                        unsigned int totalIter = 1; // each iteration uses evaluate different value for a given round
+                        unsigned int totalRound = 100; // each round uses different random number generator
+                        unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
                         float thdBias = 0.05; // threhold to consider convergence
         
                         // **************************************************************
@@ -207,14 +207,14 @@ int main()
                                 }
         
         
-                                for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
-                                {
-                                    printf("input prob %d     (%f)\n", inIdx, probVec[inIdx]);
-                                }
-                                printf("theoretical prob (%f)\n", computeInst.TheoProb()[0]);
-                                printf("window prob      (%f)\n", computeInst.WProb()[0]);
-                                printf("window bias      (%f)\n", computeInst.WBias()[0]);
-                                printf("converge cTime   (%d)\n", computeInst.CTime()[0]);
+                                // for (int inIdx = 0; inIdx < inBSNum; ++inIdx)
+                                // {
+                                //     printf("input prob %d     (%f)\n", inIdx, probVec[inIdx]);
+                                // }
+                                // printf("theoretical prob (%f)\n", computeInst.TheoProb()[0]);
+                                // printf("window prob      (%f)\n", computeInst.WProb()[0]);
+                                // printf("window bias      (%f)\n", computeInst.WBias()[0]);
+                                // printf("converge cTime   (%d)\n", computeInst.CTime()[0]);
                                 
                                 if (unipolar == 0)
                                 {

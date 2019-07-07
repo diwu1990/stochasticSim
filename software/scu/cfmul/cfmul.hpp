@@ -12,6 +12,8 @@
 #include "sobolmulti.hpp"
 #include "lfsr.hpp"
 #include "lfsrmulti.hpp"
+#include "randNum2Bit.hpp"
+#include "randNum2BitMulti.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
@@ -54,6 +56,8 @@ class CFMUL
     #endif
     SOBOLMulti rngInst;
     // LFSRMulti rngInst;
+
+    RandNum2BitMulti num2bitMultiInst;
 
     // output
     vector<char> oBit;
