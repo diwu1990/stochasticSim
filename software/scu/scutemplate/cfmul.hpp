@@ -1,6 +1,6 @@
 #pragma once
-#ifndef MUXADD_H
-#define MUXADD_H
+#ifndef CFMUL_H
+#define CFMUL_H
 
 #include <cstdio>
 #include <vector>
@@ -8,15 +8,25 @@
 #include <string>
 #include <iostream>
 #include "perfsim.hpp"
+#include "sobol.hpp"
+#include "sobolmulti.hpp"
+#include "lfsr.hpp"
+#include "lfsrmulti.hpp"
+#include "randNum2Bit.hpp"
+#include "randNum2BitMulti.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class MUXADD
+class CFMUL
 {
     // initial input
     vector<float> iProb;
+    unsigned int cfree;
+    unsigned int rngDepth;
+    unsigned int inStream;
+    unsigned int inSWindow;
     unsigned int wSize;
     float thdBias;
     unsigned int unipolar;
@@ -24,14 +34,30 @@ class MUXADD
 
     // calc input
     vector<char> iBit;
-    vector<unsigned int> randNum;
 
     // internal
     unsigned int iDim;
+    unsigned int upperBound;
+    unsigned int halfBound;
+    unsigned int bound1;
+    unsigned int bound2;
+
+    unsigned int cnt;
+    unsigned int cnt_inv;
+    unsigned int rngIdx;
+    unsigned int rngIdx_inv;
+    char regenBit;
+    char regenBit_inv;
+    char lastBit;
+    char lastBit_inv;
     unsigned int oDim;
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
+    SOBOLMulti rngInst;
+    // LFSRMulti rngInst;
+
+    RandNum2BitMulti num2bitMultiInst;
 
     // output
     vector<char> oBit;
@@ -47,8 +73,8 @@ class MUXADD
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, float, unsigned int, string);
-    void Calc(vector<char>, vector<unsigned int>);
+    void Init(vector<float>, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float, unsigned int, string);
+    void Calc(vector<char>);
     vector<char> OutBit();
 
     #ifdef PERFSIM
