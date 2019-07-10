@@ -49,7 +49,7 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsign
     // iDim check, have to be power of 2
     if(ceil(log2(iDim)) != floor(log2(iDim)))
     {
-        printf("Warning: Input dimension of CFADD instantance is not power of 2.\n");
+        printf("Info: Input dimension of CFADD instantance is not power of 2.\n");
     }
 
     oDim = 1;

@@ -11,26 +11,26 @@ CONV2D::~CONV2D(){}
 void CONV2D::Init(vector<vector<vector<char>>> param1, vector<vector<vector<char>>> param2, vector<vector<unsigned int>> param3, string param4)
 {
     // vector<vector<vector<char>>> iWeight;
- //    vector<vector<vector<char>>> iFeature;
- //    vector<vector<float>> iWeightProb;
- //    vector<vector<float>> iFeatureProb;
- //    vector<vector<float>> oFeatureProb;
- //    vector<vector<unsigned int>> randNum;
+    //    vector<vector<vector<char>>> iFeature;
+    //    vector<vector<float>> iWeightProb;
+    //    vector<vector<float>> iFeatureProb;
+    //    vector<vector<float>> oFeatureProb;
+    //    vector<vector<unsigned int>> randNum;
 
- //    unsigned int weightDim;
- //    unsigned int featureDim;
- //    unsigned int seqLength;
- //    vector<vector<vector<char>>> oFeature;
- //    vector<vector<float>> theoPRrob;
- //    vector<vector<vector<float>>> realProb;
- //    vector<vector<float>> finalRealProb;
- //    vector<vector<vector<float>>> errRate;
- //    vector<vector<float>> finalErrRate;
- //    vector<float> mse;
- //    float finalMSE;
- //    vector<unsigned int> lowErrLen;
- //    float avgLowErrLen;
- //    string m_name;
+    //    unsigned int weightDim;
+    //    unsigned int featureDim;
+    //    unsigned int seqLength;
+    //    vector<vector<vector<char>>> oFeature;
+    //    vector<vector<float>> theoPRrob;
+    //    vector<vector<vector<float>>> realProb;
+    //    vector<vector<float>> finalRealProb;
+    //    vector<vector<vector<float>>> errRate;
+    //    vector<vector<float>> finalErrRate;
+    //    vector<float> mse;
+    //    float finalMSE;
+    //    vector<unsigned int> lowErrLen;
+    //    float avgLowErrLen;
+    //    string m_name;
 
     iWeight = param1;
     iFeature = param2;
@@ -360,7 +360,7 @@ vector<float> CONV2D::MSE()
     return mse;
 }
 
-vector<unsigned int> CONV2D::LowErrLen()
+vector<unsigned int> CONV2D::CTime()
 {
     // printf("Low Err Len:\n");
     // for (int i = 0; i < seqDim; ++i)
@@ -371,7 +371,7 @@ vector<unsigned int> CONV2D::LowErrLen()
     return lowErrLen;
 }
 
-float CONV2D::AvgLowErrLen()
+float CONV2D::AvgCTime()
 {
     // printf("Avg Low Err Len:\n");
     // printf("%u\n", avgLowErrLen);
