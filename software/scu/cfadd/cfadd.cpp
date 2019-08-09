@@ -9,7 +9,7 @@ void CFADD::Help()
 
     printf("1. inst.Init() method:\n");
     printf("Configure the current inst.\n");
-    printf("Parameters: Input Probability, Window Size, Threshold for Window Bias, Unipolar Enable, Instance Name.\n");
+    printf("Parameters: Input Probability, Scaled ADD Endable, Window Size, Threshold for Window Bias, Unipolar Enable, Instance Name.\n");
 
     printf("2. inst.Calc() method:\n");
     printf("Calculate the result bit.\n");
@@ -37,13 +37,15 @@ void CFADD::Help()
     printf("**********************************************************\n");
 }
 
-void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsigned int param4, string param5)
+void CFADD::Init(vector<float> param1, unsigned int param2, unsigned int param3, unsigned int param4, float param5, unsigned int param6, string param7)
 {
     iProb = param1;
-    wSize = param2;
-    thdBias = param3;
-    unipolar = param4;
-    m_name = param5;
+    scaled = param2;
+    depthSync = param3;
+    wSize = param4;
+    thdBias = param5;
+    unipolar = param6;
+    m_name = param7;
 
     iDim = (unsigned int)iProb.size();
     // iDim check, have to be power of 2
@@ -64,7 +66,21 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsign
     }
     parallel_cnt = 0;
     accumulator = 0;
+    signed_accumulator = 0;
+    offset_accumulator = 0;
+    theoOutOne = 0;
     upper = iDim;
+    if (unipolar == 1)
+    {
+        offset = 0;
+    }
+    else
+    {
+        offset = (int)(iDim-1);
+    }
+    outOneCnt = 0;
+
+    // printf("%d, %d, %d\n", signed_acc_upper, signed_acc_lower, offset);
 
     #ifdef PERFSIM
         oBS.resize(oDim);
@@ -81,7 +97,21 @@ void CFADD::Init(vector<float> param1, unsigned int param2, float param3, unsign
             {
                 theoProb[i] += iProb[j];
             }
-            theoProb[i] /= iDim;
+            if (scaled == 1)
+            {
+                theoProb[i] /= iDim;
+            }
+            else
+            {
+                if (theoProb[i] > 1)
+                {
+                    theoProb[i] = 1;
+                }
+                else if (theoProb[i] < -1)
+                {
+                    theoProb[i] = -1;
+                }
+            }
             cTime[i] = 0;
         }
     #endif
@@ -97,23 +127,43 @@ void CFADD::Calc(vector<char> param1)
         parallel_cnt += iBit[i];
         // printf("%d,", iBit[i]);
     }
-    // printf("===>%d, %d\n", parallel_cnt, accumulator);
-    accumulator += (parallel_cnt%iDim);
-    if (parallel_cnt >= upper)
+
+    if (scaled == 1)
     {
-        oBit[0] = 1;
+        // printf("===>%d, %d\n", parallel_cnt, accumulator);
+        accumulator += (parallel_cnt%iDim);
+        if (parallel_cnt >= upper)
+        {
+            oBit[0] = 1;
+        }
+        else
+        {
+            if (accumulator >= upper)
+            {
+                oBit[0] = 1;
+                accumulator = (accumulator%iDim);
+            }
+            else
+            {
+                oBit[0] = 0;
+            }
+        }
     }
     else
     {
-        if (accumulator >= upper)
+        signed_accumulator += parallel_cnt*2;
+        offset_accumulator += offset;
+        theoOutOne = signed_accumulator - offset_accumulator;
+        if (theoOutOne > outOneCnt)
         {
             oBit[0] = 1;
-            accumulator = (accumulator%iDim);
         }
         else
         {
             oBit[0] = 0;
         }
+        outOneCnt += (oBit[0]*2);
+        // printf("===>%d, %d, %d, %d, %d, %d\n", parallel_cnt, signed_accumulator, offset_accumulator, theoOutOne, outOneCnt, oBit[0]);
     }
 
     #ifdef PERFSIM

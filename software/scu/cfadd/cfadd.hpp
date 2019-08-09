@@ -17,6 +17,8 @@ class CFADD
 {
     // initial input
     vector<float> iProb; // input prob, have to be 2^N
+    unsigned int scaled;
+    unsigned int depthSync;
     unsigned int wSize;
     float thdBias; // threshold to consider convergence
     unsigned int unipolar;
@@ -31,6 +33,13 @@ class CFADD
     unsigned int parallel_cnt;
     unsigned int accumulator;
     unsigned int upper;
+
+    int signed_accumulator;
+    int offset_accumulator;
+    int theoOutOne;
+    int offset;
+    int outOneCnt;
+    
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
@@ -49,7 +58,7 @@ class CFADD
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, float, unsigned int, string);
+    void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, unsigned int, string);
     void Calc(vector<char>);
     vector<char> OutBit();
 
