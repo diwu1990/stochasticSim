@@ -147,8 +147,11 @@ int main()
                                         val[inIdx] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
                                         if (scaled == 0)
                                         {
-                                            // val[inIdx] /= (float)max(inBSNum-1,1);
-                                            val[inIdx] = (float)((int)(val[inIdx]*pow(2,randBitLen)))/pow(2,randBitLen);
+                                            if (rand()%256>(256/(int)inBSNum))
+                                            {
+                                                val[inIdx] /= (float)max((int)inBSNum-4,1);
+                                                val[inIdx] = (float)((int)(val[inIdx]*pow(2,randBitLen)))/pow(2,randBitLen);
+                                            }
                                         }
                                     }
                                     bitLengthVec[inIdx] = randBitLen;
