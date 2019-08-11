@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CFMUL_H
-#define CFMUL_H
+#ifndef CFADD_H
+#define CFADD_H
 
 #include <cstdio>
 #include <vector>
@@ -8,27 +8,19 @@
 #include <string>
 #include <iostream>
 #include "perfsim.hpp"
-#include "sobol.hpp"
-#include "sobolmulti.hpp"
-#include "lfsr.hpp"
-#include "lfsrmulti.hpp"
-#include "randNum2Bit.hpp"
-#include "randNum2BitMulti.hpp"
 using namespace std;
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
-class CFMUL
+class CFADD
 {
     // initial input
-    vector<float> iProb;
-    unsigned int cfree;
-    unsigned int rngDepth;
-    unsigned int inStream;
-    unsigned int inSWindow;
+    vector<float> iProb; // input prob, have to be 2^N
+    unsigned int scaled;
+    unsigned int depthSync;
     unsigned int wSize;
-    float thdBias;
+    float thdBias; // threshold to consider convergence
     unsigned int unipolar;
     string m_name;
 
@@ -37,27 +29,20 @@ class CFMUL
 
     // internal
     unsigned int iDim;
-    unsigned int upperBound;
-    unsigned int halfBound;
-    unsigned int bound1;
-    unsigned int bound2;
-
-    unsigned int cnt;
-    unsigned int cnt_inv;
-    unsigned int rngIdx;
-    unsigned int rngIdx_inv;
-    char regenBit;
-    char regenBit_inv;
-    char lastBit;
-    char lastBit_inv;
     unsigned int oDim;
+    unsigned int parallel_cnt;
+    unsigned int accumulator;
+    unsigned int upper;
+
+    int signed_accumulator;
+    int offset_accumulator;
+    int theoOutOne;
+    int offset;
+    int outOneCnt;
+    
     #ifdef PERFSIM
         unsigned int iLen;
     #endif
-    SOBOLMulti rngInst;
-    // LFSRMulti rngInst;
-
-    RandNum2BitMulti num2bitMultiInst;
 
     // output
     vector<char> oBit;
@@ -73,7 +58,7 @@ class CFMUL
 
 public:
     void Help();
-    void Init(vector<float>, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float, unsigned int, string);
+    void Init(vector<float>, unsigned int, unsigned int, unsigned int, float, unsigned int, string);
     void Calc(vector<char>);
     vector<char> OutBit();
 
