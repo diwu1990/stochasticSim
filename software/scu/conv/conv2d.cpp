@@ -8,36 +8,26 @@ CONV2D::CONV2D(){}
 
 CONV2D::~CONV2D(){}
 
-void CONV2D::Init(vector<vector<vector<char>>> param1, vector<vector<vector<char>>> param2, vector<vector<unsigned int>> param3, string param4)
+void CONV2D::Init(vector<vector<vector<float>>> param1, vector<vector<vector<vector<float>>>> param2, vector<float> param3, unsigned int param4, unsigned int param5)
 {
-    // vector<vector<vector<char>>> iWeight;
-    //    vector<vector<vector<char>>> iFeature;
-    //    vector<vector<float>> iWeightProb;
-    //    vector<vector<float>> iFeatureProb;
-    //    vector<vector<float>> oFeatureProb;
-    //    vector<vector<unsigned int>> randNum;
+    iFmProb = param1;
+    wgtProb = param2;
+    biasProb = param3;
+    issame = param4;
+    stride = param5;
 
-    //    unsigned int weightDim;
-    //    unsigned int featureDim;
-    //    unsigned int seqLength;
-    //    vector<vector<vector<char>>> oFeature;
-    //    vector<vector<float>> theoPRrob;
-    //    vector<vector<vector<float>>> realProb;
-    //    vector<vector<float>> finalRealProb;
-    //    vector<vector<vector<float>>> errRate;
-    //    vector<vector<float>> finalErrRate;
-    //    vector<float> mse;
-    //    float finalMSE;
-    //    vector<unsigned int> lowErrLen;
-    //    float avgLowErrLen;
-    //    string m_name;
+    unsigned int ifm_c;
+    unsigned int ifm_h;
+    unsigned int ifm_w;
 
-    iWeight = param1;
-    iFeature = param2;
-    randNum = param3;
-    m_name = param4;
+    unsigned int wgt_h;
+    unsigned int wgt_w;
 
-    if ((unsigned int)iWeight.size() == (unsigned int)iWeight[0].size())
+    unsigned int ofm_c;
+    unsigned int ofm_h;
+    unsigned int ofm_w;
+    
+    if ((unsigned int)iFmProb.size() == (unsigned int)iWeight[0].size())
     {
         weightDim = (unsigned int)iWeight.size();
         seqLength = (unsigned int)iWeight[0][0].size();
