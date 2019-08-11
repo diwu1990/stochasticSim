@@ -161,7 +161,7 @@ int main()
                                     for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                                     {
                                         // inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))];
-                                        // inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[inIdx][seqIdx%(unsigned int)(pow(2,randBitLen))];
+                                        inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[inIdx][seqIdx%(unsigned int)(pow(2,randBitLen))];
                                         // printf("%d\n", inRandNum[inIdx][seqIdx]);
                                     }
                                 }
