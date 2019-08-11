@@ -12,19 +12,20 @@
 #include "desynchronizer.hpp"
 #include <cstdlib>
 #include <ctime>
-#include "cfmul.hpp"
+#include "cfadd.hpp"
 #include "perfsim.hpp"
 
 int main()
 {
     srand(time(NULL));
-    vector<unsigned int> inBSNumVec{2};
-    vector<unsigned int> randBitLenVec{8};
-    for (unsigned int cfree = 1; cfree < 2; ++cfree)
+    vector<unsigned int> inBSNumVec{2, 8};
+    vector<unsigned int> randBitLenVec{6, 8, 10};
+    unsigned int scaled = 0;
+    for (unsigned int cfree = 0; cfree < 1; ++cfree)
     {
         for (unsigned int instream = 0; instream < 1; ++instream)
         {
-            for (unsigned int unipolar = 0; unipolar < 2; ++unipolar)
+            for (unsigned int unipolar = 1; unipolar < 2; ++unipolar)
             {
                 for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
                 {
@@ -43,8 +44,8 @@ int main()
                         // **************************************************************
                         unsigned int randBitLen = randBitLenVec[randBitLenVecIdx]; // number of bits for random number
                         // total run number is totalRound * totalIter.
-                        unsigned int totalRound = 100; // each round uses different random number generator
-                        unsigned int totalIter = 100; // each iteration uses evaluate different value for a given round
+                        unsigned int totalRound = 1; // each round uses different random number generator
+                        unsigned int totalIter = 1000; // each iteration uses evaluate different value for a given round
                         float thdBias = 0.05; // threhold to consider convergence
         
                         // **************************************************************
@@ -144,6 +145,14 @@ int main()
                                     else
                                     {
                                         val[inIdx] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+                                        if (scaled == 0)
+                                        {
+                                            if (rand()%256>(256/(int)inBSNum))
+                                            {
+                                                val[inIdx] /= (float)max((int)inBSNum-4,1);
+                                                val[inIdx] = (float)((int)(val[inIdx]*pow(2,randBitLen)))/pow(2,randBitLen);
+                                            }
+                                        }
                                     }
                                     bitLengthVec[inIdx] = randBitLen;
                                     probVec[inIdx] = val[inIdx];
@@ -181,8 +190,8 @@ int main()
                                     SyncInst.Init(val, 1, wSize, thdBias,"SyncInst");
                                 }
         
-                                CFMUL computeInst;
-                                computeInst.Init(probVec, cfree, depthSync, instream, inSWindow, wSize, thdBias, unipolar, "computeInst");
+                                CFADD computeInst;
+                                computeInst.Init(probVec, scaled, depthSync, wSize, thdBias, unipolar, "computeInst");
                                 for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                                 {
                                     // set bit stream
@@ -305,7 +314,8 @@ int main()
                         printf("Depth of Buffer:             %4d\n", depth);
                         printf("Correlation Free Enbale:     %4d\n", cfree!=0);
                         printf("In-Stream Enbale:            %4d\n", instream!=0);
-                        printf("Unipolar Enbale:             %4d\n\n", unipolar!=0);
+                        printf("Unipolar Enbale:             %4d\n", unipolar!=0);
+                        printf("Scaled Addition Enbale:      %4d\n\n", scaled!=0);
         
                         printf("Evaluation Configuration:\n");
                         printf("Random Number Length:        %4d\n", randBitLen);

@@ -45,7 +45,7 @@ int main()
                         unsigned int randBitLen = randBitLenVec[randBitLenVecIdx]; // number of bits for random number
                         // total run number is totalRound * totalIter.
                         unsigned int totalRound = 1; // each round uses different random number generator
-                        unsigned int totalIter = 1; // each iteration uses evaluate different value for a given round
+                        unsigned int totalIter = 100000; // each iteration uses evaluate different value for a given round
                         float thdBias = 0.05; // threhold to consider convergence
         
                         // **************************************************************
@@ -147,8 +147,11 @@ int main()
                                         val[inIdx] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
                                         if (scaled == 0)
                                         {
-                                            val[inIdx] /= (float)max(inBSNum-4,1);
-                                            val[inIdx] = (float)((int)(val[inIdx]*pow(2,randBitLen)))/pow(2,randBitLen);
+                                            if (rand()%256>(256/(int)inBSNum))
+                                            {
+                                                val[inIdx] /= (float)max((int)inBSNum-4,1);
+                                                val[inIdx] = (float)((int)(val[inIdx]*pow(2,randBitLen)))/pow(2,randBitLen);
+                                            }
                                         }
                                     }
                                     bitLengthVec[inIdx] = randBitLen;
@@ -161,7 +164,7 @@ int main()
                                     for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                                     {
                                         // inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))];
-                                        // inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[inIdx][seqIdx%(unsigned int)(pow(2,randBitLen))];
+                                        inRandNum[inIdx][seqIdx] = rngInst.OutSeq()[inIdx][seqIdx%(unsigned int)(pow(2,randBitLen))];
                                         // printf("%d\n", inRandNum[inIdx][seqIdx]);
                                     }
                                 }
