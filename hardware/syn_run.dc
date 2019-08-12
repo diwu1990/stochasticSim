@@ -66,3 +66,4 @@ report_timing -delay max > cpu_max_delay.txt
 
 #### write out final netlist ######
 write -format verilog cpu -output cpu.vg
+exit
