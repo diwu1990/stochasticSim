@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : apcADD_rng
 Version: N-2017.09-SP5
-Date   : Mon Aug 12 15:17:54 2019
+Date   : Mon Aug 12 16:28:23 2019
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc
@@ -31,8 +31,8 @@ Wire Load Model Mode: segmented
   U_SobolRNGDim1/u_cntWithEn/cnt_reg[0]/CP (DFCNQD1BWP)
                                                           0.00       0.00 r
   U_SobolRNGDim1/u_cntWithEn/cnt_reg[0]/Q (DFCNQD1BWP)
-                                                          0.14       0.14 r
-  U49/ZN (CKND0BWP)                                       0.05       0.18 f
+                                                          0.15       0.15 r
+  U39/ZN (INVD1BWP)                                       0.03       0.18 f
   U_SobolRNGDim1/u_cntWithEn/cnt_reg[0]/D (DFCNQD1BWP)
                                                           0.00       0.18 f
   data arrival time                                                  0.18
@@ -42,13 +42,13 @@ Wire Load Model Mode: segmented
   clock uncertainty                                       0.15       0.15
   U_SobolRNGDim1/u_cntWithEn/cnt_reg[0]/CP (DFCNQD1BWP)
                                                           0.00       0.15 r
-  library hold time                                       0.02       0.17
-  data required time                                                 0.17
+  library hold time                                       0.03       0.18
+  data required time                                                 0.18
   --------------------------------------------------------------------------
-  data required time                                                 0.17
+  data required time                                                 0.18
   data arrival time                                                 -0.18
   --------------------------------------------------------------------------
-  slack (MET)                                                        0.01
+  slack (MET)                                                        0.00
 
 
 1

@@ -7,7 +7,7 @@ Report : power
         -analysis_effort low
 Design : apcADD_rng
 Version: N-2017.09-SP5
-Date   : Mon Aug 12 15:17:54 2019
+Date   : Mon Aug 12 16:28:23 2019
 ****************************************
 
 
@@ -34,12 +34,12 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  =  33.2130 uW   (72%)
-  Net Switching Power  =  12.8234 uW   (28%)
+  Cell Internal Power  =  23.7577 uW   (71%)
+  Net Switching Power  =   9.9320 uW   (29%)
                          ---------
-Total Dynamic Power    =  46.0364 uW  (100%)
+Total Dynamic Power    =  33.6898 uW  (100%)
 
-Cell Leakage Power     =  11.7516 nW
+Cell Leakage Power     =   6.9109 nW
 
 
                  Internal         Switching           Leakage            Total
@@ -49,9 +49,9 @@ io_pad             0.0000            0.0000            0.0000            0.0000 
 memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register       2.6203e-02        1.4996e-03            4.0161        2.7707e-02  (  60.17%)
+register       1.9914e-02        1.2940e-03            3.0319        2.1211e-02  (  62.95%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational  7.0100e-03        1.1324e-02            7.7356        1.8342e-02  (  39.83%)
+combinational  3.8442e-03        8.6380e-03            3.8790        1.2486e-02  (  37.05%)
 --------------------------------------------------------------------------------------------------
-Total          3.3213e-02 mW     1.2823e-02 mW        11.7516 nW     4.6048e-02 mW
+Total          2.3758e-02 mW     9.9320e-03 mW         6.9109 nW     3.3697e-02 mW
 1
