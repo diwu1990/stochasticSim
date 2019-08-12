@@ -1,4 +1,4 @@
-`define INUM 16
+`define INUM 8
 
 module orADD (
     input logic clk,    // Clock
