@@ -1,14 +1,14 @@
-`define INWD 8
+`define DATAWD 8
 
 module bMUL (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
-    input logic [`INWD-1:0] iA,
-    input logic [`INWD-1:0] iB,
-    output logic [`INWD*2-1:0] oC,
+    input logic [`DATAWD-1:0] iA,
+    input logic [`DATAWD-1:0] iB,
+    output logic [`DATAWD*2-1:0] oC,
 );
-    logic [`INWD-1:0] iA_buf;
-    logic [`INWD-1:0] iB_buf;
+    logic [`DATAWD-1:0] iA_buf;
+    logic [`DATAWD-1:0] iB_buf;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_oC
         if(~rst_n) begin
