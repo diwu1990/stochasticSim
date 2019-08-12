@@ -7,7 +7,7 @@ Report : power
         -analysis_effort low
 Design : muxADD_rng
 Version: N-2017.09-SP5
-Date   : Mon Aug 12 15:20:57 2019
+Date   : Mon Aug 12 16:21:35 2019
 ****************************************
 
 
@@ -34,12 +34,12 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  =  24.7123 uW   (68%)
-  Net Switching Power  =  11.3661 uW   (32%)
+  Cell Internal Power  =  19.1539 uW   (66%)
+  Net Switching Power  =   9.9307 uW   (34%)
                          ---------
-Total Dynamic Power    =  36.0783 uW  (100%)
+Total Dynamic Power    =  29.0846 uW  (100%)
 
-Cell Leakage Power     =   9.0360 nW
+Cell Leakage Power     =   5.7616 nW
 
 
                  Internal         Switching           Leakage            Total
@@ -49,9 +49,9 @@ io_pad             0.0000            0.0000            0.0000            0.0000 
 memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register       1.9395e-02        1.8738e-03            3.0788        2.1272e-02  (  58.95%)
+register       1.5656e-02        1.6661e-03            2.3961        1.7325e-02  (  59.56%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational  5.3171e-03        9.4923e-03            5.9572        1.4815e-02  (  41.05%)
+combinational  3.4974e-03        8.2646e-03            3.3654        1.1765e-02  (  40.44%)
 --------------------------------------------------------------------------------------------------
-Total          2.4712e-02 mW     1.1366e-02 mW         9.0360 nW     3.6087e-02 mW
+Total          1.9154e-02 mW     9.9307e-03 mW         5.7616 nW     2.9090e-02 mW
 1
