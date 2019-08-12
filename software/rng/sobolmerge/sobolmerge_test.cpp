@@ -6,9 +6,9 @@ int main()
     SOBOL sobolinst1;
     sobolinst1.Init(8,1,0,"sobolinst1");
     sobolinst1.SeqGen();
-    // sobolinst1.SeqPrint();
-    // sobolinst1.VecPrint();
-    // sobolinst1.MemPrint();
+    sobolinst1.SeqPrint();
+    sobolinst1.VecPrint();
+    sobolinst1.MemPrint();
 
     SOBOL sobolinst2;
     sobolinst2.Init(8,2,0,"sobolinst2");
