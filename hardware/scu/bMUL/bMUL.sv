@@ -5,7 +5,7 @@ module bMUL (
     input logic rst_n,  // Asynchronous reset active low
     input logic [`DATAWD-1:0] iA,
     input logic [`DATAWD-1:0] iB,
-    output logic [`DATAWD*2-1:0] oC,
+    output logic [`DATAWD*2-1:0] oC
 );
     logic [`DATAWD-1:0] iA_buf;
     logic [`DATAWD-1:0] iB_buf;
