@@ -11,10 +11,10 @@ module uNSADD16 (
     
     logic [3:0] inCntLess;
     logic [4:0] tempSum;
-    logic [11:0] inAccBuf; // log2(N*L)+1
-    logic [12:0] offsetAccBuf; // log2(N*L)+1
-    logic [12:0] theoryOneBuf; // log2(N*L)+1
-    logic [12:0] actualOneBuf; // log2(N*L)+1
+    // logic [11:0] inAccBuf; // log2(N*L)+1
+    // logic [12:0] offsetAccBuf; // log2(N*L)+1
+    logic [9:0] theoryOneBuf; // log2(N*L)+1
+    logic [9:0] actualOneBuf; // log2(N*L)+1
 
     parallelCnt15 U_parallelCnt15(
         .in(in[14:0]),
