@@ -35,7 +35,7 @@ module uNSADD16 (
 
     // assign theoryOneBuf = {inAccBuf, 1'b0} - offsetAccBuf;
 
-    always_ff @(posedge clk or negedge rst_n) begin : proc_actualOneBuf
+    always_ff @(posedge clk or negedge rst_n) begin : proc_theoryOneBuf
         if(~rst_n) begin
             theoryOneBuf <= 0;
         end else begin
