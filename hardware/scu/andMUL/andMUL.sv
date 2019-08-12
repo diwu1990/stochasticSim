@@ -43,14 +43,14 @@ module andMUL (
     SobolRNGDim1 U_SobolRNGDim1_A(
         .clk(clk),
         .rst_n(rst_n),
-        .enable(1),
+        .enable(1'b1),
         .sobolSeq(sobolSeqA)
         );
 
     SobolRNGDim1 U_SobolRNGDim1_B(
         .clk(clk),
         .rst_n(rst_n),
-        .enable(1),
+        .enable(1'b1),
         .sobolSeq(sobolSeqB)
         );
 
