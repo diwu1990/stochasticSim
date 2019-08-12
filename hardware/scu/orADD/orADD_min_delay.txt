@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : orADD
 Version: N-2017.09-SP5
-Date   : Mon Aug 12 04:56:34 2019
+Date   : Mon Aug 12 16:05:56 2019
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc
