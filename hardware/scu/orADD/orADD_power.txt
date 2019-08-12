@@ -7,7 +7,7 @@ Report : power
         -analysis_effort low
 Design : orADD
 Version: N-2017.09-SP5
-Date   : Mon Aug 12 16:05:56 2019
+Date   : Mon Aug 12 16:07:09 2019
 ****************************************
 
 
@@ -34,12 +34,12 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  =   2.7630 uW   (52%)
-  Net Switching Power  =   2.5165 uW   (48%)
+  Cell Internal Power  =   2.4160 uW   (47%)
+  Net Switching Power  =   2.7030 uW   (53%)
                          ---------
-Total Dynamic Power    =   5.2795 uW  (100%)
+Total Dynamic Power    =   5.1191 uW  (100%)
 
-Cell Leakage Power     =   1.4571 nW
+Cell Leakage Power     =   1.2362 nW
 
 
                  Internal         Switching           Leakage            Total
@@ -49,9 +49,9 @@ io_pad             0.0000            0.0000            0.0000            0.0000 
 memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register       2.0914e-03        7.4377e-05            0.3241        2.1661e-03  (  41.02%)
+register       2.1056e-03        3.6583e-05            0.3237        2.1425e-03  (  41.84%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational  6.7161e-04        2.4421e-03            1.1330        3.1149e-03  (  58.98%)
+combinational  3.1038e-04        2.6665e-03            0.9125        2.9778e-03  (  58.16%)
 --------------------------------------------------------------------------------------------------
-Total          2.7630e-03 mW     2.5165e-03 mW         1.4571 nW     5.2810e-03 mW
+Total          2.4160e-03 mW     2.7030e-03 mW         1.2362 nW     5.1203e-03 mW
 1
