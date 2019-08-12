@@ -1,14 +1,14 @@
 `timescale 1ns/1ns
-`include "parallelCnt7.sv"
+`include "parallelCnt.sv"
 
-module parallelCnt7_tb ();
+module parallelCnt_tb ();
 
     logic   clk;
     logic   rst_n;
     logic   [6:0] in;
     logic   [2:0] out;
 
-    parallelCnt7 U_parallelCnt7(
+    parallelCnt7 U_parallelCnt(
         .in(in),
         .out(out)
         );
@@ -18,7 +18,7 @@ module parallelCnt7_tb ();
 
     `ifdef DUMPFSDB
         initial begin
-            $fsdbDumpfile("parallelCnt7.fsdb");
+            $fsdbDumpfile("parallelCnt.fsdb");
             $fsdbDumpvars(0,"+all");
             // $fsdbDumpvars;
         end
