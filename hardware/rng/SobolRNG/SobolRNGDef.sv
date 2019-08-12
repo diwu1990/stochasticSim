@@ -1,3 +1,4 @@
+// `define INWD4
 // `define INWD6
 `define INWD8
 // `define INWD10
