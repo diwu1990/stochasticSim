@@ -20,7 +20,7 @@ module muxADD_rng (
         .clk(clk),    // Clock
         .rst_n(rst_n),  // Asynchronous reset active low
         .in(in),
-        .sel(sel[2:0]),
+        .sel(sel),
         .out(out)
         );
 
