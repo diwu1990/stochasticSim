@@ -6,15 +6,15 @@ Report : timing
         -max_paths 1
 Design : uNSADD16
 Version: N-2017.09-SP5
-Date   : Mon Aug 12 05:02:39 2019
+Date   : Mon Aug 12 15:29:59 2019
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc
 Wire Load Model Mode: segmented
 
-  Startpoint: actualOneBuf_reg[2]
-              (rising edge-triggered flip-flop clocked by clk)
-  Endpoint: out (output port clocked by clk)
+  Startpoint: in[11] (input port clocked by clk)
+  Endpoint: theoryOneBuf_reg[9]
+            (rising edge-triggered flip-flop clocked by clk)
   Path Group: clk
   Path Type: max
 
@@ -27,35 +27,38 @@ Wire Load Model Mode: segmented
   -----------------------------------------------------------
   clock clk (rise edge)                    0.00       0.00
   clock network delay (ideal)              0.00       0.00
-  actualOneBuf_reg[2]/CP (DFCNQD1BWP)      0.00       0.00 r
-  actualOneBuf_reg[2]/Q (DFCNQD1BWP)       0.14       0.14 r
-  U170/ZN (INVD1BWP)                       0.03       0.17 f
-  U169/Z (OA211D1BWP)                      0.07       0.24 f
-  U94/Z (AO221D1BWP)                       0.12       0.36 f
-  U144/Z (OA221D1BWP)                      0.06       0.42 f
-  U92/Z (AO221D1BWP)                       0.13       0.54 f
-  U142/ZN (OAI221D1BWP)                    0.04       0.58 r
-  U149/ZN (OAI221D1BWP)                    0.08       0.66 f
-  U148/ZN (OAI221D1BWP)                    0.05       0.71 r
-  U147/ZN (OAI221D1BWP)                    0.08       0.79 f
-  U135/Z (OA221D1BWP)                      0.07       0.85 f
-  U86/Z (AO221D1BWP)                       0.13       0.98 f
-  U134/ZN (OAI221D1BWP)                    0.04       1.02 r
-  U130/ZN (IOA21D1BWP)                     0.06       1.08 f
-  U126/Z (CKBD16BWP)                       0.09       1.17 f
-  out (out)                                0.00       1.17 f
-  data arrival time                                   1.17
+  input external delay                     0.25       0.25 r
+  in[11] (in)                              0.00       0.25 r
+  U51/Z (XOR2D1BWP)                        0.08       0.33 f
+  U50/ZN (XNR2D1BWP)                       0.09       0.42 r
+  U49/Z (XOR2D1BWP)                        0.10       0.52 f
+  U25/ZN (MAOI22D1BWP)                     0.06       0.58 r
+  U23/ZN (XNR2D1BWP)                       0.09       0.67 f
+  U22/ZN (XNR2D1BWP)                       0.09       0.76 r
+  U21/ZN (XNR2D1BWP)                       0.09       0.85 f
+  U15/ZN (XNR2D1BWP)                       0.07       0.92 f
+  U113/ZN (IND3D1BWP)                      0.09       1.02 f
+  U9/Z (XOR2D1BWP)                         0.10       1.12 r
+  U18/CO (FA1D0BWP)                        0.12       1.24 r
+  U19/CO (FA1D0BWP)                        0.07       1.31 r
+  U16/CO (FA1D0BWP)                        0.09       1.40 r
+  U123/Z (AN3D1BWP)                        0.11       1.51 r
+  U124/ZN (ND2D1BWP)                       0.04       1.54 f
+  U79/ZN (XNR2D1BWP)                       0.08       1.62 r
+  theoryOneBuf_reg[9]/D (DFCNQD1BWP)       0.00       1.62 r
+  data arrival time                                   1.62
 
   clock clk (rise edge)                    2.50       2.50
   clock network delay (ideal)              0.00       2.50
   clock uncertainty                       -0.15       2.35
-  output external delay                   -0.50       1.85
-  data required time                                  1.85
+  theoryOneBuf_reg[9]/CP (DFCNQD1BWP)      0.00       2.35 r
+  library setup time                      -0.03       2.32
+  data required time                                  2.32
   -----------------------------------------------------------
-  data required time                                  1.85
-  data arrival time                                  -1.17
+  data required time                                  2.32
+  data arrival time                                  -1.62
   -----------------------------------------------------------
-  slack (MET)                                         0.68
+  slack (MET)                                         0.70
 
 
 1

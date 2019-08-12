@@ -7,7 +7,7 @@ Report : power
         -analysis_effort low
 Design : uNSADD16
 Version: N-2017.09-SP5
-Date   : Mon Aug 12 05:02:39 2019
+Date   : Mon Aug 12 15:29:59 2019
 ****************************************
 
 
@@ -34,12 +34,12 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  =  77.6294 uW   (84%)
-  Net Switching Power  =  14.4195 uW   (16%)
+  Cell Internal Power  =  65.1137 uW   (80%)
+  Net Switching Power  =  15.8525 uW   (20%)
                          ---------
-Total Dynamic Power    =  92.0489 uW  (100%)
+Total Dynamic Power    =  80.9662 uW  (100%)
 
-Cell Leakage Power     =  26.9315 nW
+Cell Leakage Power     =  23.6348 nW
 
 
                  Internal         Switching           Leakage            Total
@@ -49,9 +49,9 @@ io_pad             0.0000            0.0000            0.0000            0.0000 
 memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register       5.5591e-02        2.3730e-03            6.7918        5.7971e-02  (  62.96%)
+register       4.2476e-02        1.8809e-03            5.1687        4.4362e-02  (  54.77%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational  2.2038e-02        1.2047e-02           20.1397        3.4105e-02  (  37.04%)
+combinational  2.2638e-02        1.3972e-02           18.4661        3.6628e-02  (  45.23%)
 --------------------------------------------------------------------------------------------------
-Total          7.7629e-02 mW     1.4419e-02 mW        26.9315 nW     9.2076e-02 mW
+Total          6.5114e-02 mW     1.5852e-02 mW        23.6348 nW     8.0990e-02 mW
 1
