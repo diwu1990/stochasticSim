@@ -39,7 +39,7 @@ module uNSADD16 (
         if(~rst_n) begin
             theoryOneBuf <= 0;
         end else begin
-            theoryOneBuf <= theoryOneBuf + tempSum - `OFFSET;
+            theoryOneBuf <= theoryOneBuf + (tempSum << 1) - `OFFSET;
         end
     end
 
