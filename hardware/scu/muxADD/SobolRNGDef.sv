@@ -4,6 +4,6 @@
 // `define INWD10
 
 
-`define INWD 8
-`define LOGINWD 3
+`define INWD 4
+`define LOGINWD 2
 `define CNTWD `INWD
