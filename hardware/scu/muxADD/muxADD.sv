@@ -1,5 +1,5 @@
-`define INUM 16
-`define LOGINUM 4
+`define INUM 8
+`define LOGINUM 3
 
 module muxADD (
     input logic clk,    // Clock

@@ -29,7 +29,7 @@ module SobolRNGDim1 (
 
     /* initialization of directional vectors for current dimension*/
     `ifdef INWD4
-        always_comb begin : proc_dirVec_6
+        always_comb begin : proc_dirVec_4
             dirVec[0] <= 'd8;
             dirVec[1] <= 'd4;
             dirVec[2] <= 'd2;
