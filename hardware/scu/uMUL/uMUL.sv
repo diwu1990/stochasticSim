@@ -7,10 +7,11 @@ module uMUL (
     input logic iA,
     input logic [`DATAWD-1:0] iB,
     input logic loadB,
-    input logic oC,
+    output logic oC
 );
     
     logic [`DATAWD-1:0] iB_buf;
+    logic [`DATAWD-1:0] sobolSeq;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_iB_buf
         if(~rst_n) begin
