@@ -24,6 +24,17 @@ module LSZ (
         end
     endgenerate
 
+    `ifdef INWD3
+        always_comb begin : proc_3
+            case(outoh)
+                'b001 : lszIdx = 'd0;
+                'b010 : lszIdx = 'd1;
+                'b100 : lszIdx = 'd2;
+                default : lszIdx = 'd0;
+            endcase // onehot
+        end
+    `endif
+
     `ifdef INWD4
         always_comb begin : proc_4
             case(outoh)
