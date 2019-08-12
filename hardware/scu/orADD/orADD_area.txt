@@ -1,0 +1,31 @@
+ 
+****************************************
+Report : area
+Design : orADD
+Version: N-2017.09-SP5
+Date   : Mon Aug 12 04:56:33 2019
+****************************************
+
+Information: Updating design information... (UID-85)
+Library(s) Used:
+
+    tcbn40lpbwptc (File: /cae/apps/data/tsmclibs-2013/digital/Front_End/timing_power_noise/NLDM/tcbn40lpbwp_120b/tcbn40lpbwptc.db)
+
+Number of ports:                           19
+Number of nets:                            25
+Number of cells:                            7
+Number of combinational cells:              6
+Number of sequential cells:                 1
+Number of macros/black boxes:               0
+Number of buf/inv:                          1
+Number of references:                       4
+
+Combinational area:                 10.936800
+Buf/Inv area:                        4.762800
+Noncombinational area:               4.057200
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                    14.994000
+Total area:                 undefined
+1
