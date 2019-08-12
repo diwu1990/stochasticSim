@@ -21,7 +21,7 @@ module andMUL (
             iA_buf <= 0;
         end else begin
             if(loadA) begin
-                iA_buf <= iB;
+                iA_buf <= iA;
             end else begin
                 iA_buf <= iA_buf;
             end
