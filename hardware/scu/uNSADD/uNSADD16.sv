@@ -23,17 +23,25 @@ module uNSADD16 (
 
     assign tempSum = inCntLess + in[15];
 
-    always_ff @(posedge clk or negedge rst_n) begin : proc_accBuf
+    // always_ff @(posedge clk or negedge rst_n) begin : proc_accBuf
+    //     if(~rst_n) begin
+    //         inAccBuf <= 0;
+    //         offsetAccBuf <= 0;
+    //     end else begin
+    //         inAccBuf <= inAccBuf + tempSum;
+    //         offsetAccBuf <= offsetAccBuf + `OFFSET;
+    //     end
+    // end
+
+    // assign theoryOneBuf = {inAccBuf, 1'b0} - offsetAccBuf;
+
+    always_ff @(posedge clk or negedge rst_n) begin : proc_actualOneBuf
         if(~rst_n) begin
-            inAccBuf <= 0;
-            offsetAccBuf <= 0;
+            theoryOneBuf <= 0;
         end else begin
-            inAccBuf <= inAccBuf + tempSum;
-            offsetAccBuf <= offsetAccBuf + `OFFSET;
+            theoryOneBuf <= theoryOneBuf + tempSum - `OFFSET;
         end
     end
-
-    assign theoryOneBuf = {inAccBuf, 1'b0} - offsetAccBuf;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_actualOneBuf
         if(~rst_n) begin
