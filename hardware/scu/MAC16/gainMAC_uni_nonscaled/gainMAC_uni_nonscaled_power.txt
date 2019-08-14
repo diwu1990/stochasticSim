@@ -7,7 +7,7 @@ Report : power
         -analysis_effort low
 Design : gainMAC_uni_nonscaled
 Version: N-2017.09-SP5
-Date   : Wed Aug 14 05:31:08 2019
+Date   : Wed Aug 14 13:44:48 2019
 ****************************************
 
 
@@ -34,12 +34,12 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  = 563.3530 uW   (93%)
-  Net Switching Power  =  45.3060 uW    (7%)
+  Cell Internal Power  =   1.7413 mW   (92%)
+  Net Switching Power  = 160.7203 uW    (8%)
                          ---------
-Total Dynamic Power    = 608.6591 uW  (100%)
+Total Dynamic Power    =   1.9020 mW  (100%)
 
-Cell Leakage Power     = 213.3651 nW
+Cell Leakage Power     = 543.8292 nW
 
 
                  Internal         Switching           Leakage            Total
@@ -49,9 +49,9 @@ io_pad             0.0000            0.0000            0.0000            0.0000 
 memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register           0.5261        1.0774e-02          129.4571            0.5370  (  88.20%)
+register           1.6285        4.6831e-02          281.5061            1.6756  (  88.07%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational  3.7246e-02        3.4532e-02           83.9081        7.1863e-02  (  11.80%)
+combinational      0.1129            0.1139          262.3231            0.2270  (  11.93%)
 --------------------------------------------------------------------------------------------------
-Total              0.5634 mW     4.5306e-02 mW       213.3651 nW         0.6089 mW
+Total              1.7413 mW         0.1607 mW       543.8292 nW         1.9026 mW
 1
