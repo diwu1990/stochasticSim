@@ -33,7 +33,7 @@ module uMUL_bi (
         .sobolSeq(sobolSeq)
         );
 
-    SobolRNGDim1_reverse U_SobolRNGDim1_reverse(
+    SobolRNGDim1 U_SobolRNGDim1_reverse(
         .clk(clk),
         .rst_n(rst_n),
         .enable(~iA),
