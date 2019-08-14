@@ -6,13 +6,13 @@ Report : timing
         -max_paths 1
 Design : gainMAC_uni_scaled
 Version: N-2017.09-SP5
-Date   : Wed Aug 14 05:27:05 2019
+Date   : Wed Aug 14 13:42:43 2019
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc
 Wire Load Model Mode: segmented
 
-  Startpoint: U_SobolRNGDim1_8b_A/sobolSeq_reg[2]
+  Startpoint: genblk1[0].U_SobolRNGDim1_8b_A/sobolSeq_reg[0]
               (rising edge-triggered flip-flop clocked by clk)
   Endpoint: U_muxADD/out_reg
             (rising edge-triggered flip-flop clocked by clk)
@@ -28,38 +28,38 @@ Wire Load Model Mode: segmented
   --------------------------------------------------------------------------
   clock clk (rise edge)                                   0.00       0.00
   clock network delay (ideal)                             0.00       0.00
-  U_SobolRNGDim1_8b_A/sobolSeq_reg[2]/CP (DFCNQD1BWP)     0.00       0.00 r
-  U_SobolRNGDim1_8b_A/sobolSeq_reg[2]/Q (DFCNQD1BWP)      0.15       0.15 r
-  U575/ZN (INVD1BWP)                                      0.04       0.19 f
-  U683/Z (CKBD3BWP)                                       0.08       0.27 f
-  U259/Z (AO21D1BWP)                                      0.06       0.34 f
-  U941/ZN (OAI211D1BWP)                                   0.03       0.37 r
-  U855/ZN (OAI31D1BWP)                                    0.05       0.42 f
-  U854/Z (OA221D1BWP)                                     0.06       0.48 f
-  U255/Z (AO221D1BWP)                                     0.13       0.61 f
-  U906/Z (OA211D1BWP)                                     0.06       0.67 f
-  U905/ZN (OAI22D1BWP)                                    0.06       0.73 r
-  U251/ZN (MAOI22D1BWP)                                   0.09       0.81 r
-  U607/ZN (OAI33D4BWP)                                    0.12       0.93 f
-  U789/ZN (NR2D0BWP)                                      0.05       0.98 r
-  U591/ZN (OAI22D1BWP)                                    0.05       1.03 f
-  U764/ZN (AOI222D4BWP)                                   0.16       1.19 r
-  U569/ZN (OAI22D0BWP)                                    0.04       1.23 f
-  U568/Z (CKBD1BWP)                                       0.04       1.27 f
-  U_muxADD/out_reg/D (DFCNQD1BWP)                         0.00       1.27 f
-  data arrival time                                                  1.27
+  genblk1[0].U_SobolRNGDim1_8b_A/sobolSeq_reg[0]/CP (DFCND1BWP)
+                                                          0.00       0.00 r
+  genblk1[0].U_SobolRNGDim1_8b_A/sobolSeq_reg[0]/Q (DFCND1BWP)
+                                                          0.13       0.13 f
+  U3436/ZN (IND2D1BWP)                                    0.06       0.19 f
+  U1294/Z (OA21D1BWP)                                     0.06       0.26 f
+  U1293/Z (AO221D1BWP)                                    0.12       0.38 f
+  U3090/Z (OA221D1BWP)                                    0.06       0.44 f
+  U2648/ZN (AOI221D4BWP)                                  0.16       0.60 r
+  U2647/ZN (AOI221D1BWP)                                  0.02       0.62 f
+  U2775/ZN (MOAI22D0BWP)                                  0.06       0.68 r
+  U2774/ZN (OAI221D1BWP)                                  0.08       0.75 f
+  U2773/ZN (IOA21D1BWP)                                   0.03       0.79 r
+  U2746/ZN (AOI33D1BWP)                                   0.06       0.84 f
+  U2744/ZN (ND2D1BWP)                                     0.04       0.88 r
+  U2760/ZN (AOI22D1BWP)                                   0.03       0.91 f
+  U2191/ZN (OAI22D0BWP)                                   0.08       0.99 r
+  U2190/Z (CKBD1BWP)                                      0.05       1.04 r
+  U_muxADD/out_reg/D (DFCNQD1BWP)                         0.00       1.04 r
+  data arrival time                                                  1.04
 
   clock clk (rise edge)                                   2.50       2.50
   clock network delay (ideal)                             0.00       2.50
   clock uncertainty                                      -0.15       2.35
   U_muxADD/out_reg/CP (DFCNQD1BWP)                        0.00       2.35 r
-  library setup time                                     -0.01       2.34
-  data required time                                                 2.34
+  library setup time                                     -0.03       2.32
+  data required time                                                 2.32
   --------------------------------------------------------------------------
-  data required time                                                 2.34
-  data arrival time                                                 -1.27
+  data required time                                                 2.32
+  data arrival time                                                 -1.04
   --------------------------------------------------------------------------
-  slack (MET)                                                        1.07
+  slack (MET)                                                        1.28
 
 
 1

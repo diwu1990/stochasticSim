@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : gainMAC_uni_scaled
 Version: N-2017.09-SP5
-Date   : Wed Aug 14 05:27:05 2019
+Date   : Wed Aug 14 13:42:43 2019
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc
@@ -29,8 +29,8 @@ Wire Load Model Mode: segmented
   clock clk (rise edge)                                   0.00       0.00
   clock network delay (ideal)                             0.00       0.00
   U_SobolRNGDim1_4b/cnt_reg[0]/CP (DFCNQD1BWP)            0.00       0.00 r
-  U_SobolRNGDim1_4b/cnt_reg[0]/Q (DFCNQD1BWP)             0.14       0.14 r
-  U570/ZN (CKND0BWP)                                      0.04       0.18 f
+  U_SobolRNGDim1_4b/cnt_reg[0]/Q (DFCNQD1BWP)             0.13       0.13 r
+  U2192/ZN (CKND0BWP)                                     0.05       0.18 f
   U_SobolRNGDim1_4b/cnt_reg[0]/D (DFCNQD1BWP)             0.00       0.18 f
   data arrival time                                                  0.18
 
