@@ -1,5 +1,4 @@
 `include "SobolRNGDim1_8b.sv"
-`define DATAWD `INWD 
 
 module tMUL_bi (
     input logic clk,    // Clock
@@ -12,9 +11,9 @@ module tMUL_bi (
     output logic stop
 );
     
-    logic [`DATAWD-1:0] iA_buf;
-    logic [`DATAWD-1:0] iB_buf;
-    logic [`DATAWD-1:0] sobolSeq;
+    logic [7:0] iA_buf;
+    logic [7:0] iB_buf;
+    logic [7:0] sobolSeq;
     
     always_ff @(posedge clk or negedge rst_n) begin : proc_iA_buf
         if(~rst_n) begin
@@ -48,15 +47,16 @@ module tMUL_bi (
         end
     end
 
-    SobolRNGDim1 U_SobolRNGDim1(
+    SobolRNGDim1_8b U_SobolRNGDim1_8b(
         .clk(clk),
         .rst_n(rst_n),
-        .enable(~stop),
+        // .enable(~stop),
+        .enable(1'b1),
         .sobolSeq(sobolSeq)
         );
 
     always_comb begin : proc_oC
-        oC <= ~stop & (iB_buf > sobolSeq);
+        oC <= ~(stop ^ (iB_buf > sobolSeq));
     end
 
 endmodule
