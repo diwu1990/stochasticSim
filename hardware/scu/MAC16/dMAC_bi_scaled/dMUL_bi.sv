@@ -1,20 +1,17 @@
-`include "SobolRNGDim1.sv"
-`define DATAWD `INWD 
-
 module dMUL_bi (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
-    input logic [`DATAWD-1:0] iA,
-    input logic [`DATAWD-1:0] iB,
+    input logic [7:0] iA,
+    input logic [7:0] iB,
     input logic loadA,
     input logic loadB,
-    input logic [`DATAWD-1:0] sobolSeqA,
-    input logic [`DATAWD-1:0] sobolSeqB,
+    input logic [7:0] sobolSeqA,
+    input logic [7:0] sobolSeqB,
     output logic oC
 );
     
-    logic [`DATAWD-1:0] iA_buf;
-    logic [`DATAWD-1:0] iB_buf;
+    logic [7:0] iA_buf;
+    logic [7:0] iB_buf;
 
     always_ff @(posedge clk or negedge rst_n) begin : proc_iA_buf
         if(~rst_n) begin

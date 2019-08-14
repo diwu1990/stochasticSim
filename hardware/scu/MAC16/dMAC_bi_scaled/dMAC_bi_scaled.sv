@@ -1,19 +1,20 @@
 `include "SobolRNGDim1_4b.sv"
 `include "SobolRNGDim1_8b.sv"
+`include "dMUL_bi.sv"
 
 module dMAC_bi_scaled (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
-    input logic [`DATAWD-1:0] iA [15:0],
-    input logic [`DATAWD-1:0] iB [15:0],
+    input logic [7:0] iA [15:0],
+    input logic [7:0] iB [15:0],
     input logic loadA,
     input logic loadB,
     output oC
 );
-    logic [`DATAWD-1:0] sobolSeqA;
-    logic [`DATAWD-1:0] sobolSeqB;
-    logic [`DATAWD-1:0] cntA;
-    logic [`DATAWD-1:0] cntB;
+    logic [7:0] sobolSeqA;
+    logic [7:0] sobolSeqB;
+    logic [7:0] cntA;
+    logic [7:0] cntB;
     logic [15:0] mulC;
     
     always_ff @(posedge clk or negedge rst_n) begin : proc_cntA
