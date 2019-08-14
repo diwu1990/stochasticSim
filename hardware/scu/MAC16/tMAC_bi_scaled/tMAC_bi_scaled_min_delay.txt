@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : tMAC_bi_scaled
 Version: N-2017.09-SP5
-Date   : Wed Aug 14 13:30:03 2019
+Date   : Wed Aug 14 13:50:23 2019
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc

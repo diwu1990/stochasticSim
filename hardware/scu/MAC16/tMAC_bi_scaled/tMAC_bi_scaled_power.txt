@@ -7,7 +7,7 @@ Report : power
         -analysis_effort low
 Design : tMAC_bi_scaled
 Version: N-2017.09-SP5
-Date   : Wed Aug 14 13:30:03 2019
+Date   : Wed Aug 14 13:50:23 2019
 ****************************************
 
 
@@ -34,12 +34,12 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  =   1.2842 mW   (92%)
-  Net Switching Power  = 118.6217 uW    (8%)
+  Cell Internal Power  =   1.2903 mW   (91%)
+  Net Switching Power  = 120.2815 uW    (9%)
                          ---------
-Total Dynamic Power    =   1.4028 mW  (100%)
+Total Dynamic Power    =   1.4106 mW  (100%)
 
-Cell Leakage Power     = 358.3991 nW
+Cell Leakage Power     = 358.3455 nW
 
 
                  Internal         Switching           Leakage            Total
@@ -49,9 +49,9 @@ io_pad             0.0000            0.0000            0.0000            0.0000 
 memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register           1.2021        3.1100e-02          174.0099            1.2333  (  87.90%)
+register           1.2077        3.0795e-02          173.4119            1.2386  (  87.79%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational  8.2141e-02        8.7522e-02          184.3892            0.1698  (  12.10%)
+combinational  8.2659e-02        8.9486e-02          184.9335            0.1723  (  12.21%)
 --------------------------------------------------------------------------------------------------
-Total              1.2842 mW         0.1186 mW       358.3991 nW         1.4032 mW
+Total              1.2903 mW         0.1203 mW       358.3455 nW         1.4110 mW
 1
