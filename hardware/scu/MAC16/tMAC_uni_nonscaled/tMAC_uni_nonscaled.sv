@@ -16,6 +16,7 @@ module tMAC_uni_scaled (
     logic [7:0] cnt [15:0];
     logic [7:0] sum0 [3:0];
     logic [7:0] sum;
+    logic [7:0] stop [15:0];
     
     SobolRNGDim1_8b U_SobolRNGDim1_8b(
         .clk(clk),
