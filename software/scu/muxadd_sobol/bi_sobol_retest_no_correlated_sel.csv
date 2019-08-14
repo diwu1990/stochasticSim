@@ -1,5 +1,5 @@
 ============================================================================================
-Total execution time: 0.865837
+Total execution time: 0.054544
 
 Computing Unit Configuration
 Number of Input Bit Streams:    2
@@ -12,29 +12,29 @@ Random Number Length:           6
 Bit Stream Length:             64
 Threshold for Convergence:   0.05
 Window Size for Convergence:   64
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
- -1.0,                 0.14630,                 0.01878,                 0.14502
- -0.6,                 0.32490,                 0.03481,                 0.32200
- -0.2,                 0.31134,                 0.03152,                 0.30854
-  0.2,                 0.33483,                 0.04491,                 0.33193
-  0.6,                 0.14349,                 0.02387,                 0.14229
+ -1.0,                 0.04310,                 0.04310,                 0.04310
+ -0.6,                 0.08175,                 0.08175,                 0.08175
+ -0.2,                 0.09372,                 0.09372,                 0.09372
+  0.2,                 0.07628,                 0.07628,                 0.07628
+  0.6,                 0.06692,                 0.06692,                 0.06692
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
- -1.0,                59.33333,                41.11111,                59.15114
- -0.6,                63.22222,                58.81482,                63.17810
- -0.2,                63.51724,                57.65517,                63.45859
-  0.2,                63.52174,                60.95652,                63.49617
-  0.6,                63.66667,                35.41667,                63.38413
+ -1.0,                47.83544,                47.83544,                47.83544
+ -0.6,                59.89615,                59.89615,                59.89615
+ -0.2,                59.47714,                59.47714,                59.47714
+  0.2,                56.10400,                56.10400,                56.10400
+  0.6,                54.34426,                54.34426,                54.34426
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 2.842373
+Total execution time: 0.239325
 
 Computing Unit Configuration
 Number of Input Bit Streams:    2
@@ -47,29 +47,29 @@ Random Number Length:           8
 Bit Stream Length:            256
 Threshold for Convergence:   0.05
 Window Size for Convergence:  256
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
- -1.0,                 0.21314,                 0.10069,                 0.14690
- -0.6,                 0.34354,                 0.31495,                 0.32520
- -0.2,                 0.30751,                 0.28229,                 0.29389
-  0.2,                 0.31571,                 0.26434,                 0.29402
-  0.6,                 0.18588,                 0.13288,                 0.15499
+ -1.0,                 0.01047,                 0.01047,                 0.01047
+ -0.6,                 0.01546,                 0.01546,                 0.01546
+ -0.2,                 0.02040,                 0.02040,                 0.02040
+  0.2,                 0.02190,                 0.02190,                 0.02190
+  0.6,                 0.01819,                 0.01819,                 0.01819
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
- -1.0,               226.28572,               173.00000,               207.03012
- -0.6,               256.00000,               250.36000,               253.06075
- -0.2,               256.00000,               245.30556,               253.58128
-  0.2,               255.13792,               239.64999,               252.25105
-  0.6,               256.00000,               165.71428,               188.16739
+ -1.0,                91.48980,                91.48980,                91.48980
+ -0.6,               121.88938,               121.88938,               121.88938
+ -0.2,               153.41261,               153.41261,               153.41261
+  0.2,               139.81395,               139.81395,               139.81395
+  0.6,                89.01450,                89.01450,                89.01450
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 18.993068
+Total execution time: 1.915666
 
 Computing Unit Configuration
 Number of Input Bit Streams:    2
@@ -82,29 +82,29 @@ Random Number Length:          10
 Bit Stream Length:           1024
 Threshold for Convergence:   0.05
 Window Size for Convergence: 1024
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
- -1.0,                 0.21836,                 0.01965,                 0.14974
- -0.6,                 0.42769,                 0.01591,                 0.31991
- -0.2,                 0.46588,                 0.01446,                 0.29860
-  0.2,                 0.41157,                 0.01388,                 0.31111
-  0.6,                 0.22830,                 0.01754,                 0.15753
+ -1.0,                 0.01207,                 0.01207,                 0.01207
+ -0.6,                 0.01239,                 0.01239,                 0.01239
+ -0.2,                 0.01990,                 0.01990,                 0.01990
+  0.2,                 0.02720,                 0.02720,                 0.02720
+  0.6,                 0.02031,                 0.02031,                 0.02031
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
- -1.0,              1024.00000,               105.27273,               865.35553
- -0.6,              1024.00000,               107.27778,               944.29077
- -0.2,              1024.00000,               166.26471,               967.89313
-  0.2,              1024.00000,               141.62070,               948.96045
-  0.6,              1024.00000,                71.25000,               840.15393
+ -1.0,               147.23750,               147.23750,               147.23750
+ -0.6,               315.82175,               315.82175,               315.82175
+ -0.2,               269.24295,               269.24295,               269.24295
+  0.2,               360.55423,               360.55423,               360.55423
+  0.6,               317.58621,               317.58621,               317.58621
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 3.135609
+Total execution time: 0.292725
 
 Computing Unit Configuration
 Number of Input Bit Streams:    8
@@ -117,29 +117,29 @@ Random Number Length:           6
 Bit Stream Length:             64
 Threshold for Convergence:   0.05
 Window Size for Convergence:   64
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
- -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,                 0.29193,                 0.10439,                 0.18462
- -0.2,                 0.27082,                 0.11938,                 0.17730
-  0.2,                 0.20971,                 0.10581,                 0.15157
+ -1.0,                 0.08984,                 0.08984,                 0.08984
+ -0.6,                 0.07705,                 0.07705,                 0.07705
+ -0.2,                 0.08474,                 0.08474,                 0.08474
+  0.2,                 0.07832,                 0.07832,                 0.07832
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
- -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,                64.00000,                61.12500,                62.89338
- -0.2,                64.00000,                61.29851,                62.60029
-  0.2,                64.00000,                59.66667,                61.55885
+ -1.0,                64.00000,                64.00000,                64.00000
+ -0.6,                59.86735,                59.86735,                59.86735
+ -0.2,                59.89743,                59.89743,                59.89743
+  0.2,                59.56429,                59.56429,                59.56429
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 15.522888
+Total execution time: 1.562859
 
 Computing Unit Configuration
 Number of Input Bit Streams:    8
@@ -152,29 +152,29 @@ Random Number Length:           8
 Bit Stream Length:            256
 Threshold for Convergence:   0.05
 Window Size for Convergence:  256
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
- -1.0,                    -nan,                    -nan,                 0.02866
- -0.6,                 0.21536,                 0.09840,                 0.14429
- -0.2,                 0.22082,                 0.08966,                 0.13344
-  0.2,                 0.15565,                 0.04000,                 0.10242
-  0.6,                    -nan,                    -nan,                 0.02345
+ -1.0,                 0.04385,                 0.04385,                 0.04385
+ -0.6,                 0.04792,                 0.04792,                 0.04792
+ -0.2,                 0.05804,                 0.05804,                 0.05804
+  0.2,                 0.05915,                 0.05915,                 0.05915
+  0.6,                 0.07031,                 0.07031,                 0.07031
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
- -1.0,                    -nan,                    -nan,                42.20876
- -0.6,               256.00000,               227.55000,               243.23390
- -0.2,               251.24138,               221.61972,               238.24197
-  0.2,               256.00000,               185.89999,               224.65376
-  0.6,                    -nan,                    -nan,                90.01357
+ -1.0,               200.50000,               200.50000,               200.50000
+ -0.6,               215.05917,               215.05917,               215.05917
+ -0.2,               231.44730,               231.44730,               231.44730
+  0.2,               234.23170,               234.23170,               234.23170
+  0.6,               256.00000,               256.00000,               256.00000
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 173.297272
+Total execution time: 17.021282
 
 Computing Unit Configuration
 Number of Input Bit Streams:    8
@@ -187,29 +187,29 @@ Random Number Length:          10
 Bit Stream Length:           1024
 Threshold for Convergence:   0.05
 Window Size for Convergence: 1024
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
- -1.0,                    -nan,                    -nan,                 0.02856
- -0.6,                 0.23926,                 0.01010,                 0.14739
- -0.2,                 0.20443,                 0.01172,                 0.12757
-  0.2,                 0.16644,                 0.00770,                 0.09787
-  0.6,                    -nan,                    -nan,                 0.02338
+ -1.0,                 0.00098,                 0.00098,                 0.00098
+ -0.6,                 0.01939,                 0.01939,                 0.01939
+ -0.2,                 0.01941,                 0.01941,                 0.01941
+  0.2,                 0.02141,                 0.02141,                 0.02141
+  0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
- -1.0,                    -nan,                    -nan,               200.09097
- -0.6,              1024.00000,               221.19048,               940.69037
- -0.2,              1006.84998,               261.82541,               901.76617
-  0.2,              1024.00000,               186.25000,               809.93561
-  0.6,                    -nan,                    -nan,               284.64487
+ -1.0,                92.00000,                92.00000,                92.00000
+ -0.6,               423.58481,               423.58481,               423.58481
+ -0.2,               481.49698,               481.49698,               481.49698
+  0.2,               497.64633,               497.64633,               497.64633
+  0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 48.595725
+Total execution time: 4.720832
 
 Computing Unit Configuration
 Number of Input Bit Streams:   32
@@ -222,29 +222,29 @@ Random Number Length:           6
 Bit Stream Length:             64
 Threshold for Convergence:   0.05
 Window Size for Convergence:   64
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
  -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,                 0.23347,                 0.00684,                 0.09384
- -0.2,                 0.18135,                 0.06558,                 0.09923
-  0.2,                    -nan,                    -nan,                 0.08638
+ -0.6,                 0.09353,                 0.09353,                 0.09353
+ -0.2,                 0.08163,                 0.08163,                 0.08163
+  0.2,                 0.07293,                 0.07293,                 0.07293
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
  -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,                64.00000,                51.00000,                60.99719
- -0.2,                63.86458,                57.90322,                60.93654
-  0.2,                    -nan,                    -nan,                58.74059
+ -0.6,                59.80000,                59.80000,                59.80000
+ -0.2,                59.29843,                59.29843,                59.29843
+  0.2,                58.10000,                58.10000,                58.10000
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 324.607536
+Total execution time: 37.841499
 
 Computing Unit Configuration
 Number of Input Bit Streams:   32
@@ -257,29 +257,29 @@ Random Number Length:           8
 Bit Stream Length:            256
 Threshold for Convergence:   0.05
 Window Size for Convergence:  256
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
  -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,                 0.13018,                 0.00293,                 0.05871
- -0.2,                 0.12144,                 0.03527,                 0.05915
-  0.2,                 0.12091,                 0.00146,                 0.04934
+ -0.6,                 0.06300,                 0.06300,                 0.06300
+ -0.2,                 0.05930,                 0.05930,                 0.05930
+  0.2,                 0.03967,                 0.03967,                 0.03967
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
  -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,               256.00000,                95.00000,               214.76172
- -0.2,               253.53683,               170.16843,               211.39803
-  0.2,               256.00000,                58.00000,               205.01483
+ -0.6,               225.64706,               225.64706,               225.64706
+ -0.2,               229.59497,               229.59497,               229.59497
+  0.2,               212.92308,               212.92308,               212.92308
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
 
 ============================================================================================
-Total execution time: 3587.912702
+Total execution time: 355.113860
 
 Computing Unit Configuration
 Number of Input Bit Streams:   32
@@ -292,23 +292,23 @@ Random Number Length:          10
 Bit Stream Length:           1024
 Threshold for Convergence:   0.05
 Window Size for Convergence: 1024
-Total Round:                  100
-Iteration Per Round:          100
+Total Round:                    1
+Iteration Per Round:         1000
 Number of Segment:              5
 
 Range,  Max Squared Error Rate,  Min Squared Error Rate,  avg Squared Error Rate:
  -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,                 0.09711,                 0.00031,                 0.04019
- -0.2,                 0.07467,                 0.01799,                 0.03903
-  0.2,                 0.08496,                 0.00043,                 0.03314
+ -0.6,                 0.04755,                 0.04755,                 0.04755
+ -0.2,                 0.04151,                 0.04151,                 0.04151
+  0.2,                 0.03678,                 0.03678,                 0.03678
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 
 Range,    Max Convergence Time,    Min Convergence Time,    avg Convergence Time:
  -1.0,                    -nan,                    -nan,                 0.00000
- -0.6,              1024.00000,                60.00000,               605.21088
- -0.2,              1000.01062,               287.62106,               590.06116
-  0.2,              1024.00000,                67.00000,               534.92749
+ -0.6,               916.11768,               916.11768,               916.11768
+ -0.2,               828.13751,               828.13751,               828.13751
+  0.2,               802.65216,               802.65216,               802.65216
   0.6,                    -nan,                    -nan,                 0.00000
   1.0,                    -nan,                    -nan,                 0.00000
 ============================================================================================
