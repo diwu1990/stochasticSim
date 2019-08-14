@@ -1,6 +1,6 @@
 `include "parallelCnt7.sv"
-`define OFFSET 0
-// `define OFFSET 15
+// `define OFFSET 0
+`define OFFSET 15
 
 module uNSADD8 (
     input logic clk,    // Clock
