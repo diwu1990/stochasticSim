@@ -1,7 +1,7 @@
 `timescale 1ns/1ns
-`include "tMUL.sv"
+`include "tMUL_uni.sv"
 
-module tMUL_tb ();
+module tMUL_uni_tb ();
 
     logic   clk;
     logic   rst_n;
@@ -12,7 +12,7 @@ module tMUL_tb ();
     logic   oC;
     logic   stop;
 
-    tMUL U_tMUL(
+    tMUL_uni U_tMUL_uni(
         .clk(clk),    // Clock
         .rst_n(rst_n),  // Asynchronous reset active low
         .iA(iA),
@@ -28,7 +28,7 @@ module tMUL_tb ();
 
     `ifdef DUMPFSDB
         initial begin
-            $fsdbDumpfile("tMUL.fsdb");
+            $fsdbDumpfile("tMUL_uni.fsdb");
             $fsdbDumpvars(0,"+all");
             // $fsdbDumpvars;
         end

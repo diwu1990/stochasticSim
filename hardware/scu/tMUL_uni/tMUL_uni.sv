@@ -1,7 +1,7 @@
 `include "SobolRNGDim1.sv"
 `define DATAWD `INWD 
 
-module tMUL (
+module tMUL_uni (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
     input logic [`DATAWD-1:0] iA,
