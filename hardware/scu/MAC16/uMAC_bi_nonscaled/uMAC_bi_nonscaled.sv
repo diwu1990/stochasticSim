@@ -1,7 +1,7 @@
 `include "uNSADD16.sv"
 `include "uMUL_bi.sv"
 
-module uMAC_bi_scaled (
+module uMAC_bi_nonscaled (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     input logic [15:0] iA,
