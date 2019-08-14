@@ -1,6 +1,6 @@
 `define INWD3
 
-module SobolRNGDim1_3_10 (
+module SobolRNGDim1_3b_10b (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
     input logic enable,
@@ -286,6 +286,5 @@ module SobolRNGDim1_3_10 (
             endcase // onehot
         end
     `endif
-    
 
 endmodule
