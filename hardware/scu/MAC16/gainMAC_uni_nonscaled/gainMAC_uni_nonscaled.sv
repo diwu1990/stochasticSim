@@ -11,27 +11,27 @@ module gainMAC_uni_nonscaled (
     input logic loadB,
     output oC
 );
-    logic [7:0] sobolSeqA;
-    logic [7:0] sobolSeqB;
+    logic [7:0] sobolSeqA [15:0];
+    logic [7:0] sobolSeqB [15:0];
     logic [15:0] mulC;
-    
-    SobolRNGDim1_8b U_SobolRNGDim1_8b_A(
-        .clk(clk),
-        .rst_n(rst_n),
-        .enable(1'b1),
-        .sobolSeq(sobolSeqA)
-        );
-
-    SobolRNGDim1_8b U_SobolRNGDim1_8b_B(
-        .clk(clk),
-        .rst_n(rst_n),
-        .enable(1'b1),
-        .sobolSeq(sobolSeqB)
-        );
 
     genvar i;
     generate
         for (i = 0; i < 16; i++) begin
+            SobolRNGDim1_8b U_SobolRNGDim1_8b_A(
+                .clk(clk),
+                .rst_n(rst_n),
+                .enable(1'b1),
+                .sobolSeq(sobolSeqA[i])
+                );
+
+            SobolRNGDim1_8b U_SobolRNGDim1_8b_B(
+                .clk(clk),
+                .rst_n(rst_n),
+                .enable(1'b1),
+                .sobolSeq(sobolSeqB[i])
+                );
+
             gMUL_uni U_gMUL_uni(
                 .clk(clk),    // Clock
                 .rst_n(rst_n),  // Asynchronous reset active low
@@ -39,8 +39,8 @@ module gainMAC_uni_nonscaled (
                 .iB(iB[i]),
                 .loadA(loadA),
                 .loadB(loadB),
-                .sobolSeqA(sobolSeqA),
-                .sobolSeqB(sobolSeqB),
+                .sobolSeqA(sobolSeqA[i]),
+                .sobolSeqB(sobolSeqB[i]),
                 .oC(mulC[i])
                 );
         end
