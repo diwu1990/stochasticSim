@@ -1,4 +1,4 @@
-module gMUL_bi (
+module gMUL_uni (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
     input logic [7:0] iA,
