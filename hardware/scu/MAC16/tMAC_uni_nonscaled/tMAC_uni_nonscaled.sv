@@ -1,7 +1,7 @@
 `include "SobolRNGDim1_8b.sv"
 `include "tMUL_uni.sv"
 
-module tMAC_uni_scaled (
+module tMAC_uni_nonscaled (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     input logic [7:0] iA [15:0],
