@@ -1,0 +1,65 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : gainMAC_bi_scaled
+Version: N-2017.09-SP5
+Date   : Wed Aug 14 05:19:27 2019
+****************************************
+
+Operating Conditions: NCCOM   Library: tcbn40lpbwptc
+Wire Load Model Mode: segmented
+
+  Startpoint: U_SobolRNGDim1_8b_A/sobolSeq_reg[1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: U_muxADD/out_reg
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  gainMAC_bi_scaled  TSMC32K_Lowk_Conservative
+                                           tcbn40lpbwptc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  U_SobolRNGDim1_8b_A/sobolSeq_reg[1]/CP (DFCND2BWP)      0.00       0.00 r
+  U_SobolRNGDim1_8b_A/sobolSeq_reg[1]/Q (DFCND2BWP)       0.17       0.17 r
+  U667/ZN (CKND6BWP)                                      0.06       0.23 f
+  U1032/ZN (INR2D1BWP)                                    0.05       0.28 r
+  U672/Z (CKBD4BWP)                                       0.09       0.37 r
+  U958/ZN (OAI31D1BWP)                                    0.05       0.42 f
+  U957/Z (OA221D1BWP)                                     0.06       0.48 f
+  U27/Z (AO221D1BWP)                                      0.13       0.62 f
+  U645/Z (OA211D1BWP)                                     0.06       0.67 f
+  U1099/Z (OA22D1BWP)                                     0.07       0.75 f
+  U1098/Z (AO22D1BWP)                                     0.07       0.82 f
+  U1040/ZN (AOI33D0BWP)                                   0.09       0.91 r
+  U1039/ZN (ND2D1BWP)                                     0.04       0.95 f
+  U947/ZN (AOI221D4BWP)                                   0.15       1.10 r
+  U945/ZN (OAI211D1BWP)                                   0.05       1.15 f
+  U983/ZN (AOI22D1BWP)                                    0.06       1.21 r
+  U641/ZN (OAI22D0BWP)                                    0.06       1.27 f
+  U640/Z (CKBD1BWP)                                       0.05       1.31 f
+  U_muxADD/out_reg/D (DFCNQD1BWP)                         0.00       1.31 f
+  data arrival time                                                  1.31
+
+  clock clk (rise edge)                                   2.50       2.50
+  clock network delay (ideal)                             0.00       2.50
+  clock uncertainty                                      -0.15       2.35
+  U_muxADD/out_reg/CP (DFCNQD1BWP)                        0.00       2.35 r
+  library setup time                                     -0.01       2.34
+  data required time                                                 2.34
+  --------------------------------------------------------------------------
+  data required time                                                 2.34
+  data arrival time                                                 -1.31
+  --------------------------------------------------------------------------
+  slack (MET)                                                        1.03
+
+
+1
