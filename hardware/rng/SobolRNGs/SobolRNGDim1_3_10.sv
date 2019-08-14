@@ -4,7 +4,7 @@ module SobolRNGDim1_3_10 (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
     input logic enable,
-    output logic [`INWD-1:0]sobolSeq
+    output logic sobolSeq
 );
     
     `ifdef INWD3
@@ -47,6 +47,7 @@ module SobolRNGDim1_3_10 (
         parameter LOGINWD = 4;
     `endif
 
+    logic [`INWD-1:0]sobolSeq;
     logic [`LOGINWD-1:0] vecIdx;
     logic [`INWD-1:0] dirVec [`INWD-1:0];
 
