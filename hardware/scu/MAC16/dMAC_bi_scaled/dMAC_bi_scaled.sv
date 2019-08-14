@@ -1,5 +1,6 @@
 `include "SobolRNGDim1_4b.sv"
 `include "SobolRNGDim1_8b.sv"
+`include "muxADD.sv"
 `include "dMUL_bi.sv"
 
 module dMAC_bi_scaled (
