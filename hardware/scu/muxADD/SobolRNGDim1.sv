@@ -45,6 +45,16 @@ module SobolRNGDim1 (
         end
     `endif
 
+    `ifdef INWD5
+        always_comb begin : proc_dirVec_5
+            dirVec[0] <= 'd16;
+            dirVec[1] <= 'd8;
+            dirVec[2] <= 'd4;
+            dirVec[3] <= 'd2;
+            dirVec[4] <= 'd1;
+        end
+    `endif
+
     `ifdef INWD6
         always_comb begin : proc_dirVec_6
             dirVec[0] <= 'd32;
@@ -53,6 +63,18 @@ module SobolRNGDim1 (
             dirVec[3] <= 'd4;
             dirVec[4] <= 'd2;
             dirVec[5] <= 'd1;
+        end
+    `endif
+
+    `ifdef INWD7
+        always_comb begin : proc_dirVec_7
+            dirVec[0] <= 'd64;
+            dirVec[1] <= 'd32;
+            dirVec[2] <= 'd16;
+            dirVec[3] <= 'd8;
+            dirVec[4] <= 'd4;
+            dirVec[5] <= 'd2;
+            dirVec[6] <= 'd1;
         end
     `endif
 
@@ -66,6 +88,20 @@ module SobolRNGDim1 (
             dirVec[5] <= 'd4;
             dirVec[6] <= 'd2;
             dirVec[7] <= 'd1;
+        end
+    `endif
+
+    `ifdef INWD9
+        always_comb begin : proc_dirVec_9
+            dirVec[0] <= 'd256;
+            dirVec[1] <= 'd128;
+            dirVec[2] <= 'd64;
+            dirVec[3] <= 'd32;
+            dirVec[4] <= 'd16;
+            dirVec[5] <= 'd8;
+            dirVec[6] <= 'd4;
+            dirVec[7] <= 'd2;
+            dirVec[8] <= 'd1;
         end
     `endif
 
