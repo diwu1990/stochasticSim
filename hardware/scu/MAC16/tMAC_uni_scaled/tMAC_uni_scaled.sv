@@ -32,7 +32,7 @@ module tMAC_uni_scaled (
     genvar i;
     generate
         for (i = 0; i < 16; i++) begin
-            tMUL_bi U_tMUL_bi(
+            tMUL_uni U_tMUL_uni(
                 .clk(clk),    // Clock
                 .rst_n(rst_n),  // Asynchronous reset active low
                 .iA(iA[i]),
