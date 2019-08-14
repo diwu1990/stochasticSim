@@ -7,13 +7,13 @@ module tMUL_uni (
     input logic [7:0] iB,
     input logic loadA,
     input logic loadB,
+    input logic sobolSeq,
     output logic oC,
     output logic stop
 );
     
     logic [7:0] iA_buf;
     logic [7:0] iB_buf;
-    logic [7:0] sobolSeq;
     
     always_ff @(posedge clk or negedge rst_n) begin : proc_iA_buf
         if(~rst_n) begin
@@ -46,14 +46,6 @@ module tMUL_uni (
             end
         end
     end
-
-    SobolRNGDim1_8b U_SobolRNGDim1_8b(
-        .clk(clk),
-        .rst_n(rst_n),
-        // .enable(~stop),
-        .enable(1'b1),
-        .sobolSeq(sobolSeq)
-        );
 
     always_comb begin : proc_oC
         oC <= ~stop & (iB_buf > sobolSeq);

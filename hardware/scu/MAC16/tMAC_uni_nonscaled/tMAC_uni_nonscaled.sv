@@ -1,4 +1,4 @@
-`include "SobolRNGDim1_4b.sv"
+`include "SobolRNGDim1_8b.sv"
 `include "tMUL_uni.sv"
 
 module tMAC_uni_scaled (
@@ -10,26 +10,18 @@ module tMAC_uni_scaled (
     input logic loadB,
     output oC
 );
-    logic [7:0] sobolSeqA;
-    logic [7:0] sobolSeqB;
+    logic [7:0] sobolSeq;
     logic [7:0] sobolSeqC;
     logic [15:0] mulC;
     logic [7:0] cnt [15:0];
     logic [7:0] sum0 [3:0];
     logic [7:0] sum;
     
-    SobolRNGDim1_8b U_SobolRNGDim1_8b_A(
+    SobolRNGDim1_8b U_SobolRNGDim1_8b(
         .clk(clk),
         .rst_n(rst_n),
         .enable(1'b1),
-        .sobolSeq(sobolSeqA)
-        );
-
-    SobolRNGDim1_8b U_SobolRNGDim1_8b_B(
-        .clk(clk),
-        .rst_n(rst_n),
-        .enable(1'b1),
-        .sobolSeq(sobolSeqB)
+        .sobolSeq(sobolSeq)
         );
 
     SobolRNGDim1_8b U_SobolRNGDim1_8b_C(
@@ -49,8 +41,7 @@ module tMAC_uni_scaled (
                 .iB(iB[i]),
                 .loadA(loadA),
                 .loadB(loadB),
-                .sobolSeqA(sobolSeqA),
-                .sobolSeqB(sobolSeqB),
+                .sobolSeq(sobolSeq),
                 .oC(mulC[i]),
                 .stop(stop[i])
                 );
