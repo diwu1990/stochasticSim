@@ -2,7 +2,7 @@
 `include "orADD.sv"
 `include "gMUL_uni.sv"
 
-module gainMAC_uni_scaled (
+module gainMAC_uni_nonscaled (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     input logic [7:0] iA [15:0],
