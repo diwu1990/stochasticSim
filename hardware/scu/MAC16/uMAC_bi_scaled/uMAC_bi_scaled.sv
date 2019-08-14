@@ -25,7 +25,7 @@ module uMAC_bi_scaled (
         end
     endgenerate
 
-    uSADD U_uSADD(
+    uSADD16 U_uSADD16(
         .clk(clk),    // Clock
         .rst_n(rst_n),  // Asynchronous reset active low
         .in(mulC),
