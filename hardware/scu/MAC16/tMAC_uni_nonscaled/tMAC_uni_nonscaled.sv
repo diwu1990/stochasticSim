@@ -51,7 +51,7 @@ module tMAC_uni_nonscaled (
                 if(~rst_n) begin
                     cnt[i] <= 0;
                 end else begin
-                    cnt[i] <= cnt[i] + stop[i] & mulC[i];
+                    cnt[i] <= cnt[i] + mulC[i];
                 end
             end
         end
