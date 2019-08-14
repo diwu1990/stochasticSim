@@ -40,8 +40,8 @@ module gainMAC_bi_scaled (
                 .iB(iB[i]),
                 .loadA(loadA),
                 .loadB(loadB),
-                .sobolSeqA(sobolSeqA),
-                .sobolSeqB(sobolSeqB),
+                .sobolSeqA(sobolSeqA[i]),
+                .sobolSeqB(sobolSeqB[i]),
                 .oC(mulC[i])
                 );
         end
