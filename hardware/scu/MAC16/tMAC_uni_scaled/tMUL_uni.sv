@@ -1,6 +1,6 @@
 `include "SobolRNGDim1_8b.sv"
 
-module tMUL_bi (
+module tMUL_uni (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
     input logic [7:0] iA,
@@ -56,7 +56,7 @@ module tMUL_bi (
         );
 
     always_comb begin : proc_oC
-        oC <= ~(~stop ^ (iB_buf > sobolSeq));
+        oC <= ~stop & (iB_buf > sobolSeq);
     end
 
 endmodule
