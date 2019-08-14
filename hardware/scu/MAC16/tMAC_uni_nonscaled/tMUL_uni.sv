@@ -1,5 +1,3 @@
-`include "SobolRNGDim1_8b.sv"
-
 module tMUL_uni (
     input logic clk,    // Clock
     input logic rst_n,  // Asynchronous reset active low
