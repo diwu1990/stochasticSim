@@ -5,7 +5,7 @@ module tMUL_uni (
     input logic [7:0] iB,
     input logic loadA,
     input logic loadB,
-    input logic sobolSeq,
+    input logic [7:0] sobolSeq,
     output logic oC,
     output logic stop
 );
