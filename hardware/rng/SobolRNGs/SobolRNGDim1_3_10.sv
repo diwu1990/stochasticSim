@@ -47,12 +47,12 @@ module SobolRNGDim1_3_10 (
         parameter LOGINWD = 4;
     `endif
 
-    logic [`INWD-1:0]sobolSeq;
-    logic [`LOGINWD-1:0] vecIdx;
-    logic [`INWD-1:0] dirVec [`INWD-1:0];
+    logic [INWD-1:0]sobolSeq;
+    logic [LOGINWD-1:0] vecIdx;
+    logic [INWD-1:0] dirVec [INWD-1:0];
 
     // binary counter
-    logic [`INWD-1:0]cnt;
+    logic [INWD-1:0]cnt;
     always_ff @(posedge clk or negedge rst_n) begin : proc_1
         if(~rst_n) begin
             cnt <= 0;
@@ -62,21 +62,21 @@ module SobolRNGDim1_3_10 (
     end
 
     // least significant zero index
-    logic [`INWD-1:0] inacc;
-    logic [`INWD-1:0] outoh;
+    logic [INWD-1:0] inacc;
+    logic [INWD-1:0] outoh;
 
     genvar i;
 
     assign inacc[0] = ~cnt[0];
     generate
-        for (i = 1; i < `INWD; i++) begin
+        for (i = 1; i < INWD; i++) begin
             assign inacc[i] = inacc[i-1] | ~cnt[i];
         end
     endgenerate
 
     assign outoh[0] = inacc[0];
     generate
-        for (i = 1; i < `INWD; i++) begin
+        for (i = 1; i < INWD; i++) begin
             assign outoh[i] = inacc[i-1] ^ inacc[i];
         end
     endgenerate
