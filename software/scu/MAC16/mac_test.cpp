@@ -19,20 +19,20 @@
 #include "perfsim.hpp"
 
 
-// #define UNI
-#define BI
+#define UNI
+// #define BI
 
 // #define SADD
 #define NSADD
 
-#define UGEMM
-// #define GGEMM
+// #define UGEMM
+#define GGEMM
 // #define DGEMM
 // #define TGEMM
 
 
-// #define RC
-#define TC
+#define RC
+// #define TC
 
 
 
@@ -254,6 +254,14 @@ int main()
                         else
                         {
                             val[inIdx] = (float)((float)(rand()%(int)pow(2,randBitLen))/(float)pow(2,randBitLen));
+                            if (scaled_add == 0)
+                            {
+                                if (rand()%256>(256/(int)mulNum/4))
+                                {
+                                    val[inIdx] /= (float)max((int)mulNum+8,1);
+                                    val[inIdx] = (float)((int)(val[inIdx]*pow(2,randBitLen)))/pow(2,randBitLen);
+                                }
+                            }
                         }
                         bitLengthVec[inIdx] = randBitLen;
                         probVec[inIdx] = val[inIdx];
