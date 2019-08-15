@@ -18,29 +18,84 @@
 #include "oradd.hpp"
 #include "perfsim.hpp"
 
+
+// #define UNI
+#define BI
+
+// #define SADD
+#define NSADD
+
+#define UGEMM
+// #define GGEMM
+// #define DGEMM
+// #define TGEMM
+
+
+// #define RC
+#define TC
+
+
+
+
 int main()
 {
+    #ifdef UNI
+        printf("unipolar-");
+    #endif
+    #ifdef BI
+        printf("bipolar-");
+    #endif
+
+    #ifdef SADD
+        printf("scaled-");
+    #endif
+    #ifdef NSADD
+        printf("nonscaled-");
+    #endif
+
+    #ifdef UGEMM
+        printf("uGEMM-");
+    #endif
+    #ifdef DGEMM
+        printf("dGEMM-");
+    #endif
+    #ifdef TGEMM
+        printf("tGEMM-");
+    #endif
+    #ifdef GGEMM
+        printf("gGEMM-");
+    #endif
+
+    #ifdef RC
+        printf("rate\n");
+    #endif
+    #ifdef TC
+        printf("temporal\n");
+    #endif
+
     srand(time(NULL));
     vector<unsigned int> inBSNumVec{32};
     vector<unsigned int> randBitLenVec{8};
-    // GEMM option: GEMM_mode
-    // 0 for uGEMM
-    // 1 for dGEMM
-    // 2 for tGEMM
-    // 3 for gGEMM
-    unsigned int GEMM_mode = 0;
     // Addition option: scaled_add
     // 0 for non-scaled
     // 1 for scaled
     unsigned int scaled_add = 0;
-    // data coding option: rate_coding
-    // 0 for temporal coding
-    // 1 for rate coding
-    unsigned int rate_coding = 0;
+    #ifdef SADD
+        scaled_add = 1;
+    #endif
+    #ifdef NSADD
+        scaled_add = 0;
+    #endif
     // data format: unipolar
     // 0 for bipolar
     // 1 for unipolar
-    unsigned int unipolar = 0;
+    unsigned int unipolar = 1;
+    #ifdef UNI
+        unipolar = 1;
+    #endif
+    #ifdef BI
+        unipolar = 0;
+    #endif
 
 
     // dont change code here!!!!!!!!!!!!!!!!!!!
@@ -49,15 +104,16 @@ int main()
     // whether to set cfmul to correlation free mode
     // dGEMM and gGEMM are cfree, uGEMM and tGEMM are not
     unsigned int cfree = 0;
-    if (GEMM_mode == 0 or GEMM_mode == 1)
-    {
+    #ifdef UGEMM
         cfree = 1;
-    }
+    #endif
+    #ifdef TGEMM
+        cfree = 1;
+    #endif
     // threhold to consider convergence
     float thdBias = 0.05;
 
 
-    
     for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
     {
         for (int randBitLenVecIdx = 0; randBitLenVecIdx < randBitLenVec.size(); ++randBitLenVecIdx)
@@ -67,23 +123,28 @@ int main()
             // **************************************************************
             unsigned int inBSNum = inBSNumVec[inBSNumVecIdx]; // number of input bit streams
             unsigned int mulNum = inBSNum/2; // number of muls
+            // printf("number of input is %d\n", inBSNum);
+            // printf("number of multiplers is %d\n", mulNum);
             unsigned int depthSync = (unsigned int)log2(mulNum); // depth of synchronizer, used in some units with supported architecture
-            // depthSync = randBitLenVec[randBitLenVecIdx];
+            depthSync = randBitLenVec[randBitLenVecIdx];
+            // printf("depthSync is %d\n", depthSync);
             unsigned int inSWindow = ceil(depthSync/2); // shift offset for internal cnt
             unsigned int depth = inSWindow; // depth of other buffer, used in some units with supported architecture
             // **************************************************************
             // configuration for evaluation
             // **************************************************************
             unsigned int randBitLen = randBitLenVec[randBitLenVecIdx]; // number of bits for random number
+            // printf("randBitLen is %d\n", randBitLen);
             // total run number is totalRound * totalIter.
             unsigned int totalRound = 1; // each round uses different random number generator
-            unsigned int totalIter = 1000; // each iteration uses evaluate different value for a given round
+            unsigned int totalIter = 500; // each iteration uses evaluate different value for a given round
 
             // **************************************************************
             // different modes for random number generator
             // **************************************************************
             string mode = "random"; // "incremental", "delayed", "random"
             unsigned int seqLength = (unsigned int)pow(2,randBitLen); // bit sequence length to be evaluated
+            // printf("seqLength is %d\n", seqLength);
             unsigned int wSize = seqLength; // window size to monitor accuracy
             unsigned int segmentNum = 1; // evaluate the accuracy of different output ranges (segments)
             unsigned int randSeqNum = 2; // number of random number sequences for depthSync/depth
@@ -98,6 +159,12 @@ int main()
             vector<float> SegmentedAvgRSE(segmentNum); // average squared error (MSE) for each segment
             vector<float> SegmentedAvgConvergenceTime(segmentNum); // average convergence time for each segment
             vector<unsigned int> SegmentedTotalNum(segmentNum); // average squared error (MSE) for each segment
+
+            vector<float> CycleAvgRSE(seqLength);
+            for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
+            {
+                CycleAvgRSE[seqIdx] = 0;
+            }
 
             vector<float> RSEMax(1);
             vector<float> RSEMin(1);
@@ -146,30 +213,27 @@ int main()
                 unsigned int delay = 0;
                 // random number generator
                 // SystemRandMulti rngInst;
-                if (GEMM_mode == 2)
-                {
+                #ifdef TGEMM
                     RACELMulti rngInst;
-                }
-                else
-                {
-                    if (rate_coding != 0)
-                    {
-                        RACELMulti rngInst;
-                    }
-                    else
-                    {
+                #else
+                    #ifdef RC
                         SOBOLMulti rngInst;
-                    }
-                }
+                    #endif
+                    #ifdef TC
+                        RACELMulti rngInst;
+                    #endif
+                #endif
                 // LFSRMulti rngInst;
                 // RACELMulti rngInst;
+                // printf("%d, %d, %d, %d, \n", GEMM_mode, scaled_add, rate_coding, unipolar);
+
                 rngInst.Init(inBSNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
                 rngInst.SeqGen();
 
                 // random number generator
                 // SystemRandMulti rngSeqInst;
-                // SOBOLMulti rngSeqInst;
-                LFSRMulti rngSeqInst;
+                SOBOLMulti rngSeqInst;
+                // LFSRMulti rngSeqInst;
                 rngSeqInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngSeqInst");
                 rngSeqInst.SeqGen();
 
@@ -215,7 +279,7 @@ int main()
                     for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                     {
                         // RandSeq[0][seqIdx] = rngInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
-                        RandSeq[0][seqIdx] = rngSeqInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - depthSync);
+                        RandSeq[0][seqIdx] = rngSeqInst.OutSeq()[0][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - 4);
                         RandSeq[1][seqIdx] = rngSeqInst.OutSeq()[1][seqIdx%(unsigned int)(pow(2,randBitLen))] >> (randBitLen - (unsigned int)log2(depth));
                     }
 
@@ -226,46 +290,45 @@ int main()
                     {
                         mulProbVec[0] = probVec[mulIdx*2];
                         mulProbVec[1] = probVec[mulIdx*2+1];
-                        mulInst.Init(probVec, cfree, depthSync, instream, inSWindow, wSize, thdBias, unipolar, "mulInst");
+                        mulInst[mulIdx].Init(mulProbVec, cfree, randBitLen, instream, inSWindow, wSize, thdBias, unipolar, "mulInst");
+                        // printf("%.5f, ", mulInst[mulIdx].TheoProb()[0]);
                     }
-                        
-                    // not all mul are included in addInst, CFADD
-                    vector<float> addProbVec(mulNum);
-                    if (GEMM_mode == 0)
-                    {
-                        CFADD addInst;
-                        for (int addInIdx = 0; addInIdx < mulNum; ++addInIdx)
-                        {
-                            addProbVec[addInIdx] = mulInst[addInIdx].TheoProb();
-                        }
-                        addInst.Init(addProbVec, scaled_add, depthSync, wSize, thdBias, unipolar, "addInst");
-                    }
-                    else
-                    {
-                        if (scaled_add != 0)
-                        {
-                            MUXADD addInst;
-                            for (int addInIdx = 0; addInIdx < mulNum; ++addInIdx)
-                            {
-                                addProbVec[addInIdx] = mulInst[addInIdx].TheoProb();
-                            }
-                            addInst.Init(addProbVec, wSize, thdBias, unipolar, "addInst");
-                        }
-                        else
-                        {
-                            if (unipolar == 0)
-                            {
-                                printf("Error: non-scaled addition has no bipolar mode!!!!!!!!!\n");
-                            }
-                            ORADD addInst;
-                            for (int addInIdx = 0; addInIdx < mulNum; ++addInIdx)
-                            {
-                                addProbVec[addInIdx] = mulInst[addInIdx].TheoProb();
-                            }
-                            addInst.Init(probVec, wSize, thdBias, "addInst");
-                        }
-                    }
+                    // printf("\n");
 
+                    // not all mul are included in computeInst, CFADD
+                    vector<float> addProbVec(mulNum);
+                    #ifdef UGEMM
+                        CFADD computeInst;
+                        for (int mulIdx = 0; mulIdx < mulNum; ++mulIdx)
+                        {
+                            addProbVec[mulIdx] = mulInst[mulIdx].TheoProb()[0];
+                            // printf("%.5f, ", addProbVec[mulIdx]);
+                        }
+                        // printf("\n");
+                        computeInst.Init(addProbVec, scaled_add, randBitLen, wSize, thdBias, unipolar, "computeInst");
+                    #else
+                        #ifdef SADD
+                            MUXADD computeInst;
+                            for (int mulIdx = 0; mulIdx < mulNum; ++mulIdx)
+                            {
+                                addProbVec[mulIdx] = mulInst[mulIdx].TheoProb()[0];
+                            }
+                            computeInst.Init(addProbVec, wSize, thdBias, unipolar, "computeInst");
+                        #endif
+                        #ifdef NSADD
+                            #ifdef BI
+                                printf("Error: Non UGEMM mode should not have bipolar input with nonscaled add!!!!!!\n");
+                            #endif
+                            ORADD computeInst;
+                            for (int mulIdx = 0; mulIdx < mulNum; ++mulIdx)
+                            {
+                                addProbVec[mulIdx] = mulInst[mulIdx].TheoProb()[0];
+                            }
+                            computeInst.Init(probVec, wSize, thdBias, "computeInst");
+                        #endif
+                    #endif
+
+                    vector<char> addInBit(mulNum);
                     for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
                     {
                         // set bit stream
@@ -277,14 +340,29 @@ int main()
                         iRandNum[0] = RandSeq[0][seqIdx];
                         iRandNum[1] = RandSeq[1][seqIdx];
 
+                        vector<char> mulInBit(2);
                         for (int mulIdx = 0; mulIdx < mulNum; ++mulIdx)
                         {
-                            mulInst[mulIdx].Calc(iBit);
+                            mulInBit[0] = iBit[2*mulIdx];
+                            mulInBit[1] = iBit[2*mulIdx+1];
+                            mulInst[mulIdx].Calc(mulInBit);
+                            addInBit[mulIdx] = mulInst[mulIdx].OutBit()[0];
                         }
 
 
-                        // computeInst.Calc(iBit, iRandNum);
-                        // printf("window bias      (%f)\n", computeInst.WBias()[0]);
+                        #ifdef UGEMM
+                            computeInst.Calc(addInBit);
+                        #else
+                            #ifdef SADD
+                                computeInst.Calc(addInBit, iRandNum);
+                            #endif
+                            #ifdef NSADD
+                                computeInst.Calc(addInBit);
+                            #endif
+                        #endif
+                        
+                        CycleAvgRSE[seqIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
+
                     }
 
 
@@ -308,6 +386,8 @@ int main()
                     SegmentedRSE[segNum][roundIdx] += computeInst.WBias()[0] * computeInst.WBias()[0];
                     SegmentedNum[segNum][roundIdx] += 1;
                     SegmentedConvergenceTime[segNum][roundIdx] += computeInst.CTime()[0];
+                 
+
                 }
                 for (int segmentIdx = 0; segmentIdx < segmentNum; ++segmentIdx)
                 {
@@ -426,6 +506,12 @@ int main()
             }
             printf("============================================================================================\n");
             printf("\n");
+
+            for (int seqIdx = 0; seqIdx < seqLength; ++seqIdx)
+            {
+                CycleAvgRSE[seqIdx] = sqrt(CycleAvgRSE[seqIdx] / totalRound / totalIter);
+                printf("%f\n", CycleAvgRSE[seqIdx]);
+            }
         }
     }
 }
