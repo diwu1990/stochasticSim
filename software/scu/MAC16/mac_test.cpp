@@ -31,8 +31,8 @@
 // #define TGEMM
 
 
-#define RC
-// #define TC
+// #define RC
+#define TC
 
 
 
