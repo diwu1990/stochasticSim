@@ -31,8 +31,8 @@
 // #define TGEMM
 
 
-// #define RC
-#define TC
+#define RC
+// #define TC
 
 
 
@@ -217,7 +217,8 @@ int main()
                     RACELMulti rngInst;
                 #else
                     #ifdef RC
-                        SOBOLMulti rngInst;
+                        LFSRMulti rngInst;
+                        // SOBOLMulti rngInst;
                     #endif
                     #ifdef TC
                         RACELMulti rngInst;
