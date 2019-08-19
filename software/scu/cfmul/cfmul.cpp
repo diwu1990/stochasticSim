@@ -195,29 +195,29 @@ void CFMUL::Calc(vector<char> param1)
                 rngIdx %= (upperBound+1);
 
                 // inv AND gate
-                if (cnt_inv > bound1 && cnt_inv < bound2)
-                {
-                    if (iBit[1] == 0 & lastBit == 0)
-                    {
-                        cnt_inv += 2;
-                    }
-                    else if(iBit[1] == 1 & lastBit == 1)
-                    {
-                        cnt_inv -= 2;
-                    }
-                }
-                else
-                {
-                    if (iBit[1] == 0 && cnt_inv < upperBound)
-                    {
-                        cnt_inv += 1;
-                    }
-                    else if(iBit[1] == 1 && cnt_inv > 0)
-                    {
-                        cnt_inv -= 1;
-                    }
-                }
-                lastBit_inv = (1 - iBit[1]);
+                // if (cnt_inv > bound1 && cnt_inv < bound2)
+                // {
+                //     if (iBit[1] == 0 & lastBit == 0)
+                //     {
+                //         cnt_inv += 2;
+                //     }
+                //     else if(iBit[1] == 1 & lastBit == 1)
+                //     {
+                //         cnt_inv -= 2;
+                //     }
+                // }
+                // else
+                // {
+                //     if (iBit[1] == 0 && cnt_inv < upperBound)
+                //     {
+                //         cnt_inv += 1;
+                //     }
+                //     else if(iBit[1] == 1 && cnt_inv > 0)
+                //     {
+                //         cnt_inv -= 1;
+                //     }
+                // }
+                // lastBit_inv = (1 - iBit[1]);
                 rngIdx_inv += (1 - iBit[0]);
                 rngIdx_inv %= (upperBound+1);
 
@@ -230,7 +230,7 @@ void CFMUL::Calc(vector<char> param1)
                     regenBit = 0;
                 }
 
-                if (cnt_inv > rngInst.OutSeq()[0][rngIdx_inv])
+                if (cnt <= rngInst.OutSeq()[0][rngIdx_inv])
                 {
                     regenBit_inv = 1;
                 }
