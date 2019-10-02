@@ -20,7 +20,7 @@ int main()
     srand(time(NULL));
     vector<unsigned int> inBSNumVec{2};
     vector<unsigned int> randBitLenVec{6, 8, 10};
-    for (unsigned int cfree = 0; cfree < 1; ++cfree)
+    for (unsigned int cfree = 1; cfree < 2; ++cfree)
     {
         for (unsigned int instream = 1; instream < 2; ++instream)
         {
@@ -114,9 +114,9 @@ int main()
                             unsigned int delay = 0;
                             // random number generator
                             // SystemRandMulti rngInst;
-                            // SOBOLMulti rngInst;
+                            SOBOLMulti rngInst;
                             // LFSRMulti rngInst;
-                            RACELMulti rngInst;
+                            // RACELMulti rngInst;
                             rngInst.Init(inBSNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
                             rngInst.SeqGen();
         
@@ -305,7 +305,8 @@ int main()
                         printf("Depth of Buffer:             %4d\n", depth);
                         printf("Correlation Free Enbale:     %4d\n", cfree!=0);
                         printf("In-Stream Enbale:            %4d\n", instream!=0);
-                        printf("Unipolar Enbale:             %4d\n\n", unipolar!=0);
+                        printf("Unipolar Enbale:             %4d\n", unipolar!=0);
+                        printf("inSWindow size:              %4d\n\n", inSWindow);
         
                         printf("Evaluation Configuration:\n");
                         printf("Random Number Length:        %4d\n", randBitLen);
