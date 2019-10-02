@@ -37,6 +37,7 @@ int main()
                         unsigned int depthSync = (unsigned int)log2(inBSNum); // depth of synchronizer, used in some units with supported architecture
                         depthSync = randBitLenVec[randBitLenVecIdx];
                         unsigned int inSWindow = ceil(depthSync/2); // shift offset for internal cnt
+                        // unsigned int inSWindow = 2; // shift offset for internal cnt
                         unsigned int depth = inSWindow; // depth of other buffer, used in some units with supported architecture
                         // **************************************************************
                         // configuration for evaluation
