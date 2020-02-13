@@ -10,7 +10,7 @@ module dMUL_uni_tb ();
     logic   [`INWD-1:0] iB;
     logic   loadA;
     logic   loadB;
-    logic   oC;
+    logic   [`INWD*2-1:0] oC;
 
     dMUL_rot_uni U_dMUL_rot_uni(
         .clk(clk),    // Clock

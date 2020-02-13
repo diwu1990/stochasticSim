@@ -7,7 +7,7 @@ module dMUL_rot_uni (
     input logic [`DATAWD-1:0] iB,
     input logic loadA,
     input logic loadB,
-    output logic oC
+    output logic [`DATAWD*2-1:0] oC
 );
     
     logic [`DATAWD-1:0] iA_buf;
@@ -76,8 +76,20 @@ module dMUL_rot_uni (
         end
     end
 
-    always_comb begin : proc_oC
-        oC <= (iA_buf > cntA) & (iB_buf > cntB);
+    always_ff @(posedge clk or negedge rst_n) begin : proc_oC
+        if(~rst_n) begin
+            oC <= 0;
+        end else begin
+            if (loadA) begin
+                oC <= 0;
+            end else begin
+                if ((iA_buf > cntA) & (iB_buf > cntB)) begin
+                    oC <= oC + 1;
+                end else begin
+                    oC <= oC;
+                end
+            end
+        end
     end
 
 endmodule
