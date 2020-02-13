@@ -20,7 +20,11 @@ module dMUL_rot_uni (
         if(~rst_n) begin
             cntA <= 0;
         end else begin
-            cntA <= cntA + 1;
+            if (loadA) begin
+                cntA <= 0;
+            end else begin
+                cntA <= cntA + 1;
+            end
         end
     end
 
@@ -28,7 +32,11 @@ module dMUL_rot_uni (
         if(~rst_n) begin
             cntB <= 0;
         end else begin
-            cntB <= cntB + ~(&cntU);
+            if (loadB) begin
+                cntB <= 0;
+            end else begin
+                cntB <= cntB + (cntU != 8'hFF);
+            end
         end
     end
 
@@ -36,7 +44,11 @@ module dMUL_rot_uni (
         if(~rst_n) begin
             cntU <= 0;
         end else begin
-            cntU <= cntU + 1;
+            if (loadA) begin
+                cntU <= 0;
+            end else begin
+                cntU <= cntU + 1;
+            end
         end
     end
 

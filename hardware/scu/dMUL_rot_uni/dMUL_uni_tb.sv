@@ -1,5 +1,6 @@
 `timescale 1ns/1ns
-`include "dMUL_uni.sv"
+`include "dMUL_rot_uni.sv"
+`define INWD 8
 
 module dMUL_uni_tb ();
 
@@ -11,7 +12,7 @@ module dMUL_uni_tb ();
     logic   loadB;
     logic   oC;
 
-    dMUL_uni U_dMUL_uni(
+    dMUL_rot_uni U_dMUL_rot_uni(
         .clk(clk),    // Clock
         .rst_n(rst_n),  // Asynchronous reset active low
         .iA(iA),
@@ -26,7 +27,7 @@ module dMUL_uni_tb ();
 
     `ifdef DUMPFSDB
         initial begin
-            $fsdbDumpfile("dMUL_uni.fsdb");
+            $fsdbDumpfile("dMUL_rot_uni.fsdb");
             $fsdbDumpvars(0,"+all");
             // $fsdbDumpvars;
         end
