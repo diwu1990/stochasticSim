@@ -22,8 +22,8 @@ module dMUL_rot_lfsr_uni (
     lfsr #(.NUM_BITS(`DATAWD)) LFSR_inst_A
         (.clk(clk),
         .enable(1'b1),
-        .i_Seed_DV(1'b0),
-        .i_Seed_Data({`DATAWD{1'b0}}), // Replication
+        .i_Seed_DV(loadA),
+        .i_Seed_Data(8'hFE), // Replication
         .o_LFSR_Data(cntA),
         .o_LFSR_Done()
         );
@@ -31,8 +31,8 @@ module dMUL_rot_lfsr_uni (
     lfsr #(.NUM_BITS(`DATAWD)) LFSR_inst_B
         (.clk(clk),
         .enable(~u_done),
-        .i_Seed_DV(1'b0),
-        .i_Seed_Data({`DATAWD{1'b0}}), // Replication
+        .i_Seed_DV(loadB),
+        .i_Seed_Data(8'h1E), // Replication
         .o_LFSR_Data(cntB),
         .o_LFSR_Done()
         );
@@ -40,8 +40,8 @@ module dMUL_rot_lfsr_uni (
     lfsr #(.NUM_BITS(`DATAWD)) LFSR_inst_U
         (.clk(clk),
         .enable(1'b1),
-        .i_Seed_DV(1'b0),
-        .i_Seed_Data({`DATAWD{1'b0}}), // Replication
+        .i_Seed_DV(loadA),
+        .i_Seed_Data(8'hFD), // Replication
         .o_LFSR_Data(cntU),
         .o_LFSR_Done(u_done)
         );
