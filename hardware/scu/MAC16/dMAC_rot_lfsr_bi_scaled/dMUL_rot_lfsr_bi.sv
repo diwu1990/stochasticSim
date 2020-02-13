@@ -90,6 +90,6 @@ module dMUL_rot_lfsr_bi (
     //     end
     // end
 
-    assign oC = (iA_buf > cntA) ^ (iB_buf > cntB)
+    assign oC = (iA_buf > cntA) ^ (iB_buf > cntB);
 
 endmodule
