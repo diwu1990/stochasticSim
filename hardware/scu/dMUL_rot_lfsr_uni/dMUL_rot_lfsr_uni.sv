@@ -19,7 +19,7 @@ module dMUL_rot_lfsr_uni (
     
     logic u_done;
 
-    lfsr #(.NUM_BITS(`DATAWD)) LFSR_inst_A
+    lfsr #(.NUM_BITS(8)) LFSR_inst_A
         (.clk(clk),
         .enable(1'b1),
         .i_Seed_DV(1'b0),
@@ -28,7 +28,7 @@ module dMUL_rot_lfsr_uni (
         .o_LFSR_Done()
         );
 
-    lfsr #(.NUM_BITS(`DATAWD)) LFSR_inst_B
+    lfsr #(.NUM_BITS(8)) LFSR_inst_B
         (.clk(clk),
         .enable(~u_done),
         .i_Seed_DV(1'b0),
@@ -37,7 +37,7 @@ module dMUL_rot_lfsr_uni (
         .o_LFSR_Done()
         );
 
-    lfsr #(.NUM_BITS(`DATAWD)) LFSR_inst_U
+    lfsr #(.NUM_BITS(8)) LFSR_inst_U
         (.clk(clk),
         .enable(1'b1),
         .i_Seed_DV(1'b0),
