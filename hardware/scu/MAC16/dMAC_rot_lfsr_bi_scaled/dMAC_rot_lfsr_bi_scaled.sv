@@ -2,7 +2,7 @@
 `include "muxADD.sv"
 `include "dMUL_rot_lfsr_bi.sv"
 
-module dMAC_rot_bi_scaled (
+module dMAC_rot_lfsr_bi_scaled (
     input clk,    // Clock
     input rst_n,  // Asynchronous reset active low
     input logic [7:0] iA [15:0],
