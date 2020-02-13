@@ -1,5 +1,6 @@
 `include "SobolRNGDim1.sv"
 `include "muxADD.sv"
+`include "lfsr.sv"
 
 module dADD_rot_lfsr (
     input logic clk,    // Clock
@@ -10,7 +11,6 @@ module dADD_rot_lfsr (
     output logic out
 );
     logic [`LOGINUM-1:0] sel;
-
     logic [`LOGINUM-1:0] cnt;
 
     lfsr #(.NUM_BITS(`LOGINUM)) LFSR_inst_A
