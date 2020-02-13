@@ -15,7 +15,7 @@
 // Parameters:
 // NUM_BITS - Set to the integer number of bits wide to create your LFSR.
 ///////////////////////////////////////////////////////////////////////////////
-module lfsr #(parameter NUM_BITS)
+module lfsr #(parameter NUM_BITS=3)
   (
    input clk,
    input enable,
