@@ -1,0 +1,67 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : dMUL_rot_lfsr_bi
+Version: P-2019.03
+Date   : Thu Feb 13 02:50:13 2020
+****************************************
+
+Operating Conditions: NCCOM   Library: tcbn40lpbwptc
+Wire Load Model Mode: segmented
+
+  Startpoint: oC_reg[0] (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: oC_reg[15] (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  dMUL_rot_lfsr_bi   TSMC32K_Lowk_Conservative
+                                           tcbn40lpbwptc
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  oC_reg[0]/CP (DFCNQD1BWP)                0.00       0.00 r
+  oC_reg[0]/Q (DFCNQD1BWP)                 0.14       0.14 r
+  U173/Z (CKBD16BWP)                       0.09       0.22 r
+  add_84/U1_1_1/CO (HA1D0BWP)              0.09       0.32 r
+  add_84/U1_1_2/CO (HA1D0BWP)              0.08       0.40 r
+  U150/Z (AN2XD1BWP)                       0.06       0.46 r
+  add_84/U1_1_4/CO (HA1D0BWP)              0.08       0.54 r
+  add_84/U1_1_5/CO (HA1D0BWP)              0.08       0.62 r
+  U151/Z (AN2XD1BWP)                       0.06       0.68 r
+  add_84/U1_1_7/CO (HA1D0BWP)              0.08       0.76 r
+  add_84/U1_1_8/CO (HA1D0BWP)              0.07       0.83 r
+  U144/ZN (INVD1BWP)                       0.03       0.86 f
+  U190/ZN (NR2XD0BWP)                      0.05       0.91 r
+  U149/Z (AN2XD1BWP)                       0.07       0.97 r
+  add_84/U1_1_11/CO (HA1D0BWP)             0.08       1.05 r
+  add_84/U1_1_12/CO (HA1D0BWP)             0.07       1.12 r
+  U145/ZN (INVD1BWP)                       0.03       1.15 f
+  U198/ZN (NR2XD0BWP)                      0.05       1.20 r
+  add_84/U1_1_14/CO (HA1D0BWP)             0.07       1.27 r
+  U175/ZN (INVD1BWP)                       0.03       1.30 f
+  U146/ZN (OAI32D1BWP)                     0.07       1.37 r
+  U132/Z (CKBD1BWP)                        0.05       1.42 r
+  oC_reg[15]/D (DFCNQD1BWP)                0.00       1.42 r
+  data arrival time                                   1.42
+
+  clock clk (rise edge)                    2.50       2.50
+  clock network delay (ideal)              0.00       2.50
+  clock uncertainty                       -0.15       2.35
+  oC_reg[15]/CP (DFCNQD1BWP)               0.00       2.35 r
+  library setup time                      -0.03       2.32
+  data required time                                  2.32
+  -----------------------------------------------------------
+  data required time                                  2.32
+  data arrival time                                  -1.42
+  -----------------------------------------------------------
+  slack (MET)                                         0.90
+
+
+1
