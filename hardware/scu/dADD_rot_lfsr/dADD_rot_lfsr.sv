@@ -13,7 +13,7 @@ module dADD_rot_lfsr (
 
     logic [`LOGINUM-1:0] cnt;
 
-    lfsr #(.NUM_BITS(`DATAWD)) LFSR_inst_A
+    lfsr #(.NUM_BITS(`LOGINUM)) LFSR_inst_A
         (.clk(clk),
         .enable(1'b1),
         .i_Seed_DV(loadA),
