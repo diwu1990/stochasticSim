@@ -80,7 +80,7 @@ module dMUL_rot_lfsr_bi (
             if (loadA) begin
                 oC <= 0;
             end else begin
-                if ((iA_buf > cntA) & (iB_buf > cntB)) begin
+                if ((iA_buf > cntA) ^ (iB_buf > cntB)) begin
                     oC <= oC + 1;
                 end else begin
                     oC <= oC;
