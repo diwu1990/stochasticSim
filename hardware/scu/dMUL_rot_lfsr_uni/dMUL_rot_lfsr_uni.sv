@@ -8,6 +8,9 @@ module dMUL_rot_lfsr_uni (
     input logic [`DATAWD-1:0] iB,
     input logic loadA,
     input logic loadB,
+    input logic [`DATAWD-1:0] iseedA,
+    input logic [`DATAWD-1:0] iseedB,
+    input logic [`DATAWD-1:0] iseedU,
     output logic [`DATAWD*2-1:0] oC
 );
     
@@ -23,7 +26,7 @@ module dMUL_rot_lfsr_uni (
         (.clk(clk),
         .enable(1'b1),
         .i_Seed_DV(loadA),
-        .i_Seed_Data(8'hFE), // Replication
+        .i_Seed_Data(iseedA), // Replication
         .o_LFSR_Data(cntA),
         .o_LFSR_Done()
         );
@@ -32,7 +35,7 @@ module dMUL_rot_lfsr_uni (
         (.clk(clk),
         .enable(~u_done),
         .i_Seed_DV(loadB),
-        .i_Seed_Data(8'h1E), // Replication
+        .i_Seed_Data(iseedB), // Replication
         .o_LFSR_Data(cntB),
         .o_LFSR_Done()
         );
@@ -41,7 +44,7 @@ module dMUL_rot_lfsr_uni (
         (.clk(clk),
         .enable(1'b1),
         .i_Seed_DV(loadA),
-        .i_Seed_Data(8'hFD), // Replication
+        .i_Seed_Data(iseedU), // Replication
         .o_LFSR_Data(cntU),
         .o_LFSR_Done(u_done)
         );
