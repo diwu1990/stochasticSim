@@ -20,11 +20,11 @@ int main()
     srand(time(NULL));
     vector<unsigned int> inBSNumVec{2};
     vector<unsigned int> randBitLenVec{6, 8, 10};
-    for (unsigned int cfree = 1; cfree < 2; ++cfree)
+    for (unsigned int cfree = 0; cfree < 1; ++cfree)
     {
-        for (unsigned int instream = 1; instream < 2; ++instream)
+        for (unsigned int instream = 0; instream < 1; ++instream)
         {
-            for (unsigned int unipolar = 0; unipolar < 1; ++unipolar)
+            for (unsigned int unipolar = 0; unipolar < 2; ++unipolar)
             {
                 for (int inBSNumVecIdx = 0; inBSNumVecIdx < inBSNumVec.size(); ++inBSNumVecIdx)
                 {
@@ -115,16 +115,16 @@ int main()
                             unsigned int delay = 0;
                             // random number generator
                             // SystemRandMulti rngInst;
-                            SOBOLMulti rngInst;
-                            // LFSRMulti rngInst;
+                            // SOBOLMulti rngInst;
+                            LFSRMulti rngInst;
                             // RACELMulti rngInst;
                             rngInst.Init(inBSNum,seedInitIdx,delay,randBitLen,mode,"rngInst");
                             rngInst.SeqGen();
         
                             // random number generator
                             // SystemRandMulti rngSeqInst;
-                            SOBOLMulti rngSeqInst;
-                            // LFSRMulti rngSeqInst;
+                            // SOBOLMulti rngSeqInst;
+                            LFSRMulti rngSeqInst;
                             rngSeqInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngSeqInst");
                             rngSeqInst.SeqGen();
         
