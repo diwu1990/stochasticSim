@@ -22,8 +22,8 @@
 #define UNI
 // #define BI
 
-// #define SADD
-#define NSADD
+#define SADD
+// #define NSADD
 
 // #define UGEMM
 #define GGEMM
@@ -233,8 +233,8 @@ int main()
 
                 // random number generator
                 // SystemRandMulti rngSeqInst;
-                SOBOLMulti rngSeqInst;
-                // LFSRMulti rngSeqInst;
+                // SOBOLMulti rngSeqInst;
+                LFSRMulti rngSeqInst;
                 rngSeqInst.Init(randSeqNum,seedInitIdx,delay,randBitLen,mode,"rngSeqInst");
                 rngSeqInst.SeqGen();
 
